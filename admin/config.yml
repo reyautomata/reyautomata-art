@@ -1,0 +1,27 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Carpeta donde el CMS guarda las imágenes que subas
+media_folder: "img/dibujos"
+public_folder: "img/dibujos"
+
+# Idioma del panel
+locale: "es"
+
+collections:
+  - name: "dibujos"
+    label: "Dibujos"
+    label_singular: "Dibujo"
+    folder: "dibujos"
+    create: true
+    slug: "{{slug}}"
+    summary: "{{titulo}}"
+    sortable_fields: ["commit_date", "titulo"]
+    fields:
+      - { name: "titulo", label: "Título", widget: "string" }
+      - { name: "imagen", label: "Imagen del dibujo", widget: "image" }
+      - { name: "tecnica", label: "Técnica (ej: Lápiz, Tinta)", widget: "string", required: false, default: "Dibujo · Lápiz" }
+      - { name: "anio", label: "Año", widget: "string", required: false, default: "2026" }
+      - { name: "categoria", label: "Categoría", widget: "select", required: false, options: ["Bocetos", "Figura humana", "Rostros", "Árboles Humanos", "Ilustraciones", "Pintura", "Cuadernos"], default: "Bocetos" }
+      - { name: "texto", label: "Poema / descripción", widget: "text", required: false }
