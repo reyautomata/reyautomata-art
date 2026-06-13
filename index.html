@@ -2504,7 +2504,21 @@
       const re = new RegExp('^' + campo + ':\\s*(.*)$', 'm');
       const m = texto.match(re);
       if (!m) return '';
-      return m[1].trim().replace(/^["']|["']$/g, ''); // quita comillas
+      let valor = m[1].trim();
+      // Si el valor está entre comillas, quita SOLO las de los extremos
+      if (valor.length >= 2 &&
+          ((valor[0] === '"' && valor[valor.length - 1] === '"') ||
+           (valor[0] === "'" && valor[valor.length - 1] === "'"))) {
+        const comilla = valor[0];
+        valor = valor.slice(1, -1);
+        // YAML escapa comillas internas duplicándolas ("" -> ") o con \"
+        if (comilla === '"') {
+          valor = valor.replace(/""/g, '"').replace(/\\"/g, '"');
+        } else {
+          valor = valor.replace(/''/g, "'");
+        }
+      }
+      return valor;
     }
 
     // Crea la tarjeta de un dibujo en la galería
