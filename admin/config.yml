@@ -2,7 +2,7 @@ backend:
   name: github
   repo: reyautomata/reyautomata-art
   branch: main
-  base_url: https://reyautomata-art.ingenieria-ahumada.workers.dev
+  base_url: https://reyautomata-art.pages.dev
   auth_endpoint: /api/auth
 
 media_folder: "img/dibujos"
