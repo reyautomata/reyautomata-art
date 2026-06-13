@@ -5,10 +5,10 @@ tecnica: Dibujo · Lápiz
 anio: "2025"
 categoria: Bocetos
 texto: |-
-  "Nuestras horas son minutos
+  Nuestras horas son minutos
   cuando esperamos saber,
   y siglos cuando sabemos
-  lo que se puede aprender."
+  lo que se puede aprender.
 
   – Antonio Machado.
 ---
