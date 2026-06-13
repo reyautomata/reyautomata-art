@@ -1,12 +1,13 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: reyautomata/reyautomata-art
   branch: main
+  base_url: https://reyautomata-art.ingenieria-ahumada.workers.dev
+  auth_endpoint: /api/auth
 
-# Carpeta donde el CMS guarda las imágenes que subas
 media_folder: "img/dibujos"
 public_folder: "img/dibujos"
 
-# Idioma del panel
 locale: "es"
 
 collections:
