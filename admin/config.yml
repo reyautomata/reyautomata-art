@@ -15,7 +15,8 @@ collections:
     label_singular: "Dibujo"
     folder: "dibujos"
     create: true
-    slug: "{{slug}}"
+    identifier_field: "titulo"
+    slug: "{{fields.titulo}}"
     summary: "{{titulo}}"
     sortable_fields: ["commit_date", "titulo"]
     fields:
