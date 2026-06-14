@@ -1786,6 +1786,7 @@
       inset: 0;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
+      transform: translateZ(0);
       border-radius: 10px;
       display: flex;
       flex-direction: column;
@@ -1798,9 +1799,11 @@
 
     /* Azul noche profundo de las cartas (con un toque más cálido que el fondo) */
     .card-back, .card-front {
+      /* Capa base SÓLIDA opaca primero, para que nunca se transparente el reverso */
       background:
-        radial-gradient(ellipse 70% 55% at 50% 42%, rgba(42,74,107,0.45) 0%, rgba(16,22,40,0.9) 70%),
-        linear-gradient(160deg, #141d33 0%, #0c1222 100%);
+        radial-gradient(ellipse 70% 55% at 50% 42%, rgba(42,74,107,0.45) 0%, rgba(16,22,40,0.5) 70%),
+        linear-gradient(160deg, #141d33 0%, #0c1222 100%),
+        #0c1222;
       border: 1px solid rgba(201,162,77,0.5);
     }
 
@@ -1814,19 +1817,33 @@
     }
 
     /* ── DORSO (se ve primero) ── */
-    .card-back-mark {
+    .card-back-emblema {
       position: relative;
       z-index: 2;
-      font-size: 2.6rem;
-      color: var(--copper);
-      margin-bottom: 1rem;
-      animation: oracle-pulse 3s ease-in-out infinite;
-      filter: drop-shadow(0 0 14px rgba(184,70,10,0.5));
+      width: 92px;
+      height: 92px;
+      margin-bottom: 1.4rem;
+      animation: oracle-pulse 4s ease-in-out infinite;
+      filter: drop-shadow(0 0 12px rgba(184,70,10,0.4));
+    }
+
+    .card-back-emblema svg { width: 100%; height: 100%; display: block; }
+
+    .card-back-titulo {
+      position: relative;
+      z-index: 2;
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      line-height: 1.2;
+      color: #c9a24d;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.02em;
     }
 
     @keyframes oracle-pulse {
-      0%, 100% { opacity: 0.6; transform: scale(1); }
-      50%      { opacity: 1; transform: scale(1.08); }
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50%      { opacity: 1; transform: scale(1.04); }
     }
 
     .card-back-text {
@@ -1842,7 +1859,7 @@
 
     /* ── FRENTE (el signo + el desafío) ── */
     .card-front {
-      transform: rotateY(180deg);
+      transform: rotateY(180deg) translateZ(0);
       justify-content: flex-start;
       padding-top: 38%;
     }
@@ -1972,7 +1989,7 @@
   <!-- ── SIDEBAR ── -->
   <nav class="sidebar" id="sidebar">
     <div class="sidebar-brand">Rey Autómata</div>
-    <div class="sidebar-title">Rey<br>Ahumada</div>
+    <div class="sidebar-title">Alberto<br>Ahumada</div>
 
     <ul class="nav-list">
       <li><a href="#inicio" class="active">
@@ -2016,9 +2033,9 @@
 
     <!-- INICIO -->
     <section id="inicio">
-      <div class="hero-eyebrow">Arte · Poesía · Pensamiento</div>
+      <div class="hero-eyebrow">Arte · Poesía · Máquina</div>
       <h1 class="hero-title typewriter">Rey Autómata</h1>
-      <p class="hero-subtitle">Dibujo, poesía y pensamiento<br>desde el árbol interior.</p>
+      <p class="hero-subtitle">Dibujo, poesía y pensamiento<br>desde la máquina interior.</p>
       <p class="hero-body">
         Un espacio donde conviven el arte, la técnica, la escritura y la contemplación. 
         Aquí guardo dibujos, poemas, libros, apuntes y fragmentos de una búsqueda personal.
@@ -2076,7 +2093,8 @@
           <!-- Dorso (se ve primero) -->
           <div class="card-face card-back">
             <div class="card-svg" id="card-svg-back"></div>
-            <div class="card-back-mark">✦</div>
+            <div class="card-back-emblema" id="card-emblema"></div>
+            <div class="card-back-titulo">El Oráculo<br>del Dibujo</div>
             <div class="card-back-text">Toca para revelar</div>
           </div>
           <!-- Frente (signo zodiacal + desafío) -->
@@ -2864,24 +2882,58 @@
     { consigna: 'Un retrato de alguien que extrañas', tecnica: 'De memoria, claroscuro suave' },
     { consigna: 'Tu sombra proyectada', tecnica: 'Solo negro y blanco, sin grises' },
     { consigna: 'Una máquina vieja u oxidada', tecnica: 'Detalle de texturas, grafito' },
+    { consigna: 'Un par de ojos que esconden algo', tecnica: 'Solo la mirada, nada más del rostro' },
+    { consigna: 'El interior de tu bolsillo o mochila', tecnica: 'Bodegón rápido, lápiz' },
+    { consigna: 'Una pareja de ancianos', tecnica: 'Línea expresiva, capturando arrugas' },
+    { consigna: 'Lo primero que ves al despertar', tecnica: 'De memoria, tonos suaves' },
+    { consigna: 'Una calle vacía de madrugada', tecnica: 'Perspectiva y sombras largas' },
+    { consigna: 'Tu comida favorita a medio comer', tecnica: 'Color o aguada, apetitoso' },
+    { consigna: 'Una emoción sin dibujar a nadie', tecnica: 'Solo formas y líneas abstractas' },
+    { consigna: 'Un animal dormido', tecnica: 'Curvas suaves, mínimo detalle' },
+    { consigna: 'El humo de algo (cigarro, té, incienso)', tecnica: 'Difuminado, carboncillo' },
+    { consigna: 'Tu mano no dominante dibujándose sola', tecnica: 'Dibuja con la mano que no usas' },
+    { consigna: 'Un personaje inventado en 3 minutos', tecnica: 'Diseño rápido, tinta directa' },
+    { consigna: 'La textura de una tela arrugada', tecnica: 'Estudio de pliegues, grafito' },
+    { consigna: 'Algo visto a través del agua', tecnica: 'Distorsión, bordes suaves' },
+    { consigna: 'Un esqueleto haciendo algo cotidiano', tecnica: 'Anatomía con humor, línea limpia' },
+    { consigna: 'El mismo objeto desde tres ángulos', tecnica: 'Estudio de volumen, lápiz' },
+    { consigna: 'Una multitud reducida a siluetas', tecnica: 'Solo negros, sin rasgos' },
+    { consigna: 'Tu rostro como si tuvieras 80 años', tecnica: 'Proyección, claroscuro' },
+    { consigna: 'Un paisaje que solo existe en tu cabeza', tecnica: 'Imaginación libre, técnica mixta' },
+    { consigna: 'Las raíces de un árbol como venas', tecnica: 'Tinta, líneas orgánicas' },
+    { consigna: 'Un instrumento musical en reposo', tecnica: 'Curvas y brillos, grafito blando' },
   ];
   // ===================================================================
 
   // Los 12 signos del zodíaco con su símbolo y las estrellas de su constelación
   // (coordenadas en un lienzo de 100x100, centradas alrededor de 50,50)
+  // Los 12 signos: símbolo, nombre, estrellas de la constelación, y el dibujo (figura)
+  // de su animal/símbolo en líneas (path SVG sobre un lienzo 0..100).
   const zodiaco = [
-    { nombre: 'Aries',       simbolo: '\u2648', estrellas: [[35,40],[45,38],[55,42],[63,50]] },
-    { nombre: 'Tauro',       simbolo: '\u2649', estrellas: [[36,55],[44,48],[52,45],[60,48],[66,42],[40,62]] },
-    { nombre: 'Géminis',     simbolo: '\u264A', estrellas: [[40,35],[42,50],[44,63],[58,35],[58,50],[57,63]] },
-    { nombre: 'Cáncer',      simbolo: '\u264B', estrellas: [[38,45],[48,42],[58,46],[52,55],[44,58]] },
-    { nombre: 'Leo',         simbolo: '\u264C', estrellas: [[36,50],[42,42],[50,40],[58,45],[62,54],[55,60],[46,58]] },
-    { nombre: 'Virgo',       simbolo: '\u264D', estrellas: [[35,42],[44,46],[52,44],[60,48],[56,58],[48,60]] },
-    { nombre: 'Libra',       simbolo: '\u264E', estrellas: [[38,52],[48,45],[58,45],[64,52],[44,60],[58,60]] },
-    { nombre: 'Escorpio',    simbolo: '\u264F', estrellas: [[34,42],[42,46],[50,48],[57,53],[62,60],[58,66],[50,64]] },
-    { nombre: 'Sagitario',   simbolo: '\u2650', estrellas: [[36,58],[44,50],[52,44],[60,40],[58,50],[52,54]] },
-    { nombre: 'Capricornio', simbolo: '\u2651', estrellas: [[36,46],[44,42],[52,46],[58,52],[52,60],[42,58]] },
-    { nombre: 'Acuario',     simbolo: '\u2652', estrellas: [[36,46],[44,50],[50,45],[56,50],[62,45],[44,58],[56,58]] },
-    { nombre: 'Piscis',      simbolo: '\u2653', estrellas: [[36,42],[42,50],[40,60],[58,42],[64,50],[60,60],[50,51]] },
+    { nombre: 'Aries', simbolo: '\u2648', estrellas: [[35,40],[45,38],[55,42],[63,50]],
+      figura: 'M38,60 C30,56 30,44 40,44 C40,36 52,36 52,46 C52,36 64,36 64,44 C74,44 74,56 66,60 M52,46 L52,66' },
+    { nombre: 'Tauro', simbolo: '\u2649', estrellas: [[36,55],[44,48],[52,45],[60,48],[66,42]],
+      figura: 'M34,40 C40,48 40,50 44,52 M66,40 C60,48 60,50 56,52 M50,68 A14,14 0 1,1 50.1,68 Z' },
+    { nombre: 'Géminis', simbolo: '\u264A', estrellas: [[40,35],[42,50],[44,63],[58,35],[58,50],[57,63]],
+      figura: 'M36,38 L64,38 M36,68 L64,68 M44,38 L44,68 M56,38 L56,68' },
+    { nombre: 'Cáncer', simbolo: '\u264B', estrellas: [[38,45],[48,42],[58,46],[52,55]],
+      figura: 'M34,46 A8,8 0 1,1 42,54 M66,58 A8,8 0 1,1 58,50 M42,50 L58,54' },
+    { nombre: 'Leo', simbolo: '\u264C', estrellas: [[36,50],[42,42],[50,40],[58,45],[62,54],[55,60]],
+      figura: 'M44,62 A10,10 0 1,1 54,54 C54,44 44,44 44,52 C44,40 60,38 62,50 C64,60 56,64 52,62' },
+    { nombre: 'Virgo', simbolo: '\u264D', estrellas: [[35,42],[44,46],[52,44],[60,48],[56,58]],
+      figura: 'M36,40 L36,64 M44,40 L44,64 M52,40 L52,60 C52,68 62,68 62,58 C68,58 68,48 60,50' },
+    { nombre: 'Libra', simbolo: '\u264E', estrellas: [[38,52],[48,45],[58,45],[64,52]],
+      figura: 'M32,62 L68,62 M40,54 A12,8 0 0,1 60,54 M50,54 L50,62 M36,54 L44,54 M56,54 L64,54' },
+    { nombre: 'Escorpio', simbolo: '\u264F', estrellas: [[34,42],[42,46],[50,48],[57,53],[62,60]],
+      figura: 'M32,42 L32,62 M40,42 L40,62 M48,42 L48,62 C48,70 60,70 60,60 L60,56 L66,62 M60,56 L64,52' },
+    { nombre: 'Sagitario', simbolo: '\u2650', estrellas: [[36,58],[44,50],[52,44],[60,40],[58,50]],
+      figura: 'M32,68 L64,36 M64,36 L52,36 M64,36 L64,48 M44,48 L56,60' },
+    { nombre: 'Capricornio', simbolo: '\u2651', estrellas: [[36,46],[44,42],[52,46],[58,52]],
+      figura: 'M34,42 C34,56 46,56 46,44 L46,62 C46,52 56,50 58,58 C62,68 50,72 48,64' },
+    { nombre: 'Acuario', simbolo: '\u2652', estrellas: [[36,46],[44,50],[50,45],[56,50],[62,45]],
+      figura: 'M32,46 L38,42 L44,46 L50,42 L56,46 L62,42 L68,46 M32,58 L38,54 L44,58 L50,54 L56,58 L62,54 L68,58' },
+    { nombre: 'Piscis', simbolo: '\u2653', estrellas: [[36,42],[42,50],[40,60],[58,42],[64,50],[60,60]],
+      figura: 'M36,40 C28,48 28,56 36,64 M64,40 C72,48 72,56 64,64 M30,52 L70,52' },
   ];
 
   // Genera el SVG del marco art déco + rayos radiantes (estilo tarot)
@@ -2915,23 +2967,29 @@
   // Genera el SVG de la constelación de un signo (estrellas + líneas + símbolo)
   function svgConstelacion(signo) {
     const e = signo.estrellas;
-    // Lineas que unen las estrellas en orden
-    let lineas = '';
-    for (let i = 0; i < e.length - 1; i++) {
-      lineas += `<line x1="${e[i][0]}" y1="${e[i][1]}" x2="${e[i+1][0]}" y2="${e[i+1][1]}" stroke="#c9a24d" stroke-width="0.4" opacity="0.6"/>`;
-    }
-    // Estrellas (puntos)
-    let puntos = '';
-    e.forEach((p, i) => {
-      const r = (i === 0 || i === e.length-1) ? 1.4 : 1.0;
-      puntos += `<circle cx="${p[0]}" cy="${p[1]}" r="${r}" fill="#f0e6cf"/>`;
-      puntos += `<circle cx="${p[0]}" cy="${p[1]}" r="${r+1.2}" fill="none" stroke="#c9a24d" stroke-width="0.3" opacity="0.5"/>`;
+    // Estrellas tenues de fondo (la constelación, detrás de la figura)
+    let estrellas = '';
+    e.forEach((p) => {
+      estrellas += `<circle cx="${p[0]}" cy="${p[1]}" r="0.9" fill="#f0e6cf" opacity="0.55"/>`;
     });
+    for (let i = 0; i < e.length - 1; i++) {
+      estrellas += `<line x1="${e[i][0]}" y1="${e[i][1]}" x2="${e[i+1][0]}" y2="${e[i+1][1]}" stroke="#c9a24d" stroke-width="0.25" opacity="0.35"/>`;
+    }
+    // La FIGURA del animal/símbolo, en líneas doradas (lo principal)
+    const figura = `<path d="${signo.figura}" fill="none" stroke="#c9a24d" stroke-width="1.3"
+                     stroke-linecap="round" stroke-linejoin="round"
+                     filter="url(#glow)" opacity="0.95"/>`;
     return `
       <svg class="card-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"
            style="top:4%;height:34%;" xmlns="http://www.w3.org/2000/svg">
-        ${lineas}
-        ${puntos}
+        <defs>
+          <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="0.6" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        ${estrellas}
+        ${figura}
       </svg>`;
   }
 
@@ -2947,6 +3005,52 @@
 
     // Dibuja los marcos fijos (dorso con rayos, frente con marco)
     svgBack.innerHTML = svgMarco(true);
+
+    // Emblema del mazo: bola de cristal + lápiz + constelación, fundidos
+    const emblema = document.getElementById('card-emblema');
+    if (emblema) {
+      emblema.innerHTML = `
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="bola" cx="42%" cy="38%" r="60%">
+              <stop offset="0%" stop-color="rgba(201,162,77,0.35)"/>
+              <stop offset="60%" stop-color="rgba(42,74,107,0.25)"/>
+              <stop offset="100%" stop-color="rgba(12,18,34,0.1)"/>
+            </radialGradient>
+          </defs>
+          <!-- Bola de cristal -->
+          <circle cx="50" cy="48" r="26" fill="url(#bola)" stroke="#c9a24d" stroke-width="1.2"/>
+          <!-- Brillo de la bola -->
+          <ellipse cx="42" cy="40" rx="7" ry="4" fill="#f0e6cf" opacity="0.4"/>
+          <!-- Base/soporte de la bola -->
+          <path d="M38,74 Q50,82 62,74 L58,78 Q50,84 42,78 Z" fill="#c9a24d" opacity="0.8"/>
+          <path d="M44,72 L56,72" stroke="#c9a24d" stroke-width="1.4" stroke-linecap="round"/>
+          <!-- Constelación dentro de la bola (estrellas + líneas) -->
+          <g opacity="0.9">
+            <line x1="40" y1="52" x2="48" y2="44" stroke="#c9a24d" stroke-width="0.5"/>
+            <line x1="48" y1="44" x2="58" y2="50" stroke="#c9a24d" stroke-width="0.5"/>
+            <line x1="58" y1="50" x2="62" y2="42" stroke="#c9a24d" stroke-width="0.5"/>
+            <circle cx="40" cy="52" r="1.3" fill="#f0e6cf"/>
+            <circle cx="48" cy="44" r="1.6" fill="#f0e6cf"/>
+            <circle cx="58" cy="50" r="1.3" fill="#f0e6cf"/>
+            <circle cx="62" cy="42" r="1.1" fill="#f0e6cf"/>
+          </g>
+          <!-- Lápiz cruzando, como varita mágica (de abajo-izq a arriba-der) -->
+          <g transform="rotate(-38 50 50)">
+            <!-- cuerpo -->
+            <rect x="47" y="14" width="6" height="48" fill="rgba(201,162,77,0.2)" stroke="#c9a24d" stroke-width="1.1"/>
+            <!-- punta -->
+            <path d="M47,62 L53,62 L50,72 Z" fill="#c9a24d"/>
+            <path d="M48.5,67 L51.5,67 L50,72 Z" fill="#0c1222"/>
+            <!-- goma/tope arriba -->
+            <rect x="47" y="11" width="6" height="4" fill="#c9a24d"/>
+            <line x1="47" y1="24" x2="53" y2="24" stroke="#c9a24d" stroke-width="0.8"/>
+          </g>
+          <!-- Pequeños destellos alrededor -->
+          <path d="M22,30 l1.5,3 l3,1.5 l-3,1.5 l-1.5,3 l-1.5,-3 l-3,-1.5 l3,-1.5 Z" fill="#c9a24d" opacity="0.7"/>
+          <path d="M80,60 l1,2 l2,1 l-2,1 l-1,2 l-1,-2 l-2,-1 l2,-1 Z" fill="#c9a24d" opacity="0.6"/>
+        </svg>`;
+    }
     svgFront.innerHTML = svgMarco(false);
 
     let girada = false;
@@ -2973,17 +3077,15 @@
     }
 
     function revelar() {
-      if (!girada) {
+      if (!card.classList.contains('flipped')) {
+        // Está boca abajo → revela un resultado nuevo
         pintar();
         card.classList.add('flipped');
-        girada = true;
-        btn.textContent = 'Otra carta';
+        btn.textContent = 'Bajar carta';
       } else {
+        // Está mostrando → la baja (boca abajo) y se queda así, sin mostrar nada
         card.classList.remove('flipped');
-        setTimeout(() => {
-          pintar();
-          card.classList.add('flipped');
-        }, 450);
+        btn.textContent = 'Invocar un tema';
       }
     }
 
