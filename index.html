@@ -2170,6 +2170,35 @@
     .triv-opt.correcta .triv-mark { color: #6fc46f; }
     .triv-opt.incorrecta .triv-mark { color: #d46f6f; }
 
+    /* Ficha informativa que se despliega tras responder */
+    .triv-ficha {
+      max-height: 0; overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.5s ease, opacity 0.5s ease, margin 0.5s ease, padding 0.5s ease;
+      margin-top: 0; padding: 0 1.2rem;
+      text-align: left;
+      border-left: 2px solid var(--copper);
+      background: rgba(184,70,10,0.05);
+      border-radius: 0 6px 6px 0;
+    }
+    .triv-ficha.show {
+      max-height: 500px; opacity: 1;
+      margin-top: 1.5rem; padding: 1.2rem;
+    }
+    .triv-ficha-titulo {
+      font-family: var(--serif); font-style: italic;
+      font-size: 1.05rem; color: var(--oro, #c9a24d); margin-bottom: 0.3rem;
+    }
+    .triv-ficha-meta {
+      font-family: var(--mono); font-size: 0.58rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 0.75rem;
+    }
+    .triv-ficha-texto {
+      font-family: var(--body); font-size: 0.88rem;
+      line-height: 1.6; color: var(--ink);
+    }
+
     .triv-next {
       margin-top: 1.5rem;
       font-family: var(--mono); font-size: 0.7rem;
@@ -3614,49 +3643,89 @@
       img: 'img/memorice/noche-estrellada.jpg',
       pregunta: '¿Quién pintó "La noche estrellada"?',
       opciones: ['Claude Monet', 'Vincent van Gogh', 'Paul Cézanne', 'Edvard Munch'],
-      correcta: 1
+      correcta: 1,
+      ficha: {
+        titulo: 'La noche estrellada',
+        meta: 'Vincent van Gogh · 1889 · Óleo sobre lienzo',
+        texto: 'Van Gogh la pintó desde la ventana de su habitación en el sanatorio de Saint-Rémy, poco antes del amanecer, agregando un pueblo imaginario. El cielo en remolinos, los cipreses como llamas oscuras y la luna luminosa convierten una vista nocturna en una explosión de emoción y movimiento. Hoy es una de las obras más reconocidas del mundo y vive en el MoMA de Nueva York.'
+      }
     },
     {
       img: 'img/memorice/mona-lisa.jpg',
       pregunta: '¿En qué época fue pintada "La Mona Lisa"?',
       opciones: ['Renacimiento (s. XVI)', 'Barroco (s. XVII)', 'Impresionismo (s. XIX)', 'Edad Media'],
-      correcta: 0
+      correcta: 0,
+      ficha: {
+        titulo: 'La Mona Lisa (La Gioconda)',
+        meta: 'Leonardo da Vinci · c. 1503-1519 · Óleo sobre tabla',
+        texto: 'Pintada durante el Alto Renacimiento, es el retrato más famoso de la historia. Su enigmática sonrisa y la técnica del sfumato —difuminar los contornos como humo— fascinan desde hace siglos. Leonardo la llevó consigo hasta su muerte; hoy se exhibe en el Louvre, tras un cristal blindado, y recibe millones de visitas al año.'
+      }
     },
     {
       img: 'img/memorice/gran-ola.jpg',
       pregunta: '"La gran ola de Kanagawa" pertenece al arte de...',
       opciones: ['China', 'Corea', 'Japón', 'Tailandia'],
-      correcta: 2
+      correcta: 2,
+      ficha: {
+        titulo: 'La gran ola de Kanagawa',
+        meta: 'Katsushika Hokusai · c. 1831 · Xilografía (ukiyo-e)',
+        texto: 'Primera estampa de la serie "Treinta y seis vistas del monte Fuji", Hokusai la creó con más de 70 años. Una ola monumental de azul de Prusia amenaza a tres barcas, mientras el monte Fuji permanece sereno y diminuto al fondo: el caos y la calma en una sola imagen. Es la obra japonesa más célebre del mundo y se imprimió en miles de copias.'
+      }
     },
     {
       img: 'img/memorice/el-grito.jpg',
       pregunta: '¿Qué estilo representa "El grito" de Munch?',
       opciones: ['Cubismo', 'Expresionismo', 'Realismo', 'Surrealismo'],
-      correcta: 1
+      correcta: 1,
+      ficha: {
+        titulo: 'El grito',
+        meta: 'Edvard Munch · 1893 · Temple y pastel sobre cartón',
+        texto: 'Ícono del expresionismo, nació de una experiencia real: Munch caminaba al atardecer cuando el cielo se tiñó de rojo sangre y sintió "un grito infinito atravesando la naturaleza". La figura andrógina que se lleva las manos al rostro encarna la angustia existencial moderna. Munch pintó varias versiones de esta imagen.'
+      }
     },
     {
       img: 'img/memorice/joven-perla.jpg',
       pregunta: 'Vermeer, autor de "La joven de la perla", nació en...',
       opciones: ['Italia', 'Francia', 'España', 'Países Bajos (Holanda)'],
-      correcta: 3
+      correcta: 3,
+      ficha: {
+        titulo: 'La joven de la perla',
+        meta: 'Johannes Vermeer · c. 1665 · Óleo sobre lienzo',
+        texto: 'Llamada "la Mona Lisa del norte", no es un retrato sino un "tronie": un estudio de un rostro idealizado. La joven gira la cabeza hacia el espectador, con un turbante azul y una gran perla que capta la luz. Vermeer, maestro holandés de la luz, dejó pocas obras; esta se conserva en el Mauritshuis de La Haya.'
+      }
     },
     {
       img: 'img/memorice/el-beso.jpg',
       pregunta: '¿Quién pintó "El beso", ícono dorado del modernismo?',
       opciones: ['Gustav Klimt', 'Egon Schiele', 'Henri Matisse', 'Salvador Dalí'],
-      correcta: 0
+      correcta: 0,
+      ficha: {
+        titulo: 'El beso',
+        meta: 'Gustav Klimt · 1908-1909 · Óleo y pan de oro sobre lienzo',
+        texto: 'Cumbre del "período dorado" de Klimt, muestra a una pareja abrazada al borde de un prado florido, envuelta en mantos cubiertos de pan de oro real. La obra fusiona el simbolismo vienés con los mosaicos bizantinos que el artista admiraba. Es una celebración del amor y la unión, y se conserva en la Galería Belvedere de Viena.'
+      }
     },
     {
       img: 'img/memorice/nacimiento-venus.jpg',
       pregunta: '"El nacimiento de Venus" fue pintada por...',
       opciones: ['Rafael', 'Sandro Botticelli', 'Tiziano', 'Caravaggio'],
-      correcta: 1
+      correcta: 1,
+      ficha: {
+        titulo: 'El nacimiento de Venus',
+        meta: 'Sandro Botticelli · c. 1485 · Temple sobre lienzo',
+        texto: 'Obra maestra del Renacimiento florentino, muestra a la diosa Venus emergiendo del mar sobre una concha, empujada por los vientos hacia la orilla. Su gracia ideal y sus líneas fluidas la hacen inconfundible. Fue una de las primeras grandes obras sobre lienzo de su época y hoy es una joya de la Galería Uffizi en Florencia.'
+      }
     },
     {
       img: 'img/memorice/vigee-lebrun.jpg',
       pregunta: 'Élisabeth Vigée Le Brun fue una destacada pintora de...',
       opciones: ['Alemania', 'Francia', 'Inglaterra', 'Rusia'],
-      correcta: 1
+      correcta: 1,
+      ficha: {
+        titulo: 'Autorretrato con sombrero de paja',
+        meta: 'Élisabeth Vigée Le Brun · c. 1782 · Óleo sobre lienzo',
+        texto: 'Una de las pintoras más exitosas del siglo XVIII, fue retratista favorita de la reina María Antonieta. En este autorretrato se muestra al aire libre, con luz natural y una sonrisa franca, desafiando las convenciones rígidas de la época. Pintó más de 600 retratos y dejó memorias fascinantes sobre su vida como artista mujer.'
+      }
     },
   ];
   // ===================================================================
@@ -3708,6 +3777,7 @@
              onerror="this.classList.add('missing')">
         <div class="triv-pregunta">${p.pregunta}</div>
         <div class="triv-opciones">${opcionesHTML}</div>
+        <div class="triv-ficha" id="triv-ficha"></div>
         <button class="triv-next" id="triv-next">Siguiente</button>`;
 
       box.querySelectorAll('.triv-opt').forEach(btn => {
@@ -3733,6 +3803,19 @@
         }
       });
       if (elegida === p.correcta) puntos++;
+
+      // Mostrar la ficha informativa de la obra
+      if (p.ficha) {
+        const f = box.querySelector('#triv-ficha');
+        if (f) {
+          f.innerHTML =
+            '<div class="triv-ficha-titulo">' + p.ficha.titulo + '</div>' +
+            '<div class="triv-ficha-meta">' + p.ficha.meta + '</div>' +
+            '<div class="triv-ficha-texto">' + p.ficha.texto + '</div>';
+          f.classList.add('show');
+        }
+      }
+
       box.querySelector('#triv-next').classList.add('show');
       box.querySelector('#triv-next').textContent =
         (idx + 1 < TOTAL) ? 'Siguiente' : 'Ver resultado';
