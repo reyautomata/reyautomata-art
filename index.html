@@ -2128,6 +2128,12 @@
     .triv-opt:disabled { cursor: default; }
     .triv-opt.correcta { border-color: #4a8a4a; background: rgba(74,138,74,0.15); color: #9fd49f; }
     .triv-opt.incorrecta { border-color: #a04444; background: rgba(160,68,68,0.15); color: #d49f9f; }
+    .triv-mark {
+      display: inline-block; font-weight: 700; margin-right: 0.3rem;
+      font-size: 1.05rem;
+    }
+    .triv-opt.correcta .triv-mark { color: #6fc46f; }
+    .triv-opt.incorrecta .triv-mark { color: #d46f6f; }
 
     .triv-next {
       margin-top: 1.5rem;
@@ -3615,8 +3621,14 @@
       const opts = box.querySelectorAll('.triv-opt');
       opts.forEach((o, i) => {
         o.disabled = true;
-        if (i === p.correcta) o.classList.add('correcta');
-        if (i === elegida && elegida !== p.correcta) o.classList.add('incorrecta');
+        if (i === p.correcta) {
+          o.classList.add('correcta');
+          o.innerHTML = '<span class="triv-mark">✓</span> ' + o.innerHTML;
+        }
+        if (i === elegida && elegida !== p.correcta) {
+          o.classList.add('incorrecta');
+          o.innerHTML = '<span class="triv-mark">✗</span> ' + o.innerHTML;
+        }
       });
       if (elegida === p.correcta) puntos++;
       box.querySelector('#triv-next').classList.add('show');
