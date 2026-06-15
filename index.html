@@ -2111,6 +2111,34 @@
       .mem-tipo { font-size: 0.42rem; }
     }
 
+    /* Visor de zoom para las pinturas del memorice */
+    .mem-zoom {
+      position: fixed; inset: 0;
+      background: rgba(8,10,15,0.92);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+      cursor: zoom-out;
+      padding: 2rem;
+    }
+    .mem-zoom.open { opacity: 1; pointer-events: auto; }
+    .mem-zoom img {
+      max-width: 90vw; max-height: 82vh;
+      border-radius: 8px;
+      border: 1px solid rgba(201,162,77,0.5);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+      transform: scale(0.9);
+      transition: transform 0.3s;
+    }
+    .mem-zoom.open img { transform: scale(1); }
+    .mem-zoom-cap {
+      position: absolute; bottom: 2rem; left: 0; right: 0;
+      text-align: center;
+      font-family: var(--mono); font-size: 0.7rem;
+      letter-spacing: 0.1em; color: #c9a24d;
+    }
+
     /* ── TRIVIA DEL ARTE ── */
     #trivia {
       background: var(--bg);
@@ -2508,6 +2536,12 @@
 
       <p class="mem-win" id="mem-win"></p>
       <button class="mem-btn" id="mem-btn">Reiniciar juego</button>
+
+      <!-- Visor de zoom de las pinturas -->
+      <div class="mem-zoom" id="mem-zoom">
+        <img src="" alt="Pintura ampliada" id="mem-zoom-img">
+        <div class="mem-zoom-cap" id="mem-zoom-cap"></div>
+      </div>
     </section>
 
     <div class="rule"></div>
@@ -3589,8 +3623,14 @@
     }
 
     function voltear(card) {
+      // Si la carta ya está emparejada y tiene imagen, hacer zoom en vez de jugar
+      if (card.classList.contains('matched')) {
+        const img = card.querySelector('.mem-img');
+        if (img) abrirZoom(img.src, img.alt);
+        return;
+      }
       if (bloqueo) return;
-      if (card.classList.contains('flip') || card.classList.contains('matched')) return;
+      if (card.classList.contains('flip')) return;
 
       card.classList.add('flip');
 
@@ -3626,6 +3666,22 @@
     function ganar() {
       elWin.textContent = '✦ ¡Completaste el mazo en ' + intentos + ' intentos! ✦';
       elWin.classList.add('show');
+    }
+
+    // — Zoom de las pinturas emparejadas —
+    const zoom = document.getElementById('mem-zoom');
+    const zoomImg = document.getElementById('mem-zoom-img');
+    const zoomCap = document.getElementById('mem-zoom-cap');
+    function abrirZoom(src, cap) {
+      if (!zoom) return;
+      zoomImg.src = src;
+      zoomCap.textContent = cap || '';
+      zoom.classList.add('open');
+    }
+    function cerrarZoom() { if (zoom) zoom.classList.remove('open'); }
+    if (zoom) {
+      zoom.addEventListener('click', cerrarZoom);
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarZoom(); });
     }
 
     btn.addEventListener('click', crear);
