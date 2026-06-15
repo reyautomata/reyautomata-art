@@ -2323,6 +2323,104 @@
       .juegos-grid { grid-template-columns: 1fr; }
     }
 
+    /* ── GALERÍA DE PINTURAS FAMOSAS ── */
+    #galeria-arte {
+      background: var(--bg2);
+      padding: 5rem 1.5rem;
+    }
+    .gal-intro { max-width: 620px; margin: 0 auto 3rem; text-align: center; }
+    .gal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.25rem;
+      max-width: 1000px; margin: 0 auto;
+    }
+    .gal-item {
+      position: relative;
+      aspect-ratio: 3 / 4;
+      border-radius: 8px; overflow: hidden;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      transition: all 0.3s;
+      background: #0c1222;
+    }
+    .gal-item:hover {
+      transform: translateY(-4px);
+      border-color: var(--copper);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .gal-item img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.4s;
+    }
+    .gal-item:hover img { transform: scale(1.05); }
+    .gal-item.missing img { display: none; }
+    .gal-item-cap {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      padding: 1.5rem 0.9rem 0.8rem;
+      background: linear-gradient(transparent, rgba(8,10,15,0.95));
+      text-align: left;
+    }
+    .gal-item-titulo {
+      font-family: var(--serif); font-style: italic;
+      font-size: 0.92rem; color: var(--ink); line-height: 1.2;
+    }
+    .gal-item-autor {
+      font-family: var(--mono); font-size: 0.55rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--copper); margin-top: 0.3rem;
+    }
+    .gal-modal {
+      position: fixed; inset: 0;
+      background: rgba(8,10,15,0.94);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; padding: 1.5rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .gal-modal.open { opacity: 1; pointer-events: auto; }
+    .gal-modal-panel {
+      background: linear-gradient(160deg, var(--bg2) 0%, var(--bg) 100%);
+      border: 1px solid rgba(201,162,77,0.4);
+      border-radius: 12px;
+      max-width: 820px; width: 100%;
+      max-height: 88vh; overflow-y: auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      transform: scale(0.95); transition: transform 0.3s;
+    }
+    .gal-modal.open .gal-modal-panel { transform: scale(1); }
+    .gal-modal-img {
+      background: #0c1222;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+    }
+    .gal-modal-img img { width: 100%; height: 100%; object-fit: contain; max-height: 70vh; }
+    .gal-modal-info { padding: 2rem; position: relative; }
+    .gal-modal-info h3 {
+      font-family: var(--serif); font-style: italic; font-weight: 400;
+      font-size: 1.5rem; color: var(--oro, #c9a24d); margin-bottom: 0.4rem; line-height: 1.2;
+    }
+    .gal-modal-meta {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 1.25rem; line-height: 1.6;
+    }
+    .gal-modal-texto {
+      font-family: var(--body); font-size: 0.92rem;
+      line-height: 1.65; color: var(--ink);
+    }
+    .gal-modal-close {
+      position: absolute; top: 1rem; right: 1.2rem;
+      font-family: var(--mono); font-size: 1.5rem;
+      color: var(--muted); cursor: pointer; background: none; border: none;
+      transition: color 0.2s;
+    }
+    .gal-modal-close:hover { color: var(--copper); }
+    @media (max-width: 680px) {
+      .gal-modal-panel { grid-template-columns: 1fr; }
+      .gal-modal-img img { max-height: 40vh; }
+    }
+
   </style>
 </head>
 <body>
@@ -2380,6 +2478,9 @@
       </a></li>
       <li><a href="#juegos">
         <span class="nav-icon">◆</span> Juegos
+      </a></li>
+      <li><a href="#galeria-arte">
+        <span class="nav-icon">▣</span> Museo
       </a></li>
       <li><a href="#poesia">
         <span class="nav-icon">◆</span> Poesía
@@ -2555,6 +2656,31 @@
       <div class="mem-zoom" id="mem-zoom">
         <img src="" alt="Pintura ampliada" id="mem-zoom-img">
         <div class="mem-zoom-cap" id="mem-zoom-cap"></div>
+      </div>
+    </section>
+
+    <div class="rule"></div>
+
+    <!-- GALERÍA DE PINTURAS FAMOSAS -->
+    <section id="galeria-arte">
+      <div class="gal-intro">
+        <p class="section-label reveal">— Pequeño museo</p>
+        <h2 class="section-title reveal">Pinturas que cambiaron el arte</h2>
+        <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Una selección de obras maestras de distintas épocas y rincones del mundo. Toca cualquiera para conocer su historia.</p>
+      </div>
+      <div class="gal-grid reveal" id="gal-grid"></div>
+
+      <!-- Modal de la ficha -->
+      <div class="gal-modal" id="gal-modal">
+        <div class="gal-modal-panel">
+          <div class="gal-modal-img"><img src="" alt="" id="gal-modal-img"></div>
+          <div class="gal-modal-info">
+            <button class="gal-modal-close" id="gal-modal-close">×</button>
+            <h3 id="gal-modal-titulo"></h3>
+            <div class="gal-modal-meta" id="gal-modal-meta"></div>
+            <div class="gal-modal-texto" id="gal-modal-texto"></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -3938,6 +4064,114 @@
     }
 
     iniciar();
+  })();
+
+  // ── GALERÍA DE PINTURAS FAMOSAS ──
+  // ===================================================================
+  //  LAS OBRAS. Cada una: imagen (img/galeria/), titulo, autor, meta y texto.
+  //  Sube las imágenes a img/galeria/ con estos nombres exactos.
+  //  Para AGREGAR: copia un bloque { ... },
+  // ===================================================================
+  const galeria = [
+    {
+      img: 'img/galeria/noche-estrellada.jpg', titulo: 'La noche estrellada', autor: 'Vincent van Gogh',
+      meta: 'Países Bajos · 1889 · Postimpresionismo',
+      texto: 'Pintada desde la ventana de su habitación en el sanatorio de Saint-Rémy, muestra un cielo en remolinos sobre un pueblo imaginario. Los astros laten como seres vivos y los cipreses se alzan como llamas oscuras. Es una de las imágenes más reconocidas del mundo y se conserva en el MoMA de Nueva York.'
+    },
+    {
+      img: 'img/galeria/joven-perla.jpg', titulo: 'La joven de la perla', autor: 'Johannes Vermeer',
+      meta: 'Países Bajos · c. 1665 · Barroco holandés',
+      texto: 'Llamada "la Mona Lisa del norte", no es un retrato sino un tronie: el estudio de un rostro idealizado. La joven gira hacia nosotros con un turbante azul y una perla que atrapa la luz. Vermeer, maestro de la luz, dejó muy pocas obras. Se conserva en el Mauritshuis de La Haya.'
+    },
+    {
+      img: 'img/galeria/nacimiento-venus.jpg', titulo: 'El nacimiento de Venus', autor: 'Sandro Botticelli',
+      meta: 'Italia · c. 1485 · Renacimiento',
+      texto: 'La diosa Venus emerge del mar sobre una concha, empujada por los vientos hacia la orilla. Su gracia ideal y sus líneas fluidas resumen el espíritu del Renacimiento florentino. Fue de las primeras grandes obras sobre lienzo de su época. Hoy es joya de la Galería Uffizi en Florencia.'
+    },
+    {
+      img: 'img/galeria/gran-ola.jpg', titulo: 'La gran ola de Kanagawa', autor: 'Katsushika Hokusai',
+      meta: 'Japón · c. 1831 · Ukiyo-e (xilografía)',
+      texto: 'Primera estampa de las "Treinta y seis vistas del monte Fuji". Una ola monumental de azul de Prusia amenaza a tres barcas mientras el Fuji permanece sereno al fondo: el caos y la calma en una imagen. Es la obra japonesa más célebre del mundo e influyó en el arte europeo.'
+    },
+    {
+      img: 'img/galeria/tres-de-mayo.jpg', titulo: 'El 3 de mayo en Madrid', autor: 'Francisco de Goya',
+      meta: 'España · 1814 · Romanticismo',
+      texto: 'Goya retrata el fusilamiento de civiles españoles por las tropas de Napoleón. El hombre de camisa blanca, con los brazos abiertos como un Cristo, se ha vuelto símbolo universal de la víctima frente a la violencia. Una de las primeras grandes pinturas modernas de denuncia. Está en el Museo del Prado.'
+    },
+    {
+      img: 'img/galeria/senoritas-avignon.jpg', titulo: 'Las señoritas de Avignon', autor: 'Pablo Picasso',
+      meta: 'España · 1907 · Protocubismo',
+      texto: 'Cinco figuras femeninas fragmentadas en planos angulosos, con rostros inspirados en máscaras africanas. Rompió con siglos de perspectiva tradicional y abrió la puerta al cubismo y al arte del siglo XX. Fue tan radical que Picasso la mantuvo oculta varios años. Hoy está en el MoMA.'
+    },
+    {
+      img: 'img/galeria/autorretrato-sombrero.jpg', titulo: 'Autorretrato con sombrero de paja', autor: 'Élisabeth Vigée Le Brun',
+      meta: 'Francia · c. 1782 · Rococó',
+      texto: 'Una de las pintoras más exitosas del siglo XVIII y retratista favorita de María Antonieta. Aquí se muestra al aire libre, con luz natural y sonrisa franca, desafiando las convenciones rígidas de su tiempo. Pintó más de 600 retratos y dejó memorias fascinantes sobre ser artista mujer.'
+    },
+    {
+      img: 'img/galeria/el-grito.jpg', titulo: 'El grito', autor: 'Edvard Munch',
+      meta: 'Noruega · 1893 · Expresionismo',
+      texto: 'Nació de una experiencia real: Munch caminaba al atardecer cuando el cielo se tiñó de rojo sangre y sintió "un grito infinito atravesando la naturaleza". La figura que se lleva las manos al rostro encarna la angustia moderna. Pintó varias versiones de esta imagen.'
+    },
+    {
+      img: 'img/galeria/autorretrato-rojas.jpg', titulo: 'Autorretrato con sombrero rojo', autor: 'Cristóbal Rojas',
+      meta: 'Venezuela · 1887 · Realismo',
+      texto: 'Cristóbal Rojas fue uno de los grandes pintores venezolanos del siglo XIX, junto a Michelena y Tovar y Tovar. De temperamento melancólico, mezcló dramatismo, influencia impresionista y una aguda observación. Estudió en París con una beca y participó en los grandes salones franceses de su época.'
+    },
+    {
+      img: 'img/galeria/criolla-herran.jpg', titulo: 'La criolla del mantón (estudio)', autor: 'Saturnino Herrán',
+      meta: 'México · c. 1915 · Modernismo mexicano',
+      texto: 'Saturnino Herrán, puente entre el siglo XIX y XX, murió muy joven, a los 31 años. Fue pionero en retratar lo mexicano —sus tipos, trajes y raíces indígenas— con dignidad y belleza, anticipando el muralismo. Su obra reivindicó la identidad nacional antes que los grandes muralistas.'
+    },
+    {
+      img: 'img/galeria/valle-mexico.jpg', titulo: 'El Valle de México', autor: 'José María Velasco',
+      meta: 'México · s. XIX · Paisajismo',
+      texto: 'José María Velasco fue el gran paisajista mexicano del siglo XIX. Sus vistas del Valle de México, con su luz limpia y su inmensidad serena, elevaron el paisaje a género mayor en América Latina. Combinó rigor científico y poesía: era también estudioso de la botánica y la geología.'
+    },
+    {
+      img: 'img/galeria/dama-campeche.jpg', titulo: 'Retrato (escuela de Campeche)', autor: 'José Campeche',
+      meta: 'Puerto Rico · s. XVIII · Rococó colonial',
+      texto: 'José Campeche fue el primer gran pintor puertorriqueño del que se tiene noticia y el mejor retratista del Caribe en el último tercio del siglo XVIII. Autodidacta y de enorme finura, retrató a la sociedad de su tiempo con delicadeza rococó. Es figura fundacional del arte en el Caribe.'
+    },
+  ];
+  // ===================================================================
+
+  (function () {
+    const grid = document.getElementById('gal-grid');
+    const modal = document.getElementById('gal-modal');
+    if (!grid || !modal) return;
+    const mImg = document.getElementById('gal-modal-img');
+    const mTit = document.getElementById('gal-modal-titulo');
+    const mMeta = document.getElementById('gal-modal-meta');
+    const mTexto = document.getElementById('gal-modal-texto');
+
+    galeria.forEach((obra) => {
+      const item = document.createElement('div');
+      item.className = 'gal-item';
+      item.innerHTML = `
+        <img src="${obra.img}" alt="${obra.titulo}" loading="lazy"
+             onerror="this.closest('.gal-item').classList.add('missing')">
+        <div class="gal-item-cap">
+          <div class="gal-item-titulo">${obra.titulo}</div>
+          <div class="gal-item-autor">${obra.autor}</div>
+        </div>`;
+      item.addEventListener('click', () => abrir(obra));
+      grid.appendChild(item);
+    });
+
+    function abrir(obra) {
+      mImg.src = obra.img;
+      mImg.alt = obra.titulo;
+      mTit.textContent = obra.titulo;
+      mMeta.innerHTML = obra.autor + '<br>' + obra.meta;
+      mTexto.textContent = obra.texto;
+      modal.classList.add('open');
+    }
+    function cerrar() { modal.classList.remove('open'); }
+
+    document.getElementById('gal-modal-close').addEventListener('click', cerrar);
+    modal.addEventListener('click', (e) => { if (e.target === modal) cerrar(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrar(); });
   })();
 
     // ── FONDOS DE LAS DEMAS SECCIONES ──
