@@ -521,23 +521,27 @@
     }
 
     .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 1px;
-      background: var(--border);
+      /* Estilo Pinterest: columnas tipo mampostería */
+      column-count: 4;
+      column-gap: 0.9rem;
     }
+    @media (max-width: 1100px) { .gallery-grid { column-count: 3; } }
 
     .gallery-item {
       background: var(--bg2);
-      aspect-ratio: 3/4;
       position: relative;
       overflow: hidden;
       cursor: pointer;
+      display: inline-block;
+      width: 100%;
+      margin-bottom: 0.9rem;
+      border-radius: 8px;
+      break-inside: avoid;
     }
 
     .gallery-item img {
       width: 100%;
-      height: 100%;
+      height: auto;
       object-fit: cover;
       display: block;
       transition: transform 0.5s ease, filter 0.3s ease;
@@ -1259,7 +1263,8 @@
 
       .about-portrait { aspect-ratio: 4/3; }
 
-      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+      .gallery-grid { column-count: 3; column-gap: 0.5rem; }
+      .gallery-item { margin-bottom: 0.5rem; }
 
       /* En movil el titulo se ve completo aunque la animacion no quepa:
          al terminar de "escribirse" permite que el texto use todo el ancho. */
