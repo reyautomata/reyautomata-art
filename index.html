@@ -380,42 +380,41 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--copper) 0%, #d4560f 100%);
+      background: rgba(184,70,10,0.12);
       border-color: var(--copper);
-      color: #fff;
-      font-weight: 700;
-      box-shadow: 0 4px 18px rgba(184,70,10,0.45);
+      color: var(--copper);
+      font-weight: 600;
     }
 
     .btn-primary:hover {
-      box-shadow: 0 8px 28px rgba(184,70,10,0.7);
-      background: linear-gradient(135deg, #d4560f 0%, var(--copper) 100%);
+      background: var(--copper);
+      color: #fff;
+      box-shadow: 0 8px 26px rgba(184,70,10,0.35);
     }
 
     .btn-ghost {
-      background: rgba(201,162,77,0.05);
-      border-color: rgba(201,162,77,0.5);
-      color: var(--ink);
+      background: rgba(232,224,208,0.02);
+      border-color: rgba(232,224,208,0.18);
+      color: var(--muted);
     }
 
     .btn-ghost:hover {
-      border-color: var(--copper);
-      color: var(--copper);
-      background: rgba(184,70,10,0.1);
-      box-shadow: 0 6px 22px rgba(184,70,10,0.3);
+      border-color: rgba(232,224,208,0.5);
+      color: var(--ink);
+      background: rgba(232,224,208,0.06);
     }
 
-    /* Botón especial de juegos: con un brillo dorado */
+    /* Botón de juegos: acento dorado sutil y elegante */
     .btn-juegos {
-      background: linear-gradient(135deg, #c9a24d 0%, #b8860b 100%);
-      border-color: #c9a24d;
-      color: #1a1206;
-      font-weight: 700;
-      box-shadow: 0 4px 18px rgba(201,162,77,0.4);
+      background: rgba(201,162,77,0.1);
+      border-color: rgba(201,162,77,0.6);
+      color: #c9a24d;
+      font-weight: 600;
     }
     .btn-juegos:hover {
-      box-shadow: 0 8px 28px rgba(201,162,77,0.65);
-      background: linear-gradient(135deg, #d4af37 0%, #c9a24d 100%);
+      background: rgba(201,162,77,0.85);
+      color: #14141E;
+      box-shadow: 0 8px 26px rgba(201,162,77,0.35);
     }
 
     /* ── TYPEWRITER ── */
@@ -2504,16 +2503,31 @@
         <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Un rincón para poner a prueba tu memoria y tu ojo. Elige tu juego.</p>
       </div>
       <div class="juegos-grid reveal">
-        <a href="#memorice" class="juego-card">
-          <span class="juego-icon">⊞</span>
-          <span class="juego-nombre">Memorice del arte</span>
-          <span class="juego-desc">Encuentra cada pintura famosa junto a su autor. Un juego de parejas y memoria.</span>
-        </a>
         <a href="#trivia" class="juego-card">
           <span class="juego-icon">◆</span>
           <span class="juego-nombre">Trivia del arte</span>
           <span class="juego-desc">Seis preguntas sobre obras y artistas. Pon a prueba cuánto sabes y entra al ranking.</span>
         </a>
+        <a href="#memorice" class="juego-card">
+          <span class="juego-icon">⊞</span>
+          <span class="juego-nombre">Memorice del arte</span>
+          <span class="juego-desc">Encuentra cada pintura famosa junto a su autor. Un juego de parejas y memoria.</span>
+        </a>
+      </div>
+    </section>
+
+    <div class="rule"></div>
+
+    <!-- TRIVIA DEL ARTE -->
+    <section id="trivia">
+      <div class="triv-intro">
+        <p class="section-label reveal">— Pon a prueba tu ojo</p>
+        <h2 class="section-title reveal">Trivia del arte</h2>
+        <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Seis preguntas sobre obras y artistas: su autor, época, estilo y origen. ¿Cuánto sabes del arte?</p>
+      </div>
+
+      <div class="triv-box" id="triv-box">
+        <!-- Se llena con el script -->
       </div>
     </section>
 
@@ -2541,21 +2555,6 @@
       <div class="mem-zoom" id="mem-zoom">
         <img src="" alt="Pintura ampliada" id="mem-zoom-img">
         <div class="mem-zoom-cap" id="mem-zoom-cap"></div>
-      </div>
-    </section>
-
-    <div class="rule"></div>
-
-    <!-- TRIVIA DEL ARTE -->
-    <section id="trivia">
-      <div class="triv-intro">
-        <p class="section-label reveal">— Pon a prueba tu ojo</p>
-        <h2 class="section-title reveal">Trivia del arte</h2>
-        <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Seis preguntas sobre obras y artistas: su autor, época, estilo y origen. ¿Cuánto sabes del arte?</p>
-      </div>
-
-      <div class="triv-box" id="triv-box">
-        <!-- Se llena con el script -->
       </div>
     </section>
 
