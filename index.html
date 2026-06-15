@@ -2357,6 +2357,28 @@
       padding: 5rem 1.5rem;
     }
     .gal-intro { max-width: 620px; margin: 0 auto 3rem; text-align: center; }
+    .gal-filtros {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 0.6rem; margin: 0 auto 2.5rem; max-width: 800px;
+    }
+    .gal-filtro-btn {
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.6rem 1.1rem;
+      background: rgba(232,224,208,0.03);
+      border: 1px solid rgba(232,224,208,0.18);
+      border-radius: 20px;
+      color: var(--muted); cursor: pointer;
+      transition: all 0.2s;
+    }
+    .gal-filtro-btn:hover {
+      border-color: rgba(201,162,77,0.5); color: var(--ink);
+    }
+    .gal-filtro-btn.active {
+      background: rgba(201,162,77,0.15);
+      border-color: var(--copper);
+      color: #c9a24d;
+    }
     .gal-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -2705,6 +2727,13 @@
         <p class="section-label reveal">— Pequeño museo</p>
         <h2 class="section-title reveal">Pinturas que cambiaron el arte</h2>
         <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Una selección de obras maestras de distintas épocas y rincones del mundo. Toca cualquiera para conocer su historia.</p>
+      </div>
+      <div class="gal-filtros reveal" id="gal-filtros">
+        <button class="gal-filtro-btn active" data-sala="Todo">Todas</button>
+        <button class="gal-filtro-btn" data-sala="Clásicos europeos">Clásicos europeos</button>
+        <button class="gal-filtro-btn" data-sala="Maestros modernos">Maestros modernos</button>
+        <button class="gal-filtro-btn" data-sala="Arte de Oriente">Arte de Oriente</button>
+        <button class="gal-filtro-btn" data-sala="Latinoamérica">Latinoamérica</button>
       </div>
       <div class="gal-grid reveal" id="gal-grid"></div>
 
@@ -4111,66 +4140,51 @@
   //  Para AGREGAR: copia un bloque { ... },
   // ===================================================================
   const galeria = [
-    {
-      img: 'img/galeria/noche-estrellada.jpg', titulo: 'La noche estrellada', autor: 'Vincent van Gogh',
-      meta: 'Países Bajos · 1889 · Postimpresionismo',
-      texto: 'Pintada desde la ventana de su habitación en el sanatorio de Saint-Rémy, muestra un cielo en remolinos sobre un pueblo imaginario. Los astros laten como seres vivos y los cipreses se alzan como llamas oscuras. Es una de las imágenes más reconocidas del mundo y se conserva en el MoMA de Nueva York.'
-    },
-    {
-      img: 'img/galeria/joven-perla.jpg', titulo: 'La joven de la perla', autor: 'Johannes Vermeer',
-      meta: 'Países Bajos · c. 1665 · Barroco holandés',
-      texto: 'Llamada "la Mona Lisa del norte", no es un retrato sino un tronie: el estudio de un rostro idealizado. La joven gira hacia nosotros con un turbante azul y una perla que atrapa la luz. Vermeer, maestro de la luz, dejó muy pocas obras. Se conserva en el Mauritshuis de La Haya.'
-    },
-    {
-      img: 'img/galeria/nacimiento-venus.jpg', titulo: 'El nacimiento de Venus', autor: 'Sandro Botticelli',
-      meta: 'Italia · c. 1485 · Renacimiento',
-      texto: 'La diosa Venus emerge del mar sobre una concha, empujada por los vientos hacia la orilla. Su gracia ideal y sus líneas fluidas resumen el espíritu del Renacimiento florentino. Fue de las primeras grandes obras sobre lienzo de su época. Hoy es joya de la Galería Uffizi en Florencia.'
-    },
-    {
-      img: 'img/galeria/gran-ola.jpg', titulo: 'La gran ola de Kanagawa', autor: 'Katsushika Hokusai',
-      meta: 'Japón · c. 1831 · Ukiyo-e (xilografía)',
-      texto: 'Primera estampa de las "Treinta y seis vistas del monte Fuji". Una ola monumental de azul de Prusia amenaza a tres barcas mientras el Fuji permanece sereno al fondo: el caos y la calma en una imagen. Es la obra japonesa más célebre del mundo e influyó en el arte europeo.'
-    },
-    {
-      img: 'img/galeria/tres-de-mayo.jpg', titulo: 'El 3 de mayo en Madrid', sala: 'Clásicos europeos', autor: 'Francisco de Goya',
-      meta: 'España · 1814 · Romanticismo',
-      texto: 'Goya retrata el fusilamiento de civiles españoles por las tropas de Napoleón. El hombre de camisa blanca, con los brazos abiertos como un Cristo, se ha vuelto símbolo universal de la víctima frente a la violencia. Una de las primeras grandes pinturas modernas de denuncia. Está en el Museo del Prado.'
-    },
-    {
-      img: 'img/galeria/senoritas-avignon.jpg', titulo: 'Las señoritas de Avignon', sala: 'Maestros modernos', autor: 'Pablo Picasso',
-      meta: 'España · 1907 · Protocubismo',
-      texto: 'Cinco figuras femeninas fragmentadas en planos angulosos, con rostros inspirados en máscaras africanas. Rompió con siglos de perspectiva tradicional y abrió la puerta al cubismo y al arte del siglo XX. Fue tan radical que Picasso la mantuvo oculta varios años. Hoy está en el MoMA.'
-    },
-    {
-      img: 'img/galeria/autorretrato-sombrero.jpg', titulo: 'Autorretrato con sombrero de paja', autor: 'Élisabeth Vigée Le Brun',
-      meta: 'Francia · c. 1782 · Rococó',
-      texto: 'Una de las pintoras más exitosas del siglo XVIII y retratista favorita de María Antonieta. Aquí se muestra al aire libre, con luz natural y sonrisa franca, desafiando las convenciones rígidas de su tiempo. Pintó más de 600 retratos y dejó memorias fascinantes sobre ser artista mujer.'
-    },
-    {
-      img: 'img/galeria/el-grito.jpg', titulo: 'El grito', autor: 'Edvard Munch',
-      meta: 'Noruega · 1893 · Expresionismo',
-      texto: 'Nació de una experiencia real: Munch caminaba al atardecer cuando el cielo se tiñó de rojo sangre y sintió "un grito infinito atravesando la naturaleza". La figura que se lleva las manos al rostro encarna la angustia moderna. Pintó varias versiones de esta imagen.'
-    },
-    {
-      img: 'img/galeria/autorretrato-rojas.jpg', titulo: 'Autorretrato con sombrero rojo', sala: 'Latinoamérica', autor: 'Cristóbal Rojas',
-      meta: 'Venezuela · 1887 · Realismo',
-      texto: 'Cristóbal Rojas fue uno de los grandes pintores venezolanos del siglo XIX, junto a Michelena y Tovar y Tovar. De temperamento melancólico, mezcló dramatismo, influencia impresionista y una aguda observación. Estudió en París con una beca y participó en los grandes salones franceses de su época.'
-    },
-    {
-      img: 'img/galeria/criolla-herran.jpg', titulo: 'La criolla del mantón (estudio)', sala: 'Latinoamérica', autor: 'Saturnino Herrán',
-      meta: 'México · c. 1915 · Modernismo mexicano',
-      texto: 'Saturnino Herrán, puente entre el siglo XIX y XX, murió muy joven, a los 31 años. Fue pionero en retratar lo mexicano —sus tipos, trajes y raíces indígenas— con dignidad y belleza, anticipando el muralismo. Su obra reivindicó la identidad nacional antes que los grandes muralistas.'
-    },
-    {
-      img: 'img/galeria/valle-mexico.jpg', titulo: 'El Valle de México', sala: 'Latinoamérica', autor: 'José María Velasco',
-      meta: 'México · s. XIX · Paisajismo',
-      texto: 'José María Velasco fue el gran paisajista mexicano del siglo XIX. Sus vistas del Valle de México, con su luz limpia y su inmensidad serena, elevaron el paisaje a género mayor en América Latina. Combinó rigor científico y poesía: era también estudioso de la botánica y la geología.'
-    },
-    {
-      img: 'img/galeria/dama-campeche.jpg', titulo: 'Retrato (escuela de Campeche)', sala: 'Latinoamérica', autor: 'José Campeche',
-      meta: 'Puerto Rico · s. XVIII · Rococó colonial',
-      texto: 'José Campeche fue el primer gran pintor puertorriqueño del que se tiene noticia y el mejor retratista del Caribe en el último tercio del siglo XVIII. Autodidacta y de enorme finura, retrató a la sociedad de su tiempo con delicadeza rococó. Es figura fundacional del arte en el Caribe.'
-    },
+    // ── CLÁSICOS EUROPEOS ──
+    { img: 'img/galeria/nacimiento-venus.jpg', titulo: 'El nacimiento de Venus', autor: 'Sandro Botticelli', sala: 'Clásicos europeos', meta: 'Italia · c. 1485 · Renacimiento', texto: 'Venus emerge del mar sobre una concha, empujada por los vientos hacia la orilla. Su gracia ideal y sus líneas fluidas resumen el Renacimiento florentino. Hoy es joya de la Galería Uffizi en Florencia.' },
+    { img: 'img/galeria/joven-perla.jpg', titulo: 'La joven de la perla', autor: 'Johannes Vermeer', sala: 'Clásicos europeos', meta: 'Países Bajos · c. 1665 · Barroco holandés', texto: 'Llamada "la Mona Lisa del norte", es un tronie: el estudio de un rostro idealizado. La joven gira hacia nosotros con turbante azul y una perla que atrapa la luz. Se conserva en el Mauritshuis de La Haya.' },
+    { img: 'img/galeria/meninas.jpg', titulo: 'Las Meninas', autor: 'Diego Velázquez', sala: 'Clásicos europeos', meta: 'España · 1656 · Barroco', texto: 'Una de las pinturas más analizadas de la historia. Velázquez se retrata pintando, mientras la infanta Margarita y sus damas posan, y los reyes se reflejan en un espejo al fondo. Un juego genial sobre quién mira a quién. Está en el Museo del Prado.' },
+    { img: 'img/galeria/ronda-noche.jpg', titulo: 'La ronda de noche', autor: 'Rembrandt', sala: 'Clásicos europeos', meta: 'Países Bajos · 1642 · Barroco', texto: 'Retrato grupal de una compañía de milicianos, revolucionario por capturarlos en movimiento, en plena acción, en vez de posando. El dramático juego de luz y sombra es marca de Rembrandt. Se exhibe en el Rijksmuseum de Ámsterdam.' },
+    { img: 'img/galeria/jardin-delicias.jpg', titulo: 'El jardín de las delicias', autor: 'El Bosco', sala: 'Clásicos europeos', meta: 'Países Bajos · c. 1500 · Renacimiento flamenco', texto: 'Un tríptico fascinante y enigmático: del paraíso a un mundo de placeres, y de ahí a un infierno poblado de criaturas imposibles. Lleno de símbolos que aún se debaten. Una de las obras más originales de toda la historia. Está en el Prado.' },
+    { img: 'img/galeria/escuela-atenas.jpg', titulo: 'La escuela de Atenas', autor: 'Rafael', sala: 'Clásicos europeos', meta: 'Italia · 1511 · Renacimiento', texto: 'Fresco que reúne a los grandes filósofos de la antigüedad —Platón, Aristóteles, Sócrates— en un majestuoso espacio arquitectónico. Cumbre del ideal renacentista de razón y belleza. Decora las estancias del Vaticano.' },
+    { img: 'img/galeria/tres-de-mayo.jpg', titulo: 'El 3 de mayo en Madrid', autor: 'Francisco de Goya', sala: 'Clásicos europeos', meta: 'España · 1814 · Romanticismo', texto: 'Goya retrata el fusilamiento de civiles por las tropas de Napoleón. El hombre de camisa blanca, con los brazos abiertos como un Cristo, es símbolo universal de la víctima frente a la violencia. Una de las primeras pinturas modernas de denuncia. En el Prado.' },
+    { img: 'img/galeria/saturno.jpg', titulo: 'Saturno devorando a su hijo', autor: 'Francisco de Goya', sala: 'Clásicos europeos', meta: 'España · 1819-1823 · Pinturas negras', texto: 'Una de las "pinturas negras" que Goya pintó en los muros de su casa, ya viejo y sordo. El dios Saturno devora a su hijo en una imagen brutal sobre el poder, el tiempo y la locura. Cruda y moderna. Está en el Prado.' },
+    { img: 'img/galeria/autorretrato-sombrero.jpg', titulo: 'Autorretrato con sombrero de paja', autor: 'Élisabeth Vigée Le Brun', sala: 'Clásicos europeos', meta: 'Francia · c. 1782 · Rococó', texto: 'Una de las pintoras más exitosas del siglo XVIII, retratista de María Antonieta. Se muestra al aire libre, con luz natural y sonrisa franca, desafiando las convenciones de su tiempo. Pintó más de 600 retratos.' },
+    { img: 'img/galeria/libertad-pueblo.jpg', titulo: 'La libertad guiando al pueblo', autor: 'Eugène Delacroix', sala: 'Clásicos europeos', meta: 'Francia · 1830 · Romanticismo', texto: 'La Libertad, mujer alegórica con la bandera tricolor, guía al pueblo sobre las barricadas de la revolución de 1830. Símbolo de la lucha por los derechos y de Francia misma. Está en el Louvre.' },
+    { img: 'img/galeria/caminante-niebla.jpg', titulo: 'El caminante sobre el mar de nubes', autor: 'Caspar David Friedrich', sala: 'Clásicos europeos', meta: 'Alemania · c. 1818 · Romanticismo', texto: 'Un hombre de espaldas contempla un paisaje de montañas envuelto en niebla. Es la imagen por excelencia del individuo frente a la inmensidad de la naturaleza, y del espíritu romántico. Está en Hamburgo.' },
+
+    // ── MAESTROS MODERNOS ──
+    { img: 'img/galeria/noche-estrellada.jpg', titulo: 'La noche estrellada', autor: 'Vincent van Gogh', sala: 'Maestros modernos', meta: 'Países Bajos · 1889 · Postimpresionismo', texto: 'Pintada desde su ventana en el sanatorio de Saint-Rémy, muestra un cielo en remolinos sobre un pueblo imaginario. Los astros laten como seres vivos. Una de las imágenes más reconocidas del mundo. En el MoMA de Nueva York.' },
+    { img: 'img/galeria/girasoles.jpg', titulo: 'Los girasoles', autor: 'Vincent van Gogh', sala: 'Maestros modernos', meta: 'Países Bajos · 1888 · Postimpresionismo', texto: 'Serie de naturalezas muertas con girasoles en un jarrón, pintadas en Arlés para decorar la casa donde esperaba a Gauguin. Un estudio glorioso del color amarillo y de la vida que se marchita. Hay versiones en varios museos del mundo.' },
+    { img: 'img/galeria/dormitorio-arles.jpg', titulo: 'El dormitorio en Arlés', autor: 'Vincent van Gogh', sala: 'Maestros modernos', meta: 'Países Bajos · 1888 · Postimpresionismo', texto: 'Van Gogh pintó su propia habitación buscando transmitir "descanso absoluto" con el color. Los planos inclinados y los tonos vibrantes hacen lo contrario: vibran de energía. Pintó tres versiones de este cuarto.' },
+    { img: 'img/galeria/el-grito.jpg', titulo: 'El grito', autor: 'Edvard Munch', sala: 'Maestros modernos', meta: 'Noruega · 1893 · Expresionismo', texto: 'Nació de una experiencia real: Munch caminaba al atardecer cuando el cielo se tiñó de rojo sangre y sintió "un grito infinito atravesando la naturaleza". La figura que se lleva las manos al rostro encarna la angustia moderna.' },
+    { img: 'img/galeria/el-beso.jpg', titulo: 'El beso', autor: 'Gustav Klimt', sala: 'Maestros modernos', meta: 'Austria · 1908 · Modernismo (Art Nouveau)', texto: 'Cumbre del "período dorado" de Klimt: una pareja abrazada al borde de un prado, envuelta en mantos cubiertos de pan de oro. Funde el simbolismo vienés con los mosaicos bizantinos. Una celebración del amor. En el Belvedere de Viena.' },
+    { img: 'img/galeria/senoritas-avignon.jpg', titulo: 'Las señoritas de Avignon', autor: 'Pablo Picasso', sala: 'Maestros modernos', meta: 'España · 1907 · Protocubismo', texto: 'Cinco figuras fragmentadas en planos angulosos, con rostros inspirados en máscaras africanas. Rompió siglos de perspectiva y abrió la puerta al cubismo y al arte del siglo XX. En el MoMA.' },
+    { img: 'img/galeria/grande-jatte.jpg', titulo: 'Tarde de domingo en la Grande Jatte', autor: 'Georges Seurat', sala: 'Maestros modernos', meta: 'Francia · 1886 · Puntillismo', texto: 'Una escena de domingo a orillas del Sena, construida con millones de diminutos puntos de color que el ojo mezcla a distancia. Seurat tardó dos años y fundó con ella el puntillismo. Está en el Art Institute de Chicago.' },
+    { img: 'img/galeria/moulin-galette.jpg', titulo: 'Baile en el Moulin de la Galette', autor: 'Auguste Renoir', sala: 'Maestros modernos', meta: 'Francia · 1876 · Impresionismo', texto: 'Una multitud baila y conversa en un jardín de Montmartre, bajo la luz del sol filtrada entre los árboles. Renoir captura la alegría de la vida parisina con pinceladas vibrantes y luminosas. Está en el Museo de Orsay.' },
+    { img: 'img/galeria/nenufares.jpg', titulo: 'Los nenúfares', autor: 'Claude Monet', sala: 'Maestros modernos', meta: 'Francia · 1916-1926 · Impresionismo', texto: 'En sus últimos años, casi ciego, Monet pintó decenas de vistas de su estanque de nenúfares en Giverny. Pura luz, reflejo y color, casi abstractos. Anticiparon el arte del siglo XX. Hay grandes paneles en el Orangerie de París.' },
+    { img: 'img/galeria/jugadores-cartas.jpg', titulo: 'Los jugadores de cartas', autor: 'Paul Cézanne', sala: 'Maestros modernos', meta: 'Francia · 1890-1895 · Postimpresionismo', texto: 'Campesinos absortos en una partida de cartas, sólidos como esculturas. Cézanne buscaba la estructura geométrica bajo las cosas, abriendo el camino al cubismo. Pintó varias versiones de esta escena.' },
+    { img: 'img/galeria/moulin-rouge.jpg', titulo: 'En el Moulin Rouge', autor: 'Henri de Toulouse-Lautrec', sala: 'Maestros modernos', meta: 'Francia · 1892 · Postimpresionismo', texto: 'La vida nocturna del célebre cabaré de París, con sus bailarinas y bohemios, vista por un artista que la conocía de cerca. Composición audaz y colores artificiales que capturan la electricidad de la noche. En el Art Institute de Chicago.' },
+
+    // ── ARTE DE ORIENTE ──
+    { img: 'img/galeria/gran-ola.jpg', titulo: 'La gran ola de Kanagawa', autor: 'Katsushika Hokusai', sala: 'Arte de Oriente', meta: 'Japón · c. 1831 · Ukiyo-e', texto: 'Primera de las "Treinta y seis vistas del monte Fuji". Una ola monumental de azul de Prusia amenaza tres barcas mientras el Fuji permanece sereno al fondo. La obra japonesa más célebre del mundo.' },
+    { img: 'img/galeria/fuji-rojo.jpg', titulo: 'Fuji rojo (Viento del sur, cielo despejado)', autor: 'Katsushika Hokusai', sala: 'Arte de Oriente', meta: 'Japón · c. 1831 · Ukiyo-e', texto: 'También de las "36 vistas", muestra el monte Fuji teñido de rojo por la luz del amanecer en un día claro de verano. Simple y monumental, es una de las estampas más queridas de la serie.' },
+    { img: 'img/galeria/lluvia-shono.jpg', titulo: 'Lluvia repentina en Shōno', autor: 'Utagawa Hiroshige', sala: 'Arte de Oriente', meta: 'Japón · c. 1833 · Ukiyo-e', texto: 'De las "53 estaciones del Tōkaidō". Viajeros sorprendidos por un aguacero corren por una cuesta entre bambúes. Hiroshige fue maestro en captar el clima y la atmósfera. Influyó profundamente en Van Gogh y los impresionistas.' },
+    { img: 'img/galeria/ciruelo-kameido.jpg', titulo: 'El ciruelo de Kameido', autor: 'Utagawa Hiroshige', sala: 'Arte de Oriente', meta: 'Japón · 1857 · Ukiyo-e', texto: 'De "Cien famosas vistas de Edo". Un ciruelo florecido en primer plano enmarca audazmente la escena. Van Gogh quedó tan fascinado que pintó su propia copia al óleo de esta estampa.' },
+    { img: 'img/galeria/utamaro-mujer.jpg', titulo: 'Belleza mirando atrás (bijin-ga)', autor: 'Kitagawa Utamaro', sala: 'Arte de Oriente', meta: 'Japón · c. 1793 · Ukiyo-e', texto: 'Utamaro fue el gran maestro del bijin-ga, los retratos de mujeres elegantes. Con líneas delicadas y gran sensibilidad captó gestos y expresiones íntimas. Definió el ideal de belleza femenina del Japón Edo.' },
+    { img: 'img/galeria/sharaku-actor.jpg', titulo: 'Retrato del actor Ōtani Oniji III', autor: 'Tōshūsai Sharaku', sala: 'Arte de Oriente', meta: 'Japón · 1794 · Ukiyo-e', texto: 'Sharaku retrató a los actores de kabuki con una expresividad casi caricaturesca, captando el gesto dramático del personaje. Trabajó solo unos diez meses y luego desapareció: sigue siendo un misterio quién fue.' },
+
+    // ── LATINOAMÉRICA ──
+    { img: 'img/galeria/autorretrato-rojas.jpg', titulo: 'Autorretrato con sombrero rojo', autor: 'Cristóbal Rojas', sala: 'Latinoamérica', meta: 'Venezuela · 1887 · Realismo', texto: 'Uno de los grandes pintores venezolanos del siglo XIX. De temperamento melancólico, mezcló dramatismo, influencia impresionista y aguda observación. Estudió en París con una beca y participó en los grandes salones franceses.' },
+    { img: 'img/galeria/nino-enfermo.jpg', titulo: 'El niño enfermo', autor: 'Arturo Michelena', sala: 'Latinoamérica', meta: 'Venezuela · 1886 · Academicismo', texto: 'Michelena, gran maestro venezolano, pintó esta escena íntima y conmovedora de una madre que lleva a su hijo enfermo. Ganó medalla en el Salón de París. Su realismo emotivo lo consagró internacionalmente muy joven.' },
+    { img: 'img/galeria/valle-mexico.jpg', titulo: 'El Valle de México', autor: 'José María Velasco', sala: 'Latinoamérica', meta: 'México · s. XIX · Paisajismo', texto: 'El gran paisajista mexicano del siglo XIX. Sus vistas del Valle de México, con luz limpia e inmensidad serena, elevaron el paisaje a género mayor en América Latina. Combinó rigor científico y poesía.' },
+    { img: 'img/galeria/criolla-herran.jpg', titulo: 'La criolla del mantón (estudio)', autor: 'Saturnino Herrán', sala: 'Latinoamérica', meta: 'México · c. 1915 · Modernismo mexicano', texto: 'Puente entre el siglo XIX y XX, murió a los 31 años. Pionero en retratar lo mexicano —sus tipos, trajes y raíces indígenas— con dignidad y belleza, anticipando el muralismo.' },
+    { img: 'img/galeria/dama-campeche.jpg', titulo: 'Retrato (escuela de Campeche)', autor: 'José Campeche', sala: 'Latinoamérica', meta: 'Puerto Rico · s. XVIII · Rococó colonial', texto: 'El primer gran pintor puertorriqueño y el mejor retratista del Caribe en el siglo XVIII. Autodidacta y de enorme finura, retrató a la sociedad de su tiempo con delicadeza rococó. Figura fundacional del arte caribeño.' },
+    { img: 'img/galeria/juramento-blanes.jpg', titulo: 'El juramento de los Treinta y Tres Orientales', autor: 'Juan Manuel Blanes', sala: 'Latinoamérica', meta: 'Uruguay · 1877 · Pintura histórica', texto: 'La obra más célebre del "pintor de la patria" uruguayo. Retrata el juramento de los patriotas que iniciaron la independencia. Blanes elevó la pintura histórica rioplatense a su máxima expresión.' },
+    { img: 'img/galeria/pueyrredon-dama.jpg', titulo: 'Retrato de Manuelita Rosas', autor: 'Prilidiano Pueyrredón', sala: 'Latinoamérica', meta: 'Argentina · 1851 · Romanticismo', texto: 'Pueyrredón fue el gran retratista y paisajista argentino del siglo XIX. Este retrato de Manuelita Rosas, con su vestido rojo punzó, es un ícono de la pintura argentina y un documento de su época.' },
+    { img: 'img/galeria/lira-fundacion.jpg', titulo: 'La fundación de Santiago', autor: 'Pedro Lira', sala: 'Latinoamérica', meta: 'Chile · 1888 · Academicismo', texto: 'Pedro Lira fue figura central de la pintura chilena del siglo XIX, maestro e impulsor del arte nacional. Esta gran escena histórica de la fundación de Santiago es una de sus obras más reconocidas.' },
+    { img: 'img/galeria/jfgonzalez.jpg', titulo: 'Naturaleza viva (flores)', autor: 'Juan Francisco González', sala: 'Latinoamérica', meta: 'Chile · c. 1900 · Impresionismo', texto: 'Uno de los grandes maestros chilenos, renovador de la pintura nacional. De pincelada suelta y vibrante, anticipó el impresionismo en Chile. Sus flores y paisajes irradian luz y libertad.' },
+    { img: 'img/galeria/tovar-batalla.jpg', titulo: 'Firma del Acta de la Independencia', autor: 'Martín Tovar y Tovar', sala: 'Latinoamérica', meta: 'Venezuela · 1883 · Pintura histórica', texto: 'Tovar y Tovar fue el gran pintor de la historia venezolana. Sus enormes lienzos sobre la independencia y las batallas de Bolívar decoran el Capitolio de Caracas y definieron la imagen nacional de la gesta libertadora.' },
   ];
   // ===================================================================
 
@@ -4207,7 +4221,20 @@
           item.style.display = 'none';
         }
       });
+      // Sincronizar botones de filtro de la sección
+      document.querySelectorAll('.gal-filtro-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.sala === sala);
+      });
+      // Sincronizar submenú lateral
+      document.querySelectorAll('#nav-submenu a').forEach(a => {
+        a.classList.toggle('active-sala', a.dataset.sala === sala);
+      });
     }
+
+    // Botones de filtro dentro de la sección Museo
+    document.querySelectorAll('.gal-filtro-btn').forEach(btn => {
+      btn.addEventListener('click', () => filtrarSala(btn.dataset.sala));
+    });
 
     // — Submenú del Museo en el nav lateral —
     const navMuseo = document.querySelector('.nav-museo');
