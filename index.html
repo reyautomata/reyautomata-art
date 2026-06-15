@@ -2076,6 +2076,110 @@
       .mem-tipo { font-size: 0.42rem; }
     }
 
+    /* ── TRIVIA DEL ARTE ── */
+    #trivia {
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 5rem 1.5rem;
+    }
+    .triv-intro { max-width: 560px; margin: 0 auto 2.5rem; }
+
+    .triv-box {
+      width: min(620px, 96vw);
+      background: linear-gradient(160deg, var(--bg2) 0%, var(--bg) 100%);
+      border: 1px solid rgba(201,162,77,0.4);
+      border-radius: 12px;
+      padding: 2rem 1.75rem;
+    }
+
+    /* Barra de progreso */
+    .triv-progress {
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: var(--mono); font-size: 0.62rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .triv-progress b { color: var(--oro, #c9a24d); }
+
+    /* Imagen de la pregunta */
+    .triv-img {
+      width: 100%; max-height: 280px; object-fit: contain;
+      border-radius: 8px; margin-bottom: 1.5rem;
+      background: #0c1222;
+    }
+    .triv-img.missing { display: none; }
+
+    .triv-pregunta {
+      font-family: var(--serif); font-size: 1.3rem;
+      color: var(--ink); margin-bottom: 1.5rem; line-height: 1.4;
+    }
+
+    .triv-opciones { display: grid; gap: 0.7rem; }
+    .triv-opt {
+      font-family: var(--body); font-size: 0.95rem;
+      padding: 0.85rem 1.2rem; text-align: left;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border); border-radius: 6px;
+      color: var(--ink); cursor: pointer; transition: all 0.2s;
+    }
+    .triv-opt:hover:not(:disabled) { border-color: var(--oro, #c9a24d); background: rgba(201,162,77,0.06); }
+    .triv-opt:disabled { cursor: default; }
+    .triv-opt.correcta { border-color: #4a8a4a; background: rgba(74,138,74,0.15); color: #9fd49f; }
+    .triv-opt.incorrecta { border-color: #a04444; background: rgba(160,68,68,0.15); color: #d49f9f; }
+
+    .triv-next {
+      margin-top: 1.5rem;
+      font-family: var(--mono); font-size: 0.7rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 0.85rem 2rem;
+      background: var(--copper); border: 1px solid var(--copper);
+      color: var(--bg); cursor: pointer; transition: all 0.2s;
+      opacity: 0; pointer-events: none;
+    }
+    .triv-next.show { opacity: 1; pointer-events: auto; }
+    .triv-next:hover { background: transparent; color: var(--copper); }
+
+    /* Pantalla final */
+    .triv-final { text-align: center; }
+    .triv-final h3 {
+      font-family: var(--serif); font-size: 2rem; color: var(--oro, #c9a24d);
+      margin-bottom: 0.5rem; font-weight: 400;
+    }
+    .triv-final .triv-score {
+      font-family: var(--mono); font-size: 1rem; color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+    .triv-final .triv-msg { color: var(--muted); font-style: italic; margin-bottom: 2rem; }
+
+    /* Ranking */
+    .triv-ranking {
+      margin: 1.5rem auto 0; max-width: 360px; text-align: left;
+      border-top: 1px solid var(--border); padding-top: 1.5rem;
+    }
+    .triv-ranking h4 {
+      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--oro, #c9a24d);
+      margin-bottom: 1rem; text-align: center;
+    }
+    .triv-rank-row {
+      display: flex; justify-content: space-between;
+      padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-family: var(--mono); font-size: 0.8rem;
+    }
+    .triv-rank-row .pos { color: var(--oro, #c9a24d); width: 28px; }
+    .triv-rank-row .nom { flex: 1; color: var(--ink); }
+    .triv-rank-row .pts { color: var(--muted); }
+    .triv-rank-row.tu { background: rgba(201,162,77,0.08); }
+
+    .triv-name-input {
+      width: 100%; max-width: 280px; margin: 0 auto 1rem; display: block;
+      font-family: var(--body); font-size: 0.95rem; text-align: center;
+      padding: 0.7rem; background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border); border-radius: 6px; color: var(--ink);
+    }
+
   </style>
 </head>
 <body>
@@ -2133,6 +2237,9 @@
       </a></li>
       <li><a href="#memorice">
         <span class="nav-icon">⊞</span> Memorice
+      </a></li>
+      <li><a href="#trivia">
+        <span class="nav-icon">◆</span> Trivia
       </a></li>
       <li><a href="#poesia">
         <span class="nav-icon">◆</span> Poesía
@@ -2264,6 +2371,21 @@
 
       <p class="mem-win" id="mem-win"></p>
       <button class="mem-btn" id="mem-btn">Reiniciar juego</button>
+    </section>
+
+    <div class="rule"></div>
+
+    <!-- TRIVIA DEL ARTE -->
+    <section id="trivia">
+      <div class="triv-intro">
+        <p class="section-label reveal">— Pon a prueba tu ojo</p>
+        <h2 class="section-title reveal">Trivia del arte</h2>
+        <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Seis preguntas sobre obras y artistas: su autor, época, estilo y origen. ¿Cuánto sabes del arte?</p>
+      </div>
+
+      <div class="triv-box" id="triv-box">
+        <!-- Se llena con el script -->
+      </div>
     </section>
 
     <div class="rule"></div>
@@ -3371,6 +3493,199 @@
 
     btn.addEventListener('click', crear);
     crear();
+  })();
+
+  // ── TRIVIA DEL ARTE ──
+  // ===================================================================
+  //  LAS PREGUNTAS. Cada una: imagen (de img/memorice/), enunciado,
+  //  opciones, y el índice (base 0) de la respuesta correcta.
+  //  Para AGREGAR: copia un bloque { ... },
+  // ===================================================================
+  const preguntas = [
+    {
+      img: 'img/memorice/noche-estrellada.jpg',
+      pregunta: '¿Quién pintó "La noche estrellada"?',
+      opciones: ['Claude Monet', 'Vincent van Gogh', 'Paul Cézanne', 'Edvard Munch'],
+      correcta: 1
+    },
+    {
+      img: 'img/memorice/mona-lisa.jpg',
+      pregunta: '¿En qué época fue pintada "La Mona Lisa"?',
+      opciones: ['Renacimiento (s. XVI)', 'Barroco (s. XVII)', 'Impresionismo (s. XIX)', 'Edad Media'],
+      correcta: 0
+    },
+    {
+      img: 'img/memorice/gran-ola.jpg',
+      pregunta: '"La gran ola de Kanagawa" pertenece al arte de...',
+      opciones: ['China', 'Corea', 'Japón', 'Tailandia'],
+      correcta: 2
+    },
+    {
+      img: 'img/memorice/el-grito.jpg',
+      pregunta: '¿Qué estilo representa "El grito" de Munch?',
+      opciones: ['Cubismo', 'Expresionismo', 'Realismo', 'Surrealismo'],
+      correcta: 1
+    },
+    {
+      img: 'img/memorice/joven-perla.jpg',
+      pregunta: 'Vermeer, autor de "La joven de la perla", nació en...',
+      opciones: ['Italia', 'Francia', 'España', 'Países Bajos (Holanda)'],
+      correcta: 3
+    },
+    {
+      img: 'img/memorice/el-beso.jpg',
+      pregunta: '¿Quién pintó "El beso", ícono dorado del modernismo?',
+      opciones: ['Gustav Klimt', 'Egon Schiele', 'Henri Matisse', 'Salvador Dalí'],
+      correcta: 0
+    },
+    {
+      img: 'img/memorice/nacimiento-venus.jpg',
+      pregunta: '"El nacimiento de Venus" fue pintada por...',
+      opciones: ['Rafael', 'Sandro Botticelli', 'Tiziano', 'Caravaggio'],
+      correcta: 1
+    },
+    {
+      img: 'img/memorice/vigee-lebrun.jpg',
+      pregunta: 'Élisabeth Vigée Le Brun fue una destacada pintora de...',
+      opciones: ['Alemania', 'Francia', 'Inglaterra', 'Rusia'],
+      correcta: 1
+    },
+  ];
+  // ===================================================================
+
+  (function () {
+    const box = document.getElementById('triv-box');
+    if (!box) return;
+
+    const TOTAL = 6; // preguntas por partida
+    let ronda = [], idx = 0, puntos = 0, respondida = false;
+
+    function barajar(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    // — Ranking local (guardado en el navegador) —
+    function getRanking() {
+      try { return JSON.parse(localStorage.getItem('triv_ranking') || '[]'); }
+      catch (e) { return []; }
+    }
+    function saveRanking(r) {
+      try { localStorage.setItem('triv_ranking', JSON.stringify(r)); } catch (e) {}
+    }
+
+    function iniciar() {
+      ronda = barajar(preguntas).slice(0, TOTAL);
+      idx = 0; puntos = 0; respondida = false;
+      mostrarPregunta();
+    }
+
+    function mostrarPregunta() {
+      respondida = false;
+      const p = ronda[idx];
+      const opcionesHTML = p.opciones.map((op, i) =>
+        `<button class="triv-opt" data-i="${i}">${op}</button>`
+      ).join('');
+
+      box.innerHTML = `
+        <div class="triv-progress">
+          <span>Pregunta <b>${idx + 1}</b> / ${TOTAL}</span>
+          <span>Puntos: <b>${puntos}</b></span>
+        </div>
+        <img class="triv-img" src="${p.img}" alt="obra"
+             onerror="this.classList.add('missing')">
+        <div class="triv-pregunta">${p.pregunta}</div>
+        <div class="triv-opciones">${opcionesHTML}</div>
+        <button class="triv-next" id="triv-next">Siguiente</button>`;
+
+      box.querySelectorAll('.triv-opt').forEach(btn => {
+        btn.addEventListener('click', () => responder(btn, p));
+      });
+      box.querySelector('#triv-next').addEventListener('click', siguiente);
+    }
+
+    function responder(btn, p) {
+      if (respondida) return;
+      respondida = true;
+      const elegida = parseInt(btn.dataset.i);
+      const opts = box.querySelectorAll('.triv-opt');
+      opts.forEach((o, i) => {
+        o.disabled = true;
+        if (i === p.correcta) o.classList.add('correcta');
+        if (i === elegida && elegida !== p.correcta) o.classList.add('incorrecta');
+      });
+      if (elegida === p.correcta) puntos++;
+      box.querySelector('#triv-next').classList.add('show');
+      box.querySelector('#triv-next').textContent =
+        (idx + 1 < TOTAL) ? 'Siguiente' : 'Ver resultado';
+    }
+
+    function siguiente() {
+      idx++;
+      if (idx < TOTAL) mostrarPregunta();
+      else finalizar();
+    }
+
+    function finalizar() {
+      let msg;
+      if (puntos === TOTAL) msg = '¡Perfecto! Tienes ojo de maestro.';
+      else if (puntos >= TOTAL - 2) msg = 'Muy bien, conoces el arte.';
+      else if (puntos >= TOTAL / 2) msg = 'Vas por buen camino.';
+      else msg = 'El arte te espera. ¡Sigue mirando!';
+
+      box.innerHTML = `
+        <div class="triv-final">
+          <h3>${puntos} / ${TOTAL}</h3>
+          <div class="triv-score">aciertos</div>
+          <p class="triv-msg">${msg}</p>
+          <input class="triv-name-input" id="triv-name" maxlength="14"
+                 placeholder="Tu nombre para el ranking">
+          <button class="mem-btn" id="triv-save">Guardar puntaje</button>
+          <div class="triv-ranking" id="triv-rank"></div>
+          <button class="triv-next show" id="triv-again" style="margin-top:1.5rem;">Jugar de nuevo</button>
+        </div>`;
+
+      pintarRanking();
+      box.querySelector('#triv-save').addEventListener('click', guardar);
+      box.querySelector('#triv-again').addEventListener('click', iniciar);
+    }
+
+    function guardar() {
+      const nombre = (box.querySelector('#triv-name').value || 'Anónimo').trim().slice(0, 14);
+      const r = getRanking();
+      r.push({ nombre, puntos, fecha: Date.now() });
+      // Ordena por puntos (desc) y deja top 10
+      r.sort((a, b) => b.puntos - a.puntos || a.fecha - b.fecha);
+      saveRanking(r.slice(0, 10));
+      box.querySelector('#triv-save').disabled = true;
+      box.querySelector('#triv-save').textContent = 'Guardado ✓';
+      pintarRanking(nombre);
+    }
+
+    function pintarRanking(resaltar) {
+      const r = getRanking();
+      const cont = box.querySelector('#triv-rank');
+      if (!cont) return;
+      if (r.length === 0) {
+        cont.innerHTML = '<h4>Ranking</h4><p style="text-align:center;color:var(--muted);font-size:0.8rem;">Aún no hay puntajes. ¡Sé el primero!</p>';
+        return;
+      }
+      const filas = r.map((e, i) => {
+        const tu = (e.nombre === resaltar) ? ' tu' : '';
+        return `<div class="triv-rank-row${tu}">
+          <span class="pos">${i + 1}.</span>
+          <span class="nom">${e.nombre}</span>
+          <span class="pts">${e.puntos}/${TOTAL}</span>
+        </div>`;
+      }).join('');
+      cont.innerHTML = '<h4>★ Mejores puntajes</h4>' + filas;
+    }
+
+    iniciar();
   })();
 
     // ── FONDOS DE LAS DEMAS SECCIONES ──
