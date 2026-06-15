@@ -535,8 +535,15 @@
       display: inline-block;
       width: 100%;
       margin-bottom: 0.9rem;
-      border-radius: 8px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
       break-inside: avoid;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    }
+    .gallery-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 14px 38px rgba(0,0,0,0.5);
+      border-color: rgba(201,162,77,0.4);
     }
 
     .gallery-item img {
@@ -641,6 +648,7 @@
     .cat-card {
       background: rgba(22,20,28,0.92);
       border: 1px solid #3a3640;
+      border-radius: 14px;
       padding: 2.5rem 2rem 2rem;
       text-align: left;
       cursor: pointer;
@@ -652,6 +660,11 @@
       position: relative;
       overflow: hidden;
       backdrop-filter: blur(2px);
+    }
+    .cat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 14px 38px rgba(0,0,0,0.5);
+      border-color: rgba(201,162,77,0.4);
     }
 
     .cat-card::after {
@@ -963,21 +976,26 @@
     .library-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1px;
-      background: var(--border);
+      gap: 1rem;
     }
 
     .book-card {
       background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
       padding: 2rem 1.75rem;
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-      transition: background 0.2s;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
       cursor: pointer;
     }
 
-    .book-card:hover { background: #14141E; }
+    .book-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 14px 38px rgba(0,0,0,0.5);
+      border-color: rgba(201,162,77,0.4);
+    }
 
     .book-tag {
       font-family: var(--mono);
@@ -2395,7 +2413,7 @@
       display: inline-block;
       width: 100%;
       margin-bottom: 0.9rem;
-      border-radius: 8px; overflow: hidden;
+      border-radius: 14px; overflow: hidden;
       cursor: pointer;
       border: 1px solid var(--border);
       transition: all 0.3s;
@@ -2403,9 +2421,9 @@
       break-inside: avoid;
     }
     .gal-item:hover {
-      transform: translateY(-4px);
-      border-color: var(--copper);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      transform: translateY(-5px);
+      border-color: rgba(201,162,77,0.4);
+      box-shadow: 0 14px 38px rgba(0,0,0,0.5);
     }
     .gal-item img {
       width: 100%; height: auto; display: block;
