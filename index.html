@@ -1946,6 +1946,124 @@
       opacity: 0.7;
     }
 
+    /* ── MEMORICE DE POESÍA ── */
+    #memorice {
+      background: var(--bg2);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 5rem 1.5rem;
+    }
+
+    .mem-intro { max-width: 560px; margin: 0 auto 2rem; }
+
+    .mem-stats {
+      display: flex; gap: 2.5rem; justify-content: center;
+      margin-bottom: 2rem;
+      font-family: var(--mono); font-size: 0.7rem;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+    }
+    .mem-stats b { color: var(--oro, #c9a24d); font-size: 1.1rem; display: block; }
+
+    .mem-board {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.85rem;
+      width: min(680px, 96vw);
+      margin: 0 auto;
+    }
+
+    .mem-card {
+      aspect-ratio: 3 / 4;
+      perspective: 900px;
+      cursor: pointer;
+    }
+    .mem-card-inner {
+      position: relative; width: 100%; height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+    }
+    .mem-card.flip .mem-card-inner,
+    .mem-card.matched .mem-card-inner { transform: rotateY(180deg); }
+
+    .mem-face {
+      position: absolute; inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform: translateZ(0);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0.6rem;
+      overflow: hidden;
+    }
+
+    /* Dorso */
+    .mem-back {
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 45%, rgba(184,70,10,0.18) 0%, transparent 65%),
+        linear-gradient(160deg, #141d33 0%, #0c1222 100%),
+        #0c1222;
+      border: 1px solid rgba(201,162,77,0.4);
+    }
+    .mem-back span {
+      font-size: 1.5rem; color: var(--copper);
+      opacity: 0.85;
+      filter: drop-shadow(0 0 8px rgba(184,70,10,0.4));
+    }
+
+    /* Frente */
+    .mem-front {
+      transform: rotateY(180deg) translateZ(0);
+      background:
+        linear-gradient(160deg, #1a2540 0%, #0c1222 100%),
+        #0c1222;
+      border: 1px solid rgba(201,162,77,0.6);
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .mem-card.matched .mem-front {
+      border-color: var(--copper);
+      box-shadow: 0 0 16px rgba(184,70,10,0.4);
+    }
+
+    .mem-tipo {
+      font-family: var(--mono); font-size: 0.5rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: #c9a24d; opacity: 0.8;
+    }
+    .mem-texto {
+      font-family: var(--serif);
+      font-size: 0.82rem; line-height: 1.3;
+      color: var(--ink); font-style: italic;
+    }
+    .mem-card.tipo-autor .mem-texto { font-style: normal; color: #c9a24d; font-size: 0.95rem; }
+
+    .mem-btn {
+      margin-top: 2.5rem;
+      font-family: var(--mono); font-size: 0.7rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 0.9rem 2rem;
+      background: transparent; border: 1px solid var(--copper);
+      color: var(--copper); cursor: pointer; transition: all 0.2s;
+    }
+    .mem-btn:hover { background: var(--copper); color: var(--bg); }
+
+    .mem-win {
+      margin-top: 1.5rem; font-family: var(--serif); font-style: italic;
+      font-size: 1.1rem; color: var(--oro, #c9a24d);
+      min-height: 1.5rem; opacity: 0; transition: opacity 0.4s;
+    }
+    .mem-win.show { opacity: 1; }
+
+    @media (max-width: 560px) {
+      .mem-board { grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+      .mem-texto { font-size: 0.6rem; }
+      .mem-tipo { font-size: 0.42rem; }
+    }
+
   </style>
 </head>
 <body>
@@ -2000,6 +2118,9 @@
       </a></li>
       <li><a href="#oraculo">
         <span class="nav-icon">✦</span> El Oráculo
+      </a></li>
+      <li><a href="#memorice">
+        <span class="nav-icon">⊞</span> Memorice
       </a></li>
       <li><a href="#poesia">
         <span class="nav-icon">◆</span> Poesía
@@ -2110,6 +2231,27 @@
 
       <button class="oracle-btn" id="oracle-btn">Invocar un tema</button>
       <p class="oracle-hint">Cada carta es un punto de partida, no una regla. Rómpela si quieres.</p>
+    </section>
+
+    <div class="rule"></div>
+
+    <!-- MEMORICE DE POESÍA (juego de parejas: poeta + su verso) -->
+    <section id="memorice">
+      <div class="mem-intro">
+        <p class="section-label reveal">— Juego de memoria</p>
+        <h2 class="section-title reveal">Memorice de la palabra</h2>
+        <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Encuentra cada poeta latinoamericano junto al verso que lo hizo eterno. Voltea dos cartas y descubre las parejas.</p>
+      </div>
+
+      <div class="mem-stats reveal">
+        <div><b id="mem-pares">0</b> Parejas</div>
+        <div><b id="mem-intentos">0</b> Intentos</div>
+      </div>
+
+      <div class="mem-board" id="mem-board"></div>
+
+      <p class="mem-win" id="mem-win"></p>
+      <button class="mem-btn" id="mem-btn">Reiniciar juego</button>
     </section>
 
     <div class="rule"></div>
@@ -3091,6 +3233,120 @@
 
     btn.addEventListener('click', revelar);
     card.addEventListener('click', revelar);
+  })();
+
+  // ── MEMORICE DE POESÍA ──
+  // ===================================================================
+  //  LAS PAREJAS: cada poeta con su verso famoso.
+  //  Para AGREGAR/EDITAR: { autor: 'Nombre', verso: 'su verso...' },
+  // ===================================================================
+  const parejas = [
+    { autor: 'Pablo Neruda',        verso: 'Puedo escribir los versos más tristes esta noche.' },
+    { autor: 'Gabriela Mistral',    verso: 'Dame la mano y danzaremos; dame la mano y me amarás.' },
+    { autor: 'César Vallejo',       verso: 'Hay golpes en la vida, tan fuertes… Yo no sé.' },
+    { autor: 'Alejandra Pizarnik',  verso: 'Explicar con palabras de este mundo que partió de mí un barco llevándome.' },
+    { autor: 'Octavio Paz',         verso: 'Para que pueda ser he de ser otro, salir de mí, buscarme entre los otros.' },
+    { autor: 'Rubén Darío',         verso: 'Yo soy aquel que ayer no más decía el verso azul y la canción profana.' },
+    { autor: 'Jorge Luis Borges',   verso: 'Uno no es lo que es por lo que escribe, sino por lo que ha leído.' },
+    { autor: 'Sor Juana Inés de la Cruz', verso: 'Hombres necios que acusáis a la mujer sin razón.' },
+  ];
+  // ===================================================================
+
+  (function () {
+    const board = document.getElementById('mem-board');
+    const btn = document.getElementById('mem-btn');
+    const elPares = document.getElementById('mem-pares');
+    const elIntentos = document.getElementById('mem-intentos');
+    const elWin = document.getElementById('mem-win');
+    if (!board) return;
+
+    let cartas = [], primera = null, segunda = null;
+    let bloqueo = false, pares = 0, intentos = 0;
+
+    function barajar(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function crear() {
+      board.innerHTML = '';
+      elWin.classList.remove('show');
+      elWin.textContent = '';
+      primera = segunda = null; bloqueo = false;
+      pares = 0; intentos = 0;
+      elPares.textContent = '0'; elIntentos.textContent = '0';
+
+      // Genera dos cartas por pareja: una de autor, una de verso, con id de pareja
+      cartas = [];
+      parejas.forEach((p, i) => {
+        cartas.push({ id: i, tipo: 'autor', texto: p.autor });
+        cartas.push({ id: i, tipo: 'verso', texto: p.verso });
+      });
+      cartas = barajar(cartas);
+
+      cartas.forEach((c) => {
+        const card = document.createElement('div');
+        card.className = 'mem-card' + (c.tipo === 'autor' ? ' tipo-autor' : '');
+        card.dataset.id = c.id;
+        card.innerHTML = `
+          <div class="mem-card-inner">
+            <div class="mem-face mem-back"><span>✦</span></div>
+            <div class="mem-face mem-front">
+              <span class="mem-tipo">${c.tipo === 'autor' ? 'Poeta' : 'Verso'}</span>
+              <span class="mem-texto">${c.texto}</span>
+            </div>
+          </div>`;
+        card.addEventListener('click', () => voltear(card));
+        board.appendChild(card);
+      });
+    }
+
+    function voltear(card) {
+      if (bloqueo) return;
+      if (card.classList.contains('flip') || card.classList.contains('matched')) return;
+
+      card.classList.add('flip');
+
+      if (!primera) { primera = card; return; }
+      segunda = card;
+      bloqueo = true;
+      intentos++;
+      elIntentos.textContent = intentos;
+
+      // ¿Son pareja? (mismo id, distinto tipo ya está garantizado al tocar dos)
+      if (primera.dataset.id === segunda.dataset.id) {
+        setTimeout(() => {
+          primera.classList.add('matched');
+          segunda.classList.add('matched');
+          primera.classList.remove('flip');
+          segunda.classList.remove('flip');
+          resetTurno();
+          pares++;
+          elPares.textContent = pares;
+          if (pares === parejas.length) ganar();
+        }, 600);
+      } else {
+        setTimeout(() => {
+          primera.classList.remove('flip');
+          segunda.classList.remove('flip');
+          resetTurno();
+        }, 1100);
+      }
+    }
+
+    function resetTurno() { primera = null; segunda = null; bloqueo = false; }
+
+    function ganar() {
+      elWin.textContent = '✦ ¡Completaste el mazo en ' + intentos + ' intentos! ✦';
+      elWin.classList.add('show');
+    }
+
+    btn.addEventListener('click', crear);
+    crear();
   })();
 
     // ── FONDOS DE LAS DEMAS SECCIONES ──
