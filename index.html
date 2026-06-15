@@ -2576,9 +2576,6 @@
       <li><a href="#oraculo">
         <span class="nav-icon">✦</span> El Oráculo
       </a></li>
-      <li><a href="#juegos">
-        <span class="nav-icon">◆</span> Juegos
-      </a></li>
       <li class="nav-museo">
         <a href="#galeria-arte" id="nav-museo-link">
           <span class="nav-icon">▣</span> Museo
@@ -2592,6 +2589,9 @@
           <li><a href="#galeria-arte" data-sala="Latinoamérica">Latinoamérica</a></li>
         </ul>
       </li>
+      <li><a href="#juegos">
+        <span class="nav-icon">◆</span> Juegos
+      </a></li>
       <li><a href="#poesia">
         <span class="nav-icon">◆</span> Poesía
       </a></li>
@@ -2706,6 +2706,39 @@
 
     <div class="rule"></div>
 
+    <!-- GALERÍA DE PINTURAS FAMOSAS -->
+    <section id="galeria-arte">
+      <div class="gal-intro">
+        <p class="section-label reveal">— Pequeño museo</p>
+        <h2 class="section-title reveal">Pinturas que cambiaron el arte</h2>
+        <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Una selección de obras maestras de distintas épocas y rincones del mundo. Toca cualquiera para conocer su historia.</p>
+      </div>
+      <div class="gal-filtros reveal" id="gal-filtros">
+        <button class="gal-filtro-btn active" data-sala="Todo">Todas</button>
+        <button class="gal-filtro-btn" data-sala="Clásicos europeos">Clásicos europeos</button>
+        <button class="gal-filtro-btn" data-sala="Maestros modernos">Maestros modernos</button>
+        <button class="gal-filtro-btn" data-sala="Arte de Oriente">Arte de Oriente</button>
+        <button class="gal-filtro-btn" data-sala="Latinoamérica">Latinoamérica</button>
+      </div>
+      <div class="gal-grid reveal" id="gal-grid"></div>
+
+      <!-- Modal de la ficha -->
+      <div class="gal-modal" id="gal-modal">
+        <div class="gal-modal-panel">
+          <div class="gal-modal-img"><img src="" alt="" id="gal-modal-img"></div>
+          <div class="gal-modal-info">
+            <button class="gal-modal-close" id="gal-modal-close">×</button>
+            <h3 id="gal-modal-titulo"></h3>
+            <div class="gal-modal-meta" id="gal-modal-meta"></div>
+            <div class="gal-modal-bio" id="gal-modal-bio"></div>
+            <div class="gal-modal-texto" id="gal-modal-texto"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="rule"></div>
+
     <!-- APARTADO JUEGOS (portada) -->
     <section id="juegos">
       <div class="juegos-intro">
@@ -2766,39 +2799,6 @@
       <div class="mem-zoom" id="mem-zoom">
         <img src="" alt="Pintura ampliada" id="mem-zoom-img">
         <div class="mem-zoom-cap" id="mem-zoom-cap"></div>
-      </div>
-    </section>
-
-    <div class="rule"></div>
-
-    <!-- GALERÍA DE PINTURAS FAMOSAS -->
-    <section id="galeria-arte">
-      <div class="gal-intro">
-        <p class="section-label reveal">— Pequeño museo</p>
-        <h2 class="section-title reveal">Pinturas que cambiaron el arte</h2>
-        <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Una selección de obras maestras de distintas épocas y rincones del mundo. Toca cualquiera para conocer su historia.</p>
-      </div>
-      <div class="gal-filtros reveal" id="gal-filtros">
-        <button class="gal-filtro-btn active" data-sala="Todo">Todas</button>
-        <button class="gal-filtro-btn" data-sala="Clásicos europeos">Clásicos europeos</button>
-        <button class="gal-filtro-btn" data-sala="Maestros modernos">Maestros modernos</button>
-        <button class="gal-filtro-btn" data-sala="Arte de Oriente">Arte de Oriente</button>
-        <button class="gal-filtro-btn" data-sala="Latinoamérica">Latinoamérica</button>
-      </div>
-      <div class="gal-grid reveal" id="gal-grid"></div>
-
-      <!-- Modal de la ficha -->
-      <div class="gal-modal" id="gal-modal">
-        <div class="gal-modal-panel">
-          <div class="gal-modal-img"><img src="" alt="" id="gal-modal-img"></div>
-          <div class="gal-modal-info">
-            <button class="gal-modal-close" id="gal-modal-close">×</button>
-            <h3 id="gal-modal-titulo"></h3>
-            <div class="gal-modal-meta" id="gal-modal-meta"></div>
-            <div class="gal-modal-bio" id="gal-modal-bio"></div>
-            <div class="gal-modal-texto" id="gal-modal-texto"></div>
-          </div>
-        </div>
       </div>
     </section>
 
