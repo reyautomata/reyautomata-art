@@ -2947,6 +2947,93 @@
       .gal-modal-img img { max-height: 40vh; }
     }
 
+    /* ── TOGGLE GALERÍA / CRONOLOGÍA ── */
+    .gal-vista-toggle {
+      display: flex; justify-content: center; margin: 0 auto 2rem;
+      max-width: 240px; border: 1px solid var(--border); border-radius: 4px; overflow: hidden;
+    }
+    .gal-vista-btn {
+      flex: 1; background: transparent; border: none; border-radius: 0;
+      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted);
+      padding: 0.55rem 1rem; cursor: pointer; transition: all 0.2s;
+    }
+    .gal-vista-btn + .gal-vista-btn { border-left: 1px solid var(--border); }
+    .gal-vista-btn.active { background: rgba(184,70,10,0.12); color: var(--copper); }
+
+    /* ── LÍNEA DE TIEMPO ── */
+    .gal-timeline {
+      max-width: 900px; margin: 0 auto; padding: 0.5rem 1rem 3rem; position: relative;
+    }
+    .tl-line {
+      position: absolute; left: 50%; top: 0; bottom: 0; width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--border) 5%, var(--border) 95%, transparent);
+      transform: translateX(-50%); pointer-events: none;
+    }
+    .tl-era-label {
+      position: relative; z-index: 2; text-align: center; margin: 2.5rem 0 1.8rem;
+    }
+    .tl-era-badge {
+      display: inline-block; background: var(--bg2);
+      border: 1px solid rgba(201,162,77,0.3); padding: 0.3rem 1.1rem; border-radius: 2px;
+      font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--oro);
+    }
+    .tl-item {
+      display: grid; grid-template-columns: 1fr 52px 1fr;
+      align-items: center; margin-bottom: 1.4rem; position: relative;
+    }
+    .tl-item.tl-left .tl-card  { grid-column: 1; display: flex; justify-content: flex-end; }
+    .tl-item.tl-left .tl-dot-col { grid-column: 2; }
+    .tl-item.tl-left .tl-spacer  { grid-column: 3; }
+    .tl-item.tl-right .tl-spacer  { grid-column: 1; }
+    .tl-item.tl-right .tl-dot-col { grid-column: 2; }
+    .tl-item.tl-right .tl-card  { grid-column: 3; display: flex; justify-content: flex-start; }
+    .tl-card {
+      cursor: pointer; transition: transform 0.2s; position: relative; z-index: 2;
+      padding: 0 0.4rem;
+    }
+    .tl-card:hover { transform: translateY(-2px); }
+    .tl-card:focus-visible { outline: 2px solid var(--copper); outline-offset: 2px; border-radius: 6px; }
+    .tl-inner {
+      background: rgba(15,15,22,0.75); border: 1px solid var(--border);
+      border-radius: 6px; display: flex; align-items: center; gap: 0.7rem;
+      padding: 0.7rem; transition: border-color 0.2s; max-width: 330px; width: 100%;
+    }
+    .tl-card:hover .tl-inner { border-color: rgba(184,70,10,0.45); }
+    .tl-thumb { width: 58px; height: 58px; object-fit: cover; border-radius: 3px; flex-shrink: 0; display: block; }
+    .tl-info { min-width: 0; flex: 1; }
+    .tl-ttl {
+      font-family: var(--serif); font-style: italic; font-size: 0.86rem;
+      color: var(--oro); line-height: 1.2; margin-bottom: 0.1rem;
+    }
+    .tl-aut { font-family: var(--serif); font-size: 0.72rem; color: var(--ink); display: block; }
+    .tl-sala {
+      font-family: var(--mono); font-size: 0.46rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); display: block; margin-top: 0.08rem;
+    }
+    .tl-dot-col {
+      grid-column: 2; display: flex; flex-direction: column;
+      align-items: center; gap: 0.25rem; z-index: 2;
+    }
+    .tl-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--bg2); border: 2px solid var(--copper); flex-shrink: 0;
+    }
+    .tl-yr {
+      font-family: var(--mono); font-size: 0.48rem; letter-spacing: 0.07em;
+      color: var(--muted); white-space: nowrap; text-align: center;
+    }
+    @media (max-width: 680px) {
+      .tl-line { left: 18px; }
+      .tl-item { grid-template-columns: 36px 1fr !important; }
+      .tl-item .tl-card { grid-column: 2 !important; grid-row: 1; justify-content: flex-start !important; }
+      .tl-item .tl-dot-col { grid-column: 1 !important; grid-row: 1; }
+      .tl-item .tl-spacer { display: none !important; }
+      .tl-inner { max-width: 100%; }
+      .tl-era-label { text-align: left; padding-left: 36px; }
+    }
+
   </style>
 </head>
 <body>
@@ -3142,6 +3229,10 @@
         <h2 class="section-title reveal">Pinturas que cambiaron el arte</h2>
         <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Una selección de obras maestras de distintas épocas y rincones del mundo. Toca cualquiera para conocer su historia.</p>
       </div>
+      <div class="gal-vista-toggle reveal" id="gal-vista-toggle">
+        <button class="gal-vista-btn active" id="vista-grid">⊞ Galería</button>
+        <button class="gal-vista-btn" id="vista-tl">◉ Cronología</button>
+      </div>
       <div class="gal-filtros reveal" id="gal-filtros">
         <button class="gal-filtro-btn active" data-sala="Todo">Todas</button>
         <button class="gal-filtro-btn" data-sala="Clásicos europeos">Clásicos europeos</button>
@@ -3150,6 +3241,7 @@
         <button class="gal-filtro-btn" data-sala="Latinoamérica">Latinoamérica</button>
       </div>
       <div class="gal-grid reveal" id="gal-grid"></div>
+      <div class="gal-timeline" id="gal-timeline" hidden></div>
 
       <!-- Modal de la ficha -->
       <div class="gal-modal" id="gal-modal">
@@ -5027,6 +5119,76 @@
       function activar(e) { e.preventDefault(); abrir(obra); }
       card.addEventListener('click', activar);
       card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') activar(e); });
+    })();
+
+    // ── LÍNEA DE TIEMPO ──
+    (function () {
+      const tlEl = document.getElementById('gal-timeline');
+      const gridEl = document.getElementById('gal-grid');
+      const filtrosEl = document.getElementById('gal-filtros');
+      const btnGrid = document.getElementById('vista-grid');
+      const btnTl = document.getElementById('vista-tl');
+      if (!tlEl || !btnGrid || !btnTl) return;
+      let built = false;
+
+      function extractYear(meta) { const m = meta.match(/(\d{4})/); return m ? parseInt(m[1]) : 9999; }
+      function getYearLabel(meta) { const p = meta.split('·'); return (p[1] || '').trim(); }
+      function getEra(year) {
+        if (year < 1600) return 'Siglos XV — XVI';
+        if (year < 1700) return 'Siglo XVII';
+        if (year < 1800) return 'Siglo XVIII';
+        if (year < 1850) return 'Siglo XIX · Temprano';
+        if (year < 1900) return 'Siglo XIX · Tardío';
+        return 'Siglo XX';
+      }
+
+      function build() {
+        const sorted = galeria
+          .map(o => ({ ...o, _year: extractYear(o.meta), _yrLabel: getYearLabel(o.meta) }))
+          .sort((a, b) => a._year - b._year);
+
+        let html = '<div class="tl-line"></div>';
+        let lastEra = null;
+        sorted.forEach((obra, i) => {
+          const era = getEra(obra._year);
+          if (era !== lastEra) {
+            html += `<div class="tl-era-label"><span class="tl-era-badge">${era}</span></div>`;
+            lastEra = era;
+          }
+          const side = i % 2 === 0 ? 'tl-left' : 'tl-right';
+          html += `
+            <div class="tl-item ${side}" tabindex="0" role="button" aria-label="${obra.titulo}">
+              <div class="tl-card"><div class="tl-inner">
+                <img class="tl-thumb" src="${obra.img}" alt="${obra.titulo}" loading="lazy">
+                <div class="tl-info">
+                  <div class="tl-ttl">${obra.titulo}</div>
+                  <span class="tl-aut">${obra.autor}</span>
+                  <span class="tl-sala">${obra.sala || ''}</span>
+                </div>
+              </div></div>
+              <div class="tl-dot-col"><div class="tl-dot"></div><div class="tl-yr">${obra._yrLabel}</div></div>
+              <div class="tl-spacer"></div>
+            </div>`;
+        });
+
+        tlEl.innerHTML = html;
+        tlEl.querySelectorAll('.tl-item').forEach((el, idx) => {
+          const obra = sorted[idx];
+          el.addEventListener('click', () => abrir(obra));
+          el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') abrir(obra); });
+        });
+        built = true;
+      }
+
+      btnGrid.addEventListener('click', () => {
+        gridEl.hidden = false; filtrosEl.hidden = false; tlEl.hidden = true;
+        btnGrid.classList.add('active'); btnTl.classList.remove('active');
+      });
+      btnTl.addEventListener('click', () => {
+        gridEl.hidden = true; filtrosEl.hidden = true; tlEl.hidden = false;
+        btnGrid.classList.remove('active'); btnTl.classList.add('active');
+        if (!built) build();
+      });
     })();
 
   })();
