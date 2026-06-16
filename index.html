@@ -3034,6 +3034,30 @@
       .tl-era-label { text-align: left; padding-left: 36px; }
     }
 
+    /* ── GALERÍA PERSONAL (FAVORITAS) ── */
+    .fav-btn {
+      position: absolute; top: 0.5rem; right: 0.5rem; z-index: 3;
+      background: rgba(10,10,15,0.65); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50%; width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 0.85rem; line-height: 1;
+      color: rgba(255,255,255,0.35); transition: all 0.2s;
+      opacity: 0; backdrop-filter: blur(4px);
+    }
+    .gal-item:hover .fav-btn, .fav-btn.activo { opacity: 1; }
+    .fav-btn.activo {
+      color: var(--copper); border-color: rgba(184,70,10,0.5);
+      background: rgba(184,70,10,0.2);
+    }
+    .fav-btn:hover { color: var(--copper); border-color: rgba(184,70,10,0.4); }
+    .gal-filtro-favs { border-color: rgba(184,70,10,0.25) !important; }
+    #fav-empty {
+      display: none; text-align: center; padding: 4rem 1rem;
+      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted);
+      max-width: 400px; margin: 0 auto; line-height: 2;
+    }
+
   </style>
 </head>
 <body>
@@ -3239,8 +3263,13 @@
         <button class="gal-filtro-btn" data-sala="Maestros modernos">Maestros modernos</button>
         <button class="gal-filtro-btn" data-sala="Arte de Oriente">Arte de Oriente</button>
         <button class="gal-filtro-btn" data-sala="Latinoamérica">Latinoamérica</button>
+        <button class="gal-filtro-btn gal-filtro-favs" data-sala="Favoritas">♡ Favoritas</button>
       </div>
       <div class="gal-grid reveal" id="gal-grid"></div>
+      <div id="fav-empty">
+        Aún no tienes obras favoritas.<br>
+        Pasa el cursor sobre cualquier pintura y toca ♡ para guardarla aquí.
+      </div>
       <div class="gal-timeline" id="gal-timeline" hidden></div>
 
       <!-- Modal de la ficha -->
@@ -4899,35 +4928,57 @@
     const mMeta = document.getElementById('gal-modal-meta');
     const mTexto = document.getElementById('gal-modal-texto');
 
+    const FAV_KEY = 'reyautomata-favs';
+    function getFavs() { try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); } catch { return []; } }
+    function saveFavs(a) { try { localStorage.setItem(FAV_KEY, JSON.stringify(a)); } catch {} }
+    function toggleFav(img) {
+      const f = getFavs(), i = f.indexOf(img);
+      if (i >= 0) f.splice(i, 1); else f.push(img);
+      saveFavs(f); return i < 0;
+    }
+
     galeria.forEach((obra) => {
       const item = document.createElement('div');
       item.className = 'gal-item';
       item.dataset.sala = obra.sala || '';
+      item.dataset.img = obra.img;
       item.innerHTML = `
         <img src="${obra.img}" alt="${obra.titulo}" loading="lazy"
              onerror="this.closest('.gal-item').classList.add('missing')">
         <div class="gal-item-cap">
           <div class="gal-item-titulo">${obra.titulo}</div>
           <div class="gal-item-autor">${obra.autor}</div>
-        </div>`;
+        </div>
+        <button class="fav-btn" aria-label="Añadir a favoritas" title="Añadir a mis favoritas">♡</button>`;
+      const favBtn = item.querySelector('.fav-btn');
+      if (getFavs().includes(obra.img)) { favBtn.classList.add('activo'); favBtn.textContent = '♥'; }
+      favBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isFav = toggleFav(obra.img);
+        favBtn.classList.toggle('activo', isFav);
+        favBtn.textContent = isFav ? '♥' : '♡';
+        const activeBtn = document.querySelector('.gal-filtro-btn.active');
+        if (activeBtn && activeBtn.dataset.sala === 'Favoritas') filtrarSala('Favoritas');
+      });
       item.addEventListener('click', () => abrir(obra));
       grid.appendChild(item);
     });
 
-    // Filtrar la galería por sala
+    // Filtrar la galería por sala (o por favoritas)
     function filtrarSala(sala) {
+      const favs = sala === 'Favoritas' ? getFavs() : null;
+      let visibles = 0;
       grid.querySelectorAll('.gal-item').forEach(item => {
-        if (sala === 'Todo' || item.dataset.sala === sala) {
-          item.style.display = '';
-        } else {
-          item.style.display = 'none';
-        }
+        const show = sala === 'Todo' ||
+          (sala === 'Favoritas' ? favs.includes(item.dataset.img) : item.dataset.sala === sala);
+        item.style.display = show ? '' : 'none';
+        if (show) visibles++;
       });
-      // Sincronizar botones de filtro de la sección
+      const emptyEl = document.getElementById('fav-empty');
+      if (emptyEl) emptyEl.style.display = (sala === 'Favoritas' && visibles === 0) ? '' : 'none';
       document.querySelectorAll('.gal-filtro-btn').forEach(b => {
         b.classList.toggle('active', b.dataset.sala === sala);
       });
-      // Sincronizar submenú lateral
       document.querySelectorAll('#nav-submenu a').forEach(a => {
         a.classList.toggle('active-sala', a.dataset.sala === sala);
       });
