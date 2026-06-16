@@ -2804,8 +2804,52 @@
       background: #0c1222;
       display: flex; align-items: center; justify-content: center;
       padding: 1rem;
+      position: relative;
     }
     .gal-modal-img img { width: 100%; height: 100%; object-fit: contain; max-height: 70vh; }
+
+    /* ── ZOOM DE DETALLE ── */
+    .gal-zoom-btn {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      font-family: var(--mono); font-size: 0.58rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); padding: 0.45rem 0.9rem;
+      border-radius: 3px; cursor: pointer; transition: all 0.2s;
+      margin-top: 1.1rem;
+    }
+    .gal-zoom-btn:hover, .gal-zoom-btn.activo {
+      border-color: var(--copper); color: var(--copper);
+    }
+    .gal-modal-img.zoom-activo { overflow: hidden; cursor: grab; }
+    .gal-modal-img.zoom-activo.dragging { cursor: grabbing; }
+    .gal-modal-img.zoom-activo img {
+      cursor: inherit; will-change: transform;
+      transform-origin: center center;
+      user-select: none; -webkit-user-drag: none;
+      transition: none;
+    }
+    .gal-zoom-nivel {
+      position: absolute; bottom: 0.7rem; left: 0.7rem;
+      font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.12em;
+      color: var(--copper); background: rgba(10,10,15,0.85);
+      padding: 0.2rem 0.5rem; border-radius: 2px;
+      border: 1px solid rgba(184,70,10,0.3);
+      pointer-events: none; opacity: 0; transition: opacity 0.25s;
+    }
+    .gal-modal-img.zoom-activo .gal-zoom-nivel { opacity: 1; }
+    .gal-zoom-hint-text {
+      position: absolute; bottom: 2.4rem; left: 50%;
+      transform: translateX(-50%); white-space: nowrap;
+      font-family: var(--mono); font-size: 0.55rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink); background: rgba(10,10,15,0.88);
+      padding: 0.3rem 0.85rem; border-radius: 3px;
+      border: 1px solid var(--border);
+      pointer-events: none; opacity: 0; transition: opacity 0.35s;
+    }
+    .gal-zoom-hint-text.visible { opacity: 1; }
+
     .gal-modal-info { padding: 2rem; position: relative; }
     .gal-modal-info h3 {
       font-family: var(--serif); font-style: italic; font-weight: 400;
@@ -4772,6 +4816,7 @@
     }
 
     function abrir(obra) {
+      if (typeof zReset === 'function') zReset();
       mImg.src = obra.img;
       mImg.alt = obra.titulo;
       mTit.textContent = obra.titulo;
@@ -4784,11 +4829,129 @@
       mTexto.textContent = obra.texto;
       modal.classList.add('open');
     }
-    function cerrar() { modal.classList.remove('open'); }
+    function cerrar() { if (typeof zReset === 'function') zReset(); modal.classList.remove('open'); }
 
     document.getElementById('gal-modal-close').addEventListener('click', cerrar);
     modal.addEventListener('click', (e) => { if (e.target === modal) cerrar(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrar(); });
+
+    // ── ZOOM DE DETALLE EN PINTURAS ──
+    const imgCont = document.querySelector('.gal-modal-img');
+    const nivelEl = document.createElement('div');
+    nivelEl.className = 'gal-zoom-nivel';
+    nivelEl.textContent = '100%';
+    imgCont.appendChild(nivelEl);
+
+    const hintEl = document.createElement('div');
+    hintEl.className = 'gal-zoom-hint-text';
+    hintEl.textContent = 'Rueda · ampliar  ·  Arrastrar · mover';
+    imgCont.appendChild(hintEl);
+
+    const zoomBtn = document.createElement('button');
+    zoomBtn.className = 'gal-zoom-btn';
+    zoomBtn.innerHTML = '⊕ &nbsp;Ampliar detalle';
+    document.querySelector('.gal-modal-info').appendChild(zoomBtn);
+
+    let zs = 1, ztx = 0, zty = 0, zActive = false, zDrag = false;
+    let zSX = 0, zSY = 0, zSTX = 0, zSTY = 0, zTouchDist = 0;
+
+    function zApply() {
+      mImg.style.transform = `translate(${ztx}px, ${zty}px) scale(${zs})`;
+      nivelEl.textContent = Math.round(zs * 100) + '%';
+    }
+    function zClamp() {
+      const cw = imgCont.offsetWidth, ch = imgCont.offsetHeight;
+      const mx = (zs - 1) * cw / 2, my = (zs - 1) * ch / 2;
+      ztx = Math.max(-mx, Math.min(mx, ztx));
+      zty = Math.max(-my, Math.min(my, zty));
+    }
+    function zReset() {
+      zActive = false; zs = 1; ztx = 0; zty = 0; zDrag = false;
+      mImg.style.transform = '';
+      imgCont.classList.remove('zoom-activo', 'dragging');
+      zoomBtn.innerHTML = '⊕ &nbsp;Ampliar detalle';
+      zoomBtn.classList.remove('activo');
+    }
+
+    zoomBtn.addEventListener('click', () => {
+      if (!zActive) {
+        zActive = true;
+        imgCont.classList.add('zoom-activo');
+        zoomBtn.innerHTML = '⊖ &nbsp;Salir del zoom';
+        zoomBtn.classList.add('activo');
+        hintEl.classList.add('visible');
+        setTimeout(() => hintEl.classList.remove('visible'), 3000);
+      } else { zReset(); }
+    });
+
+    imgCont.addEventListener('wheel', (e) => {
+      if (!zActive) return;
+      e.preventDefault();
+      const rect = imgCont.getBoundingClientRect();
+      const cx = e.clientX - (rect.left + rect.width / 2);
+      const cy = e.clientY - (rect.top + rect.height / 2);
+      const newS = Math.min(4, Math.max(1, zs * (e.deltaY < 0 ? 1.12 : 0.88)));
+      if (newS === zs) return;
+      const r = newS / zs;
+      ztx = cx - (cx - ztx) * r;
+      zty = cy - (cy - zty) * r;
+      zs = newS;
+      if (zs <= 1) { zs = 1; ztx = 0; zty = 0; }
+      zClamp(); zApply();
+    }, { passive: false });
+
+    imgCont.addEventListener('mousedown', (e) => {
+      if (!zActive || zs <= 1) return;
+      zDrag = true;
+      zSX = e.clientX; zSY = e.clientY;
+      zSTX = ztx; zSTY = zty;
+      imgCont.classList.add('dragging');
+      e.preventDefault();
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!zDrag) return;
+      ztx = zSTX + (e.clientX - zSX);
+      zty = zSTY + (e.clientY - zSY);
+      zClamp(); zApply();
+    });
+    window.addEventListener('mouseup', () => {
+      if (zDrag) { zDrag = false; imgCont.classList.remove('dragging'); }
+    });
+
+    imgCont.addEventListener('touchstart', (e) => {
+      if (!zActive) return;
+      if (e.touches.length === 2) {
+        zTouchDist = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
+      } else {
+        zSX = e.touches[0].clientX; zSY = e.touches[0].clientY;
+        zSTX = ztx; zSTY = zty;
+      }
+    }, { passive: true });
+
+    imgCont.addEventListener('touchmove', (e) => {
+      if (!zActive) return;
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const d = Math.hypot(e.touches[1].clientX - e.touches[0].clientX, e.touches[1].clientY - e.touches[0].clientY);
+        if (!zTouchDist) { zTouchDist = d; return; }
+        const newS = Math.min(4, Math.max(1, zs * d / zTouchDist));
+        zTouchDist = d;
+        if (newS !== zs) {
+          const rect = imgCont.getBoundingClientRect();
+          const mx = (e.touches[0].clientX + e.touches[1].clientX) / 2 - (rect.left + rect.width / 2);
+          const my = (e.touches[0].clientY + e.touches[1].clientY) / 2 - (rect.top + rect.height / 2);
+          const r = newS / zs;
+          ztx = mx - (mx - ztx) * r; zty = my - (my - zty) * r;
+          zs = newS; zClamp(); zApply();
+        }
+      } else if (e.touches.length === 1 && zs > 1) {
+        e.preventDefault();
+        ztx = zSTX + (e.touches[0].clientX - zSX);
+        zty = zSTY + (e.touches[0].clientY - zSY);
+        zClamp(); zApply();
+      }
+    }, { passive: false });
+
   })();
 
     // ── FONDOS DE LAS DEMAS SECCIONES ──
