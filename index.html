@@ -3058,86 +3058,81 @@
       max-width: 400px; margin: 0 auto; line-height: 2;
     }
 
-    /* ── MAPA DE ORÍGENES (estilo papiro) ── */
+    /* ── MAPA DE ORÍGENES ── */
     #mapa-origenes { padding: 5rem 1.5rem; }
     .mapa-wrap {
       max-width: 1000px; margin: 2.5rem auto 0;
-      background: #d4b483;
-      border: 5px solid #8b5e32;
+      background: #0e101a;
+      border: 2px solid rgba(201,162,77,0.35);
       border-radius: 4px; overflow: hidden; position: relative;
       box-shadow:
-        0 0 0 1px #c09a60,
-        0 8px 50px rgba(80,40,0,0.55),
-        inset 0 0 40px rgba(120,70,10,0.12);
+        0 0 0 1px rgba(201,162,77,0.1),
+        0 12px 60px rgba(0,0,0,0.7);
     }
     .mapa-svg { width: 100%; display: block; max-height: 420px; }
-    .mapa-tierra {
-      fill: #b8895a; stroke: #7a4e28; stroke-width: 1.3;
-      filter: drop-shadow(1px 2px 3px rgba(80,40,0,0.3));
-    }
     .mapa-marker { cursor: pointer; }
     .mapa-marker circle.dot {
-      fill: #5c2a0a; stroke: #3d1808; stroke-width: 0.8;
+      fill: #e84020; stroke: rgba(255,255,255,0.85); stroke-width: 1.2;
       transition: fill 0.2s, r 0.2s;
     }
     .mapa-marker:hover circle.dot,
     .mapa-marker.activo circle.dot {
-      fill: #8b1a00; stroke: #5c0800;
-      filter: drop-shadow(0 0 5px rgba(140,40,0,0.7));
+      fill: #ff5500; stroke: #fff;
+      filter: drop-shadow(0 0 7px rgba(255,80,20,0.85));
     }
     .mapa-marker text {
-      fill: #4a2408; font-size: 9.5px;
+      fill: #fff; font-size: 9.5px;
       font-family: 'Palatino Linotype', Palatino, Georgia, serif;
       font-style: italic; font-weight: bold;
       text-anchor: middle; pointer-events: none;
       opacity: 0; transition: opacity 0.2s;
       paint-order: stroke;
-      stroke: rgba(212,180,131,0.8); stroke-width: 3px;
+      stroke: rgba(0,0,0,0.8); stroke-width: 3px;
     }
     .mapa-marker:hover text, .mapa-marker.activo text { opacity: 1; }
     .mapa-pulse {
-      fill: none; stroke: rgba(92,42,10,0.55); stroke-width: 1.5;
+      fill: none; stroke: rgba(255,85,20,0.55); stroke-width: 1.5;
       animation: mapa-pulso 2.6s ease-out infinite;
     }
     @keyframes mapa-pulso {
-      0%   { r: 4;  opacity: 0.7; }
-      100% { r: 18; opacity: 0; }
+      0%   { r: 4;  opacity: 0.9; }
+      100% { r: 22; opacity: 0; }
     }
     .mapa-panel {
-      border-top: 2px solid #a07840;
-      background: linear-gradient(180deg, #efe1b5 0%, #e8d5a0 100%);
+      border-top: 1px solid var(--border);
+      background: var(--bg2);
       padding: 1.2rem 1.5rem; min-height: 80px;
     }
     .mapa-panel-hint {
-      font-family: 'Palatino Linotype', Palatino, Georgia, serif;
-      font-style: italic; font-size: 0.9rem;
-      color: #8b5e32; text-align: center; padding: 0.5rem 0;
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); text-align: center; padding: 0.5rem 0;
     }
     .mapa-pais-nombre {
-      font-family: 'Palatino Linotype', Palatino, Georgia, serif;
-      font-style: italic; font-size: 1.2rem;
-      color: #4a2408; margin-bottom: 0.85rem;
-      border-bottom: 1px solid #c09a60; padding-bottom: 0.5rem;
+      font-family: var(--serif);
+      font-style: italic; font-size: 1.1rem;
+      color: var(--oro); margin-bottom: 0.85rem;
+      border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;
     }
     .mapa-obras-grid { display: flex; flex-wrap: wrap; gap: 0.65rem; }
     .mapa-obra-card {
       display: flex; align-items: center; gap: 0.6rem;
-      background: rgba(180,130,60,0.15);
-      border: 1px solid #c09a60; border-radius: 4px;
+      background: rgba(201,162,77,0.05);
+      border: 1px solid var(--border); border-radius: 4px;
       padding: 0.45rem 0.7rem; cursor: pointer;
       transition: border-color 0.2s, background 0.2s;
       max-width: 230px;
     }
-    .mapa-obra-card:hover { border-color: #7a4e28; background: rgba(180,130,60,0.28); }
+    .mapa-obra-card:hover { border-color: var(--copper); background: rgba(184,70,10,0.1); }
     .mapa-obra-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 3px; flex-shrink: 0; }
     .mapa-obra-titulo {
-      font-family: 'Palatino Linotype', Palatino, Georgia, serif; font-style: italic;
-      font-size: 0.78rem; color: #5c2a0a; display: block; line-height: 1.2;
+      font-family: var(--serif); font-style: italic;
+      font-size: 0.78rem; color: var(--ink); display: block; line-height: 1.2;
     }
     .mapa-obra-autor {
       font-family: var(--mono); font-size: 0.47rem;
       letter-spacing: 0.08em; text-transform: uppercase;
-      color: #8b5e32; display: block; margin-top: 0.1rem;
+      color: var(--muted); display: block; margin-top: 0.1rem;
     }
     @media (max-width: 680px) {
       .mapa-obras-grid { gap: 0.5rem; }
@@ -3386,47 +3381,25 @@
       <div class="mapa-wrap reveal">
         <svg id="mapa-svg" class="mapa-svg" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <!-- Textura de fibras de papiro -->
-            <filter id="papiro" color-interpolation-filters="sRGB" x="0%" y="0%" width="100%" height="100%">
-              <feTurbulence type="fractalNoise" baseFrequency="0.72 0.28" numOctaves="4" seed="7" result="noise"/>
-              <feColorMatrix type="saturate" values="0" in="noise" result="gray"/>
-              <feBlend in="SourceGraphic" in2="gray" mode="multiply" result="blend"/>
-              <feComponentTransfer in="blend">
-                <feFuncR type="linear" slope="1.04" intercept="-0.02"/>
-                <feFuncG type="linear" slope="0.92" intercept="0.01"/>
-                <feFuncB type="linear" slope="0.75" intercept="-0.04"/>
-              </feComponentTransfer>
-            </filter>
-            <!-- Patrón de olas del océano -->
-            <pattern id="olas" x="0" y="0" width="24" height="9" patternUnits="userSpaceOnUse">
-              <path d="M 0 4.5 Q 6 0 12 4.5 Q 18 9 24 4.5" fill="none" stroke="#c4a060" stroke-width="0.55" opacity="0.45"/>
-            </pattern>
-            <!-- Viñeta de envejecimiento -->
-            <radialGradient id="vignet" cx="50%" cy="50%" r="72%">
-              <stop offset="0%" stop-color="transparent"/>
-              <stop offset="85%" stop-color="rgba(100,50,8,0.10)"/>
-              <stop offset="100%" stop-color="rgba(80,38,5,0.45)"/>
+            <radialGradient id="vignet" cx="50%" cy="50%" r="70%">
+              <stop offset="0%"   stop-color="transparent"/>
+              <stop offset="70%"  stop-color="rgba(0,0,0,0.05)"/>
+              <stop offset="100%" stop-color="rgba(0,0,0,0.55)"/>
             </radialGradient>
           </defs>
 
-          <!-- Fondo arena / papiro -->
-          <rect width="1000" height="500" fill="#d4b483"/>
-          <!-- Textura de fibras -->
-          <rect width="1000" height="500" fill="#d4b483" filter="url(#papiro)" opacity="0.42"/>
-          <!-- Patrón de olas en el océano -->
-          <rect width="1000" height="500" fill="url(#olas)"/>
+          <!-- Mapa real como fondo -->
+          <image href="img/mapa-mundo.jpg" x="0" y="0" width="1000" height="500" preserveAspectRatio="xMidYMid slice"/>
 
           <!-- Marco interior ornamental -->
-          <rect x="5" y="5" width="990" height="490" rx="3" fill="none" stroke="#8b5e32" stroke-width="2.5" opacity="0.7"/>
-          <rect x="10" y="10" width="980" height="480" rx="2" fill="none" stroke="#c09a60" stroke-width="0.8" opacity="0.5"/>
+          <rect x="5" y="5" width="990" height="490" rx="3" fill="none" stroke="rgba(201,162,77,0.4)" stroke-width="2"/>
+          <rect x="10" y="10" width="980" height="480" rx="2" fill="none" stroke="rgba(201,162,77,0.18)" stroke-width="0.8"/>
 
-          <!-- Cuadrícula cartográfica -->
-          <g stroke="#a07a38" stroke-width="0.5" opacity="0.5" fill="none">
+          <!-- Cuadrícula cartográfica (sutil) -->
+          <g stroke="rgba(255,255,255,0.1)" stroke-width="0.6" fill="none">
             <line x1="14" y1="250" x2="986" y2="250"/>
             <line x1="14" y1="139" x2="986" y2="139" stroke-dasharray="7,5"/>
             <line x1="14" y1="361" x2="986" y2="361" stroke-dasharray="7,5"/>
-            <line x1="14" y1="83"  x2="986" y2="83"  stroke-dasharray="3,7" opacity="0.35"/>
-            <line x1="14" y1="417" x2="986" y2="417" stroke-dasharray="3,7" opacity="0.35"/>
             <line x1="167" y1="14" x2="167" y2="486"/>
             <line x1="333" y1="14" x2="333" y2="486"/>
             <line x1="500" y1="14" x2="500" y2="486"/>
@@ -3435,66 +3408,47 @@
           </g>
 
           <!-- Etiquetas de paralelos y meridianos -->
-          <g font-family="Palatino Linotype, Palatino, Georgia, serif" font-style="italic" fill="#6b4020" opacity="0.75">
+          <g font-family="Palatino Linotype, Palatino, Georgia, serif" font-style="italic"
+             fill="rgba(255,255,255,0.55)" paint-order="stroke"
+             stroke="rgba(0,0,0,0.5)" stroke-width="2">
             <text x="16" y="248" font-size="7.5" text-anchor="start">0°</text>
             <text x="16" y="137" font-size="7"   text-anchor="start">23°N</text>
             <text x="16" y="359" font-size="7"   text-anchor="start">23°S</text>
-            <text x="16" y="81"  font-size="6.5" text-anchor="start">60°N</text>
-            <text x="163" y="486" font-size="6.5" text-anchor="middle">30°O</text>
-            <text x="500" y="486" font-size="6.5" text-anchor="middle">0°</text>
-            <text x="833" y="486" font-size="6.5" text-anchor="middle">90°E</text>
+            <text x="500" y="13" font-size="6.5" text-anchor="middle">0°</text>
+            <text x="833" y="13" font-size="6.5" text-anchor="middle">90°E</text>
           </g>
 
-          <!-- ── Continentes ── -->
-          <!-- América del Norte -->
-          <path class="mapa-tierra" d="M 28 82 Q 155 55 288 72 L 362 122 L 340 150 Q 292 192 268 232 L 228 248 Q 185 220 128 212 L 48 156 Z"/>
-          <!-- América del Sur -->
-          <path class="mapa-tierra" d="M 225 218 Q 358 228 372 250 Q 412 274 405 336 Q 383 408 310 427 Q 258 422 228 390 Q 204 346 206 299 Z"/>
-          <!-- Europa -->
-          <path class="mapa-tierra" d="M 445 170 Q 448 88 508 63 Q 548 56 580 74 Q 603 110 598 168 Q 568 180 524 180 Q 476 176 445 170 Z"/>
-          <!-- África -->
-          <path class="mapa-tierra" d="M 443 175 Q 608 170 634 235 Q 618 357 552 408 Q 492 422 450 392 Q 428 332 430 232 Z"/>
-          <!-- Asia -->
-          <path class="mapa-tierra" d="M 590 62 Q 725 38 960 48 Q 1002 122 988 190 Q 944 254 840 270 Q 760 262 712 232 Q 660 196 638 155 Q 608 118 590 90 Z"/>
-          <!-- Japón (islas) -->
-          <ellipse class="mapa-tierra" cx="878" cy="152" rx="13" ry="28" transform="rotate(-15 878 152)"/>
-          <!-- Australia -->
-          <ellipse class="mapa-tierra" cx="830" cy="370" rx="72" ry="50"/>
-
-          <!-- Viñeta de envejecimiento (encima de todo) -->
+          <!-- Viñeta (encima de todo) -->
           <rect width="1000" height="500" fill="url(#vignet)" pointer-events="none"/>
 
           <!-- Cartela ornamental (esquina inferior izquierda) -->
           <g transform="translate(20, 480)" font-family="Palatino Linotype, Palatino, Georgia, serif">
             <rect x="0" y="-20" width="228" height="28" rx="3"
-                  fill="rgba(160,105,40,0.2)" stroke="#8b5e32" stroke-width="0.9"/>
+                  fill="rgba(0,0,0,0.5)" stroke="rgba(201,162,77,0.45)" stroke-width="0.9"/>
             <rect x="3" y="-17" width="222" height="22" rx="2"
-                  fill="none" stroke="#c09a60" stroke-width="0.5"/>
-            <text x="114" y="-2" text-anchor="middle" font-size="10" fill="#4a2408" font-style="italic">
+                  fill="none" stroke="rgba(201,162,77,0.2)" stroke-width="0.5"/>
+            <text x="114" y="-2" text-anchor="middle" font-size="10"
+                  fill="rgba(255,255,255,0.85)" font-style="italic">
               Mapa de Orígenes · Rey Autómata
             </text>
           </g>
 
           <!-- Rosa de los vientos (esquina inferior derecha) -->
-          <g transform="translate(966, 468)" fill="#7a4e28">
-            <!-- N grande -->
-            <polygon points="0,-19 3,-6 0,-2 -3,-6" fill="#5c2a0a"/>
-            <!-- S, E, W -->
+          <g transform="translate(966, 468)" fill="rgba(255,255,255,0.75)">
+            <polygon points="0,-19 3,-6 0,-2 -3,-6" fill="rgba(255,255,255,0.95)"/>
             <polygon points="0,19 2.5,6 0,2 -2.5,6" opacity="0.55"/>
             <polygon points="19,0 6,2.5 2,0 6,-2.5" opacity="0.55"/>
             <polygon points="-19,0 -6,2.5 -2,0 -6,-2.5" opacity="0.55"/>
-            <!-- Diagonales pequeñas -->
-            <polygon points="13,-13 6,-4 4,-1 1,-7" opacity="0.3" transform="rotate(0)"/>
-            <polygon points="13,13 6,4 4,1 1,7" opacity="0.3"/>
-            <polygon points="-13,13 -6,4 -4,1 -1,7" opacity="0.3"/>
-            <polygon points="-13,-13 -6,-4 -4,-1 -1,-7" opacity="0.3"/>
-            <!-- Centro -->
-            <circle r="3" fill="#d4b483" stroke="#7a4e28" stroke-width="0.8"/>
-            <circle r="1.2" fill="#5c2a0a"/>
-            <!-- Letra N -->
+            <polygon points="13,-13 6,-4 4,-1 1,-7" opacity="0.28"/>
+            <polygon points="13,13 6,4 4,1 1,7" opacity="0.28"/>
+            <polygon points="-13,13 -6,4 -4,1 -1,7" opacity="0.28"/>
+            <polygon points="-13,-13 -6,-4 -4,-1 -1,-7" opacity="0.28"/>
+            <circle r="3" fill="rgba(0,0,0,0.45)" stroke="rgba(255,255,255,0.7)" stroke-width="0.8"/>
+            <circle r="1.2" fill="rgba(255,255,255,0.95)"/>
             <text x="0" y="-23" text-anchor="middle" font-size="9"
                   font-family="Palatino Linotype, Palatino, Georgia, serif"
-                  fill="#4a2408" font-weight="bold">N</text>
+                  fill="rgba(255,255,255,0.95)" font-weight="bold"
+                  paint-order="stroke" stroke="rgba(0,0,0,0.5)" stroke-width="2">N</text>
           </g>
 
           <!-- Marcadores (generados por JS) -->
