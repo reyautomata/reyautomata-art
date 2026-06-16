@@ -4,6 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rey Autómata — Panel</title>
+
+  <!-- Fondo negro antes de que el CMS cargue (evita flash blanco) -->
+  <style>
+    html, body { background: #0A0A0F !important; color: #E8E0D0; margin: 0; }
+  </style>
+
+  <!-- Paleta visual del sitio aplicada sobre los elementos del CMS -->
+  <link rel="stylesheet" href="cms.css" />
 </head>
 <body>
   <!-- Panel de Decap CMS (usa el backend GitHub + nuestro OAuth en Cloudflare) -->

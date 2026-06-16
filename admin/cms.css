@@ -1,0 +1,379 @@
+/* ═══════════════════════════════════════════════════════════════
+   Admin Panel — Paleta visual Rey Autómata
+   Apunta a elementos nativos (input, textarea, select, button,
+   label) y al root del CMS para no romper la lógica de Decap.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --bg:     #0A0A0F;
+  --bg2:    #0F0F16;
+  --bg3:    #16161F;
+  --ink:    #E8E0D0;
+  --muted:  #8A8478;
+  --copper: #B8460A;
+  --oro:    #c9a24d;
+  --border: #2A2A32;
+  --serif:  'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+  --mono:   'Cascadia Code', Consolas, 'Courier New', monospace;
+}
+
+/* ── BASE ─────────────────────────────────────────────────────── */
+html,
+body {
+  background: var(--bg) !important;
+  color: var(--ink) !important;
+  font-family: Georgia, 'Times New Roman', serif !important;
+  min-height: 100vh;
+}
+
+#nc-root {
+  background: var(--bg) !important;
+  color: var(--ink) !important;
+  min-height: 100vh;
+}
+
+/* Scrollbar global */
+::-webkit-scrollbar            { width: 5px; height: 5px; }
+::-webkit-scrollbar-track      { background: var(--bg); }
+::-webkit-scrollbar-thumb      { background: var(--copper); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover{ background: var(--oro); }
+
+/* ── PANELS Y SIDEBARS ────────────────────────────────────────── */
+/* Intenta oscurecer paneles blancos/grises del CMS */
+#nc-root [class*="SideBar"],
+#nc-root [class*="Sidebar"],
+#nc-root [class*="sidebar"],
+#nc-root [class*="Nav"],
+#nc-root [class*="nav"],
+#nc-root [class*="Header"],
+#nc-root [class*="header"],
+#nc-root [class*="Toolbar"],
+#nc-root [class*="toolbar"],
+#nc-root [class*="AppBar"],
+#nc-root [class*="appbar"],
+#nc-root [class*="Editor"],
+#nc-root [class*="Container"],
+#nc-root [class*="Wrapper"],
+#nc-root [class*="Panel"],
+#nc-root [class*="Collection"],
+#nc-root [class*="List"],
+#nc-root [class*="EntryEditor"],
+#nc-root [class*="EditorPane"],
+#nc-root [class*="ControlPane"],
+#nc-root [class*="ScrollSync"] {
+  background: var(--bg) !important;
+  color: var(--ink) !important;
+  border-color: var(--border) !important;
+}
+
+/* Fondo ligeramente más claro para paneles secundarios */
+#nc-root [class*="SideBar"],
+#nc-root [class*="Sidebar"] {
+  background: var(--bg2) !important;
+  border-right: 1px solid var(--border) !important;
+}
+
+/* ── LINKS DE COLECCIÓN (menú lateral) ────────────────────────── */
+#nc-root a {
+  color: var(--muted) !important;
+  text-decoration: none !important;
+  font-family: var(--mono) !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  transition: color 0.2s !important;
+}
+
+#nc-root a:hover,
+#nc-root a[class*="active"],
+#nc-root a[aria-selected="true"] {
+  color: var(--copper) !important;
+}
+
+/* ── FORMULARIO: LABELS ────────────────────────────────────────── */
+#nc-root label,
+#nc-root [class*="label"],
+#nc-root [class*="Label"] {
+  font-family: var(--mono) !important;
+  font-size: 0.6rem !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+  color: var(--oro) !important;
+  margin-bottom: 0.45rem !important;
+  display: block !important;
+}
+
+/* Descripción de campo (hint/helper) */
+#nc-root [class*="hint"],
+#nc-root [class*="Hint"],
+#nc-root [class*="description"],
+#nc-root [class*="Description"],
+#nc-root p {
+  color: var(--muted) !important;
+  font-size: 0.82rem !important;
+  font-style: italic !important;
+  line-height: 1.6 !important;
+}
+
+/* Título de sección / nombre del colección */
+#nc-root h1,
+#nc-root h2,
+#nc-root h3 {
+  font-family: var(--serif) !important;
+  font-weight: 400 !important;
+  color: var(--ink) !important;
+  letter-spacing: 0.01em !important;
+}
+
+#nc-root h1 { font-size: 1.8rem !important; }
+#nc-root h2 { font-size: 1.35rem !important; }
+#nc-root h3 { font-size: 1.1rem !important; }
+
+/* ── FORMULARIO: INPUTS ────────────────────────────────────────── */
+#nc-root input[type="text"],
+#nc-root input[type="email"],
+#nc-root input[type="url"],
+#nc-root input[type="number"],
+#nc-root input[type="date"],
+#nc-root input[type="search"],
+#nc-root input[type="password"],
+#nc-root input:not([type]) {
+  background: var(--bg2) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  padding: 0.65rem 0.9rem !important;
+  font-size: 0.95rem !important;
+  font-family: Georgia, serif !important;
+  width: 100% !important;
+  box-shadow: none !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+
+#nc-root input:focus {
+  border-color: var(--copper) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(184,70,10,0.15) !important;
+}
+
+#nc-root input::placeholder {
+  color: var(--muted) !important;
+  opacity: 0.6 !important;
+}
+
+/* ── FORMULARIO: TEXTAREA ──────────────────────────────────────── */
+#nc-root textarea {
+  background: var(--bg2) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  padding: 0.75rem 0.9rem !important;
+  font-size: 0.95rem !important;
+  font-family: Georgia, serif !important;
+  line-height: 1.75 !important;
+  width: 100% !important;
+  resize: vertical !important;
+  box-shadow: none !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+  min-height: 120px !important;
+}
+
+#nc-root textarea:focus {
+  border-color: var(--copper) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(184,70,10,0.15) !important;
+}
+
+#nc-root textarea::placeholder {
+  color: var(--muted) !important;
+  opacity: 0.6 !important;
+}
+
+/* ── FORMULARIO: SELECT ────────────────────────────────────────── */
+#nc-root select {
+  background: var(--bg2) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  padding: 0.65rem 0.9rem !important;
+  font-size: 0.9rem !important;
+  font-family: var(--mono) !important;
+  letter-spacing: 0.04em !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  transition: border-color 0.2s !important;
+}
+
+#nc-root select:focus {
+  border-color: var(--copper) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(184,70,10,0.15) !important;
+}
+
+#nc-root option {
+  background: var(--bg2) !important;
+  color: var(--ink) !important;
+}
+
+/* ── FORMULARIO: WIDGET WRAPPER ────────────────────────────────── */
+/* Cada campo ocupa su propio bloque con separación clara */
+#nc-root [class*="WidgetFor"],
+#nc-root [class*="Control"],
+#nc-root [class*="widget"],
+#nc-root [class*="Widget"],
+#nc-root [class*="field"],
+#nc-root [class*="Field"] {
+  background: transparent !important;
+  padding: 1.1rem 0 !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+#nc-root [class*="WidgetFor"]:last-child,
+#nc-root [class*="Control"]:last-child,
+#nc-root [class*="field"]:last-child,
+#nc-root [class*="Field"]:last-child {
+  border-bottom: none !important;
+}
+
+/* ── SUBIDA DE IMAGEN ──────────────────────────────────────────── */
+#nc-root [class*="ImageWidget"],
+#nc-root [class*="image-widget"],
+#nc-root [class*="FileWidget"],
+#nc-root [class*="fileWidget"],
+#nc-root [class*="Dropzone"],
+#nc-root [class*="dropzone"],
+#nc-root [class*="drop-zone"] {
+  background: var(--bg2) !important;
+  border: 2px dashed var(--border) !important;
+  border-radius: 8px !important;
+  padding: 1.5rem !important;
+  text-align: center !important;
+  transition: border-color 0.2s !important;
+}
+
+#nc-root [class*="Dropzone"]:hover,
+#nc-root [class*="dropzone"]:hover {
+  border-color: var(--copper) !important;
+}
+
+/* ── BOTONES ───────────────────────────────────────────────────── */
+#nc-root button {
+  font-family: var(--mono) !important;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  border: 1px solid var(--border) !important;
+  background: var(--bg2) !important;
+  color: var(--ink) !important;
+  padding: 0.55rem 1.2rem !important;
+}
+
+#nc-root button:hover {
+  border-color: var(--copper) !important;
+  color: var(--copper) !important;
+}
+
+/* Botón principal: Publicar / Guardar */
+#nc-root button[class*="success"],
+#nc-root button[class*="primary"],
+#nc-root button[class*="Publish"],
+#nc-root button[class*="publish"],
+#nc-root button[class*="Save"],
+#nc-root button[class*="save"],
+#nc-root button[class*="default-"],
+#nc-root button[data-testid="publish-button"],
+#nc-root button[data-testid="save-button"] {
+  background: var(--copper) !important;
+  color: #fff !important;
+  border-color: var(--copper) !important;
+}
+
+#nc-root button[class*="success"]:hover,
+#nc-root button[class*="primary"]:hover,
+#nc-root button[data-testid="publish-button"]:hover,
+#nc-root button[data-testid="save-button"]:hover {
+  background: transparent !important;
+  color: var(--copper) !important;
+}
+
+/* Botón de borrar / peligro */
+#nc-root button[class*="danger"],
+#nc-root button[class*="delete"],
+#nc-root button[class*="Delete"] {
+  border-color: rgba(160,60,60,0.5) !important;
+  color: #c97070 !important;
+}
+
+/* ── TARJETAS DE ENTRADA (lista de dibujos) ────────────────────── */
+#nc-root [class*="EntryCard"],
+#nc-root [class*="entry-card"],
+#nc-root [class*="ListEntry"],
+#nc-root [class*="list-entry"] {
+  background: var(--bg2) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  transition: border-color 0.2s, transform 0.2s !important;
+}
+
+#nc-root [class*="EntryCard"]:hover,
+#nc-root [class*="ListEntry"]:hover {
+  border-color: rgba(184,70,10,0.4) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ── TOASTS / NOTIFICACIONES ───────────────────────────────────── */
+#nc-root [class*="Toast"],
+#nc-root [class*="toast"],
+#nc-root [class*="Notification"],
+#nc-root [class*="notification"],
+#nc-root [class*="alert"],
+#nc-root [class*="Alert"] {
+  background: var(--bg3) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--ink) !important;
+  border-radius: 6px !important;
+}
+
+/* ── BREADCRUMB / RUTA ─────────────────────────────────────────── */
+#nc-root [class*="Breadcrumb"],
+#nc-root [class*="breadcrumb"] {
+  font-family: var(--mono) !important;
+  font-size: 0.6rem !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase !important;
+  color: var(--muted) !important;
+}
+
+/* ── SEPARADOR ORNAMENTAL (arriba del formulario) ──────────────── */
+/* Añade una línea decorativa cobre encima del primer campo */
+#nc-root [class*="EditorControl"]:first-of-type,
+#nc-root [class*="ControlPane"]:first-of-type {
+  border-top: 1px solid rgba(184,70,10,0.25) !important;
+  padding-top: 1.5rem !important;
+}
+
+/* ── EDITOR DE MARKDOWN (si se usa) ───────────────────────────── */
+#nc-root .cm-editor,
+#nc-root .CodeMirror {
+  background: var(--bg2) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  font-family: var(--mono) !important;
+  font-size: 0.9rem !important;
+  line-height: 1.75 !important;
+}
+
+#nc-root .cm-gutters,
+#nc-root .CodeMirror-gutters {
+  background: var(--bg) !important;
+  border-right: 1px solid var(--border) !important;
+}
+
+#nc-root .cm-activeLine,
+#nc-root .CodeMirror-activeline-background {
+  background: rgba(184,70,10,0.06) !important;
+}
