@@ -2639,6 +2639,74 @@
     }
     .quiz-btn:hover { background: var(--copper); color: var(--bg); }
 
+    /* ── MODO CINEMATOGRÁFICO DE POESÍA ── */
+
+    /* Botón de toggle en el lector de poemas */
+    .poem-cine-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.45rem 1rem;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 2rem;
+    }
+    .poem-cine-btn:hover,
+    .poem-cine-btn.activo {
+      border-color: var(--copper);
+      color: var(--copper);
+    }
+
+    /* Cada verso aparece con fade-in desde abajo */
+    .poem-verso-cine {
+      display: block;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      line-height: 2.2;
+      color: var(--ink);
+    }
+    .poem-verso-cine.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Pausa entre estrofas */
+    .poem-verso-espacio {
+      display: block;
+      height: 1.4rem;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    /* Cursor "clic para avanzar" cuando el modo está activo */
+    .poem-reader-text.cine-activo {
+      cursor: pointer;
+    }
+
+    /* Hint de interacción que aparece en modo cine */
+    .poem-cine-hint {
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0.5;
+      margin-top: 1.5rem;
+      display: block;
+      text-align: center;
+    }
+
     /* ── GALERÍA DE PINTURAS FAMOSAS ── */
     #galeria-arte {
       background: var(--bg2);
@@ -3701,7 +3769,95 @@
     poemReaderLabel.textContent = poemas[cat].titulo;
     poemReaderTitle.textContent = poema.titulo;
     poemReaderText.innerHTML = formatearTexto(poema.texto);
+    poemReaderText.classList.remove('cine-activo');
     poemReaderDate.textContent = poema.fecha;
+
+    // — Botón modo cinematográfico —
+    const inner = poemReader.querySelector('.poem-reader-inner');
+    const viejoBt = inner.querySelector('.poem-cine-btn');
+    if (viejoBt) viejoBt.remove();
+    const viejoHint = inner.querySelector('.poem-cine-hint');
+    if (viejoHint) viejoHint.remove();
+
+    const cineBtn = document.createElement('button');
+    cineBtn.className = 'poem-cine-btn';
+    cineBtn.innerHTML = '▶ &nbsp;Verso a verso';
+    cineBtn.setAttribute('aria-label', 'Leer verso a verso');
+    inner.appendChild(cineBtn);
+
+    let cineActivo = false;
+    let cineTimer = null;
+
+    function parsearVersos(raw) {
+      const versos = [];
+      raw.split('||').forEach((estrofa, ei, arr) => {
+        estrofa.trim().split('|').forEach(linea => {
+          if (linea.trim()) versos.push({ texto: linea.trim(), espacio: false });
+        });
+        if (ei < arr.length - 1) versos.push({ texto: '', espacio: true });
+      });
+      return versos;
+    }
+
+    function modoCinematico() {
+      cineActivo = true;
+      cineBtn.innerHTML = '✕ &nbsp;Ver todo';
+      cineBtn.classList.add('activo');
+      poemReaderText.innerHTML = '';
+      poemReaderText.classList.add('cine-activo');
+
+      // Hint de clic
+      let hint = inner.querySelector('.poem-cine-hint');
+      if (!hint) {
+        hint = document.createElement('span');
+        hint.className = 'poem-cine-hint';
+        hint.textContent = 'Toca el texto para avanzar';
+        inner.insertBefore(hint, cineBtn);
+      }
+
+      const versos = parsearVersos(poema.texto);
+      let vi = 0;
+
+      function mostrarVerso() {
+        if (vi >= versos.length || !cineActivo) return;
+        const v = versos[vi++];
+        const el = document.createElement('span');
+        el.className = 'poem-verso-cine' + (v.espacio ? ' poem-verso-espacio' : '');
+        if (!v.espacio) el.textContent = v.texto;
+        poemReaderText.appendChild(el);
+        // Fuerza reflow para que la transición arranque
+        requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('visible')));
+        // Auto-avance: pausa más larga entre estrofas
+        cineTimer = setTimeout(mostrarVerso, v.espacio ? 550 : 1350);
+      }
+
+      mostrarVerso();
+
+      // Clic sobre el texto = avanzar verso manualmente
+      poemReaderText.onclick = () => {
+        if (!cineActivo) return;
+        if (cineTimer) clearTimeout(cineTimer);
+        mostrarVerso();
+      };
+    }
+
+    function modoCompleto() {
+      cineActivo = false;
+      if (cineTimer) clearTimeout(cineTimer);
+      poemReaderText.innerHTML = formatearTexto(poema.texto);
+      poemReaderText.classList.remove('cine-activo');
+      poemReaderText.onclick = null;
+      cineBtn.innerHTML = '▶ &nbsp;Verso a verso';
+      cineBtn.classList.remove('activo');
+      const hint = inner.querySelector('.poem-cine-hint');
+      if (hint) hint.remove();
+    }
+
+    cineBtn.addEventListener('click', () => {
+      if (!cineActivo) modoCinematico();
+      else modoCompleto();
+    });
+
     poemReader.classList.add('open');
   }
 
@@ -3711,6 +3867,9 @@
   }
   function cerrarReader() {
     poemReader.classList.remove('open');
+    // Limpia el modo cine al cerrar (sin referencias colgadas)
+    poemReaderText.classList.remove('cine-activo');
+    poemReaderText.onclick = null;
   }
 
   // Clic en las tarjetas de categoria
