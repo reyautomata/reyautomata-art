@@ -3058,6 +3058,74 @@
       max-width: 400px; margin: 0 auto; line-height: 2;
     }
 
+    /* ── MAPA DE ORÍGENES ── */
+    #mapa-origenes { padding: 5rem 1.5rem; }
+    .mapa-wrap {
+      max-width: 1000px; margin: 2.5rem auto 0;
+      background: #080812; border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden; position: relative;
+    }
+    .mapa-svg { width: 100%; display: block; max-height: 380px; }
+    .mapa-tierra { fill: #16162a; stroke: #2a2a42; stroke-width: 0.8; }
+    .mapa-marker { cursor: pointer; }
+    .mapa-marker circle.dot {
+      fill: var(--copper);
+      transition: fill 0.2s, r 0.2s;
+    }
+    .mapa-marker:hover circle.dot,
+    .mapa-marker.activo circle.dot { fill: var(--oro); }
+    .mapa-marker text {
+      fill: var(--ink); font-size: 9px;
+      font-family: 'Palatino Linotype', Georgia, serif;
+      text-anchor: middle; pointer-events: none;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .mapa-marker:hover text, .mapa-marker.activo text { opacity: 1; }
+    .mapa-pulse {
+      fill: none; stroke: var(--copper); stroke-width: 1.5;
+      animation: mapa-pulso 2.4s ease-out infinite;
+    }
+    @keyframes mapa-pulso {
+      0% { r: 4; opacity: 0.7; }
+      100% { r: 16; opacity: 0; }
+    }
+    .mapa-panel {
+      border-top: 1px solid var(--border);
+      padding: 1.1rem 1.5rem; min-height: 76px;
+    }
+    .mapa-panel-hint {
+      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--muted); text-align: center;
+      padding: 0.5rem 0;
+    }
+    .mapa-pais-nombre {
+      font-family: var(--serif); font-style: italic;
+      font-size: 1.15rem; color: var(--oro); margin-bottom: 0.85rem;
+    }
+    .mapa-obras-grid { display: flex; flex-wrap: wrap; gap: 0.65rem; }
+    .mapa-obra-card {
+      display: flex; align-items: center; gap: 0.6rem;
+      background: rgba(15,15,22,0.7); border: 1px solid var(--border);
+      border-radius: 5px; padding: 0.45rem 0.7rem;
+      cursor: pointer; transition: border-color 0.2s;
+      max-width: 230px;
+    }
+    .mapa-obra-card:hover { border-color: rgba(184,70,10,0.45); }
+    .mapa-obra-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 3px; flex-shrink: 0; }
+    .mapa-obra-titulo {
+      font-family: var(--serif); font-style: italic;
+      font-size: 0.78rem; color: var(--oro); display: block; line-height: 1.2;
+    }
+    .mapa-obra-autor {
+      font-family: var(--mono); font-size: 0.48rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted); display: block;
+    }
+    @media (max-width: 680px) {
+      .mapa-obras-grid { gap: 0.5rem; }
+      .mapa-obra-card { max-width: 100%; }
+    }
+
   </style>
 </head>
 <body>
@@ -3126,6 +3194,9 @@
           <li><a href="#galeria-arte" data-sala="Latinoamérica">Latinoamérica</a></li>
         </ul>
       </li>
+      <li><a href="#mapa-origenes">
+        <span class="nav-icon">◎</span> Orígenes
+      </a></li>
       <li><a href="#juegos">
         <span class="nav-icon">⊞</span> Juegos
       </a></li>
@@ -3283,6 +3354,44 @@
             <div class="gal-modal-bio" id="gal-modal-bio"></div>
             <div class="gal-modal-texto" id="gal-modal-texto"></div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="rule"></div>
+
+    <!-- MAPA DE ORÍGENES -->
+    <section id="mapa-origenes">
+      <p class="section-label reveal">— Geografía del arte</p>
+      <h2 class="section-title reveal">Orígenes</h2>
+      <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Los países que dieron origen a los artistas del museo. Toca un marcador para explorar su obra.</p>
+      <div class="mapa-wrap reveal">
+        <svg id="mapa-svg" class="mapa-svg" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
+          <rect width="1000" height="500" fill="#080812"/>
+          <!-- Líneas de referencia (trópicos / ecuador) -->
+          <line x1="0" y1="250" x2="1000" y2="250" stroke="#16162a" stroke-width="0.6"/>
+          <line x1="0" y1="139" x2="1000" y2="139" stroke="#16162a" stroke-width="0.4"/>
+          <line x1="0" y1="361" x2="1000" y2="361" stroke="#16162a" stroke-width="0.4"/>
+          <!-- ── Continentes (simplified) ── -->
+          <!-- América del Norte -->
+          <path class="mapa-tierra" d="M 28 82 Q 155 55 288 72 L 362 122 L 340 150 Q 292 192 268 232 L 228 248 Q 185 220 128 212 L 48 156 Z"/>
+          <!-- América del Sur -->
+          <path class="mapa-tierra" d="M 225 218 Q 358 228 372 250 Q 412 274 405 336 Q 383 408 310 427 Q 258 422 228 390 Q 204 346 206 299 Z"/>
+          <!-- Europa -->
+          <path class="mapa-tierra" d="M 445 170 Q 448 88 508 63 Q 548 56 580 74 Q 603 110 598 168 Q 568 180 524 180 Q 476 176 445 170 Z"/>
+          <!-- África -->
+          <path class="mapa-tierra" d="M 443 175 Q 608 170 634 235 Q 618 357 552 408 Q 492 422 450 392 Q 428 332 430 232 Z"/>
+          <!-- Asia -->
+          <path class="mapa-tierra" d="M 590 62 Q 725 38 960 48 Q 1002 122 988 190 Q 944 254 840 270 Q 760 262 712 232 Q 660 196 638 155 Q 608 118 590 90 Z"/>
+          <!-- Japón (islas) -->
+          <ellipse class="mapa-tierra" cx="878" cy="152" rx="13" ry="28" transform="rotate(-15 878 152)"/>
+          <!-- Australia -->
+          <ellipse class="mapa-tierra" cx="830" cy="370" rx="72" ry="50"/>
+          <!-- Marcadores (generados por JS) -->
+          <g id="mapa-markers"></g>
+        </svg>
+        <div class="mapa-panel" id="mapa-panel">
+          <div class="mapa-panel-hint">Toca un marcador para ver las obras de ese país</div>
         </div>
       </div>
     </section>
@@ -5025,6 +5134,7 @@
       modal.classList.add('open');
     }
     function cerrar() { if (typeof zReset === 'function') zReset(); modal.classList.remove('open'); }
+    window._abrirMuseo = abrir;
 
     document.getElementById('gal-modal-close').addEventListener('click', cerrar);
     modal.addEventListener('click', (e) => { if (e.target === modal) cerrar(); });
@@ -5242,6 +5352,122 @@
       });
     })();
 
+  })();
+
+  // ── MAPA DE ORÍGENES ──
+  (function () {
+    const markersG = document.getElementById('mapa-markers');
+    const panel = document.getElementById('mapa-panel');
+    if (!markersG || !panel) return;
+
+    const COORDS = {
+      'España':       { lat: 40.4,  lon: -3.7   },
+      'Países Bajos': { lat: 52.1,  lon: 5.3    },
+      'Italia':       { lat: 41.9,  lon: 12.6   },
+      'Francia':      { lat: 46.2,  lon: 2.2    },
+      'Alemania':     { lat: 51.2,  lon: 10.5   },
+      'Noruega':      { lat: 60.5,  lon: 10.7   },
+      'Austria':      { lat: 47.5,  lon: 14.5   },
+      'Japón':        { lat: 36.2,  lon: 138.3  },
+      'Venezuela':    { lat: 8.0,   lon: -66.6  },
+      'México':       { lat: 24.0,  lon: -102.5 },
+      'Puerto Rico':  { lat: 18.2,  lon: -66.5  },
+      'Uruguay':      { lat: -32.5, lon: -56.0  },
+      'Argentina':    { lat: -38.4, lon: -63.6  },
+      'Chile':        { lat: -30.0, lon: -71.5  },
+    };
+
+    const CIUDAD_PAIS = {
+      'Florencia': 'Italia', 'Delft': 'Países Bajos', 'Sevilla': 'España',
+      'Leiden': 'Países Bajos', 'Países Bajos': 'Países Bajos', 'Urbino': 'Italia',
+      'Aragón': 'España', 'París': 'Francia', 'Francia': 'Francia',
+      'Alemania': 'Alemania', 'Noruega': 'Noruega', 'Viena': 'Austria',
+      'Málaga': 'España', 'Japón': 'Japón', 'Venezuela': 'Venezuela',
+      'México': 'México', 'Puerto Rico': 'Puerto Rico', 'Uruguay': 'Uruguay',
+      'Argentina': 'Argentina', 'Chile': 'Chile',
+    };
+
+    function paisDesde(bio) {
+      const primera = (bio || '').split(',')[0].trim();
+      return CIUDAD_PAIS[primera] || null;
+    }
+
+    // Agrupar obras por país
+    const porPais = {};
+    galeria.forEach(obra => {
+      const pais = paisDesde(obra.bio);
+      if (!pais) return;
+      if (!porPais[pais]) porPais[pais] = [];
+      porPais[pais].push(obra);
+    });
+
+    // Proyección equirectangular sobre el viewBox 0 0 1000 500
+    function toXY(lat, lon) {
+      return { x: (lon + 180) * (1000 / 360), y: (90 - lat) * (500 / 180) };
+    }
+
+    const NS = 'http://www.w3.org/2000/svg';
+    let activo = null;
+
+    Object.entries(porPais).forEach(([pais, obras]) => {
+      const c = COORDS[pais];
+      if (!c) return;
+      const { x, y } = toXY(c.lat, c.lon);
+      const r = Math.max(5, Math.min(10, 3 + obras.length * 1.5));
+
+      const g = document.createElementNS(NS, 'g');
+      g.setAttribute('class', 'mapa-marker');
+      g.setAttribute('role', 'button');
+      g.setAttribute('tabindex', '0');
+      g.setAttribute('aria-label', pais);
+
+      const pulse = document.createElementNS(NS, 'circle');
+      pulse.setAttribute('cx', x); pulse.setAttribute('cy', y); pulse.setAttribute('r', '4');
+      pulse.setAttribute('class', 'mapa-pulse');
+      g.appendChild(pulse);
+
+      const dot = document.createElementNS(NS, 'circle');
+      dot.setAttribute('cx', x); dot.setAttribute('cy', y); dot.setAttribute('r', r);
+      dot.setAttribute('class', 'dot');
+      g.appendChild(dot);
+
+      const label = document.createElementNS(NS, 'text');
+      label.setAttribute('x', x); label.setAttribute('y', y - r - 5);
+      label.textContent = pais;
+      g.appendChild(label);
+
+      function activar() {
+        if (activo) activo.classList.remove('activo');
+        activo = g; g.classList.add('activo');
+        const cards = obras.map((obra, i) => `
+          <div class="mapa-obra-card" data-idx="${i}" tabindex="0" role="button">
+            <img class="mapa-obra-thumb" src="${obra.img}" alt="${obra.titulo}" loading="lazy">
+            <div>
+              <span class="mapa-obra-titulo">${obra.titulo}</span>
+              <span class="mapa-obra-autor">${obra.autor}</span>
+            </div>
+          </div>`).join('');
+        panel.innerHTML = `
+          <div class="mapa-pais-nombre">${pais}
+            <span style="font-family:var(--mono);font-size:0.52rem;color:var(--muted);letter-spacing:0.1em;margin-left:0.6rem;">${obras.length} obra${obras.length > 1 ? 's' : ''}</span>
+          </div>
+          <div class="mapa-obras-grid">${cards}</div>`;
+        panel.querySelectorAll('.mapa-obra-card').forEach((card, idx) => {
+          function abrirObra() {
+            if (typeof window._abrirMuseo === 'function') {
+              document.getElementById('galeria-arte').scrollIntoView({ behavior: 'smooth' });
+              setTimeout(() => window._abrirMuseo(obras[idx]), 500);
+            }
+          }
+          card.addEventListener('click', abrirObra);
+          card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') abrirObra(); });
+        });
+      }
+
+      g.addEventListener('click', activar);
+      g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') activar(); });
+      markersG.appendChild(g);
+    });
   })();
 
     // ── FONDOS DE LAS DEMAS SECCIONES ──
