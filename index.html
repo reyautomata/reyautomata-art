@@ -2452,9 +2452,9 @@
     .juegos-intro { max-width: 560px; margin: 0 auto 3rem; }
     .juegos-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
-      width: min(680px, 96vw);
+      width: min(960px, 96vw);
     }
     .juego-card {
       background: linear-gradient(160deg, var(--bg2) 0%, #14141E 100%);
@@ -2483,9 +2483,161 @@
       font-family: var(--body); font-size: 0.85rem;
       color: var(--muted); line-height: 1.5;
     }
+    @media (max-width: 860px) {
+      .juegos-grid { grid-template-columns: repeat(2, 1fr); }
+    }
     @media (max-width: 560px) {
       .juegos-grid { grid-template-columns: 1fr; }
     }
+
+    /* ── QUIZ ¿QUÉ PERÍODO ARTÍSTICO ERES? ── */
+    #quiz-periodo {
+      background: var(--bg2);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 5rem 1.5rem;
+    }
+
+    .quiz-intro { max-width: 560px; margin: 0 auto 2.5rem; }
+
+    .quiz-box {
+      width: min(640px, 96vw);
+      background: linear-gradient(160deg, var(--bg2) 0%, var(--bg) 100%);
+      border: 1px solid rgba(201,162,77,0.35);
+      border-radius: 14px;
+      padding: 2.5rem 2rem;
+      min-height: 300px;
+    }
+
+    .quiz-progress {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+    .quiz-progress b { color: var(--oro); }
+
+    .quiz-progress-bar {
+      width: 100%;
+      height: 2px;
+      background: var(--border);
+      border-radius: 1px;
+      margin-bottom: 1.75rem;
+    }
+    .quiz-progress-fill {
+      height: 100%;
+      background: var(--copper);
+      border-radius: 1px;
+      transition: width 0.45s ease;
+    }
+
+    .quiz-pregunta {
+      font-family: var(--serif);
+      font-size: clamp(1.05rem, 2.5vw, 1.35rem);
+      color: var(--ink);
+      line-height: 1.55;
+      margin-bottom: 1.75rem;
+    }
+
+    .quiz-opciones { display: grid; gap: 0.6rem; }
+
+    .quiz-opt {
+      font-family: var(--body);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      padding: 0.85rem 1.1rem;
+      text-align: left;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+    .quiz-opt:hover {
+      border-color: var(--copper);
+      background: rgba(184,70,10,0.06);
+      transform: translateX(4px);
+    }
+    .quiz-opt-letra {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: var(--copper);
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+      min-width: 14px;
+    }
+
+    /* Resultado */
+    .quiz-resultado { text-align: left; }
+    .quiz-resultado-img {
+      width: 100%;
+      max-height: 240px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+      display: block;
+    }
+    .quiz-resultado-periodo {
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 0.6rem;
+    }
+    .quiz-resultado-nombre {
+      font-family: var(--serif);
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      color: var(--ink);
+      margin-bottom: 1.1rem;
+      line-height: 1.15;
+    }
+    .quiz-resultado-desc {
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 1rem;
+      border-left: 2px solid rgba(184,70,10,0.35);
+      padding-left: 1.1rem;
+    }
+    .quiz-resultado-obra {
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.75rem;
+    }
+    .quiz-btn {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 0.85rem 1.75rem;
+      background: transparent;
+      border: 1px solid var(--copper);
+      color: var(--copper);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 4px;
+    }
+    .quiz-btn:hover { background: var(--copper); color: var(--bg); }
 
     /* ── GALERÍA DE PINTURAS FAMOSAS ── */
     #galeria-arte {
@@ -2870,6 +3022,11 @@
           <span class="juego-nombre">Memorice del arte</span>
           <span class="juego-desc">Encuentra cada pintura famosa junto a su autor. Un juego de parejas y memoria.</span>
         </a>
+        <a href="#quiz-periodo" class="juego-card">
+          <span class="juego-icon">✦</span>
+          <span class="juego-nombre">¿Qué período eres?</span>
+          <span class="juego-desc">Cinco preguntas que revelan qué época del arte refleja tu forma de ver el mundo.</span>
+        </a>
       </div>
     </section>
 
@@ -2912,6 +3069,20 @@
       <div class="mem-zoom" id="mem-zoom">
         <img src="" alt="Pintura ampliada" id="mem-zoom-img">
         <div class="mem-zoom-cap" id="mem-zoom-cap"></div>
+      </div>
+    </section>
+
+    <div class="rule"></div>
+
+    <!-- QUIZ ¿QUÉ PERÍODO ARTÍSTICO ERES? -->
+    <section id="quiz-periodo">
+      <div class="quiz-intro">
+        <p class="section-label reveal">— Descúbrete</p>
+        <h2 class="section-title reveal">¿Qué período artístico eres?</h2>
+        <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Cinco preguntas sobre cómo ves el mundo. Al final, una obra del museo te espera.</p>
+      </div>
+      <div class="quiz-box reveal" id="quiz-box">
+        <!-- Se llena con el script -->
       </div>
     </section>
 
@@ -4717,6 +4888,152 @@
 
     // Primera nota a los 5 segundos (deja que la pagina respire primero)
     setTimeout(cicloNotas, 5000);
+  })();
+
+  // ── QUIZ ¿QUÉ PERÍODO ARTÍSTICO ERES? ──
+  (function () {
+    const box = document.getElementById('quiz-box');
+    if (!box) return;
+
+    const preguntas = [
+      {
+        texto: '¿Cómo es tu espacio ideal para crear?',
+        opciones: [
+          { texto: 'Un taller ordenado, con reglas claras y luz perfecta', p: 'renacimiento' },
+          { texto: 'Una habitación oscura e íntima, llena de textura y misterio', p: 'barroco' },
+          { texto: 'Al aire libre, con el sol en la cara y el viento encima', p: 'impresionismo' },
+          { texto: 'Mi propio caos: objetos, colores y emociones sin orden alguno', p: 'modernismo' },
+        ]
+      },
+      {
+        texto: '¿Qué buscas primero al mirar una obra de arte?',
+        opciones: [
+          { texto: 'La perfección técnica y el equilibrio de la composición', p: 'renacimiento' },
+          { texto: 'El juego dramático de luz y sombra', p: 'barroco' },
+          { texto: 'La vibración del color y la atmósfera del instante', p: 'impresionismo' },
+          { texto: 'La emoción que me provoca por dentro', p: 'modernismo' },
+        ]
+      },
+      {
+        texto: '¿Cuál de estas paletas te atrae más?',
+        opciones: [
+          { texto: 'Tonos cálidos, carnosos y dorados; todo en equilibrio', p: 'renacimiento' },
+          { texto: 'Negros profundos con destellos de luz dorada o roja', p: 'barroco' },
+          { texto: 'Azules, verdes y rosas luminosos, llenos de aire', p: 'impresionismo' },
+          { texto: 'Lo que el sentimiento pida: violeta, amarillo eléctrico, lo que sea', p: 'modernismo' },
+        ]
+      },
+      {
+        texto: '¿Cómo es tu relación con las reglas?',
+        opciones: [
+          { texto: 'Las respeto y estudio: son la base de todo lo demás', p: 'renacimiento' },
+          { texto: 'Las conozco bien y las manejo a mi favor cuando hace falta', p: 'barroco' },
+          { texto: 'Las olvido cuando hay algo que capturar en el momento', p: 'impresionismo' },
+          { texto: 'Las rompo cuando la expresión lo exige', p: 'modernismo' },
+        ]
+      },
+      {
+        texto: 'Si pudieras vivir en otra época, ¿cuál elegirías?',
+        opciones: [
+          { texto: 'La Italia del Renacimiento, rodeado de mecenas y genios', p: 'renacimiento' },
+          { texto: 'La Holanda del siglo XVII, con talleres, velas y silencio', p: 'barroco' },
+          { texto: 'El París impresionista del siglo XIX, pintando junto al Sena', p: 'impresionismo' },
+          { texto: 'Viena o Ámsterdam a principios del siglo XX', p: 'modernismo' },
+        ]
+      },
+    ];
+
+    const resultados = {
+      renacimiento: {
+        nombre: 'El Renacimiento',
+        desc: 'Te mueve el orden, la armonía y la perfección técnica. Crees que el arte nace del estudio profundo de la naturaleza y la razón humana. Como Botticelli o Rafael, tu creación es equilibrio hecho forma.',
+        img: 'img/galeria/nacimiento-venus.jpg',
+        obra: 'El nacimiento de Venus — Sandro Botticelli · c. 1485',
+      },
+      barroco: {
+        nombre: 'El Barroco',
+        desc: 'El misterio, la luz dramática y la profundidad humana son tu mundo. Como Rembrandt o Vermeer, encuentras la belleza en lo que emerge de la sombra: en la intimidad, el tiempo y el peso de las cosas.',
+        img: 'img/galeria/joven-perla.jpg',
+        obra: 'La joven de la perla — Johannes Vermeer · c. 1665',
+      },
+      impresionismo: {
+        nombre: 'El Impresionismo',
+        desc: 'Vives el instante, la luz y el color como nadie. Como Monet o Renoir, lo que te importa no es el objeto en sí sino la sensación que provoca: el reflejo, el brillo, el momento fugaz antes de desaparecer.',
+        img: 'img/galeria/nenufares.avif',
+        obra: 'Los nenúfares — Claude Monet · 1916–1926',
+      },
+      modernismo: {
+        nombre: 'El Expresionismo moderno',
+        desc: 'La emoción, la ruptura y la búsqueda interior te definen. Como Van Gogh o Klimt, el arte es para ti un lenguaje del alma: no describes el mundo tal como es — lo transformas desde adentro.',
+        img: 'img/galeria/noche-estrellada.jpg',
+        obra: 'La noche estrellada — Vincent van Gogh · 1889',
+      },
+    };
+
+    const letras = ['A', 'B', 'C', 'D'];
+    let idx = 0;
+    const votos = { renacimiento: 0, barroco: 0, impresionismo: 0, modernismo: 0 };
+
+    function barajar(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function mostrar() {
+      const p = preguntas[idx];
+      const ops = barajar(p.opciones);
+      const pct = Math.round((idx / preguntas.length) * 100);
+      box.innerHTML = `
+        <div class="quiz-progress">
+          <span>Pregunta <b>${idx + 1}</b> / ${preguntas.length}</span>
+        </div>
+        <div class="quiz-progress-bar">
+          <div class="quiz-progress-fill" style="width:${pct}%"></div>
+        </div>
+        <div class="quiz-pregunta">${p.texto}</div>
+        <div class="quiz-opciones">
+          ${ops.map((op, i) => `
+            <button class="quiz-opt" data-p="${op.p}">
+              <span class="quiz-opt-letra">${letras[i]}</span>
+              <span>${op.texto}</span>
+            </button>`).join('')}
+        </div>`;
+
+      box.querySelectorAll('.quiz-opt').forEach(btn => {
+        btn.addEventListener('click', () => {
+          votos[btn.dataset.p]++;
+          idx++;
+          if (idx < preguntas.length) mostrar();
+          else resultado();
+        });
+      });
+    }
+
+    function resultado() {
+      const ganador = Object.entries(votos).sort((a, b) => b[1] - a[1])[0][0];
+      const r = resultados[ganador];
+      box.innerHTML = `
+        <div class="quiz-resultado">
+          <div class="quiz-resultado-periodo">— Tu período artístico —</div>
+          <div class="quiz-resultado-nombre">${r.nombre}</div>
+          <img class="quiz-resultado-img" src="${r.img}" alt="${r.nombre}"
+               onerror="this.style.display='none'">
+          <p class="quiz-resultado-desc">${r.desc}</p>
+          <div class="quiz-resultado-obra">${r.obra}</div>
+          <button class="quiz-btn" id="quiz-reiniciar">Intentarlo de nuevo</button>
+        </div>`;
+      box.querySelector('#quiz-reiniciar').addEventListener('click', () => {
+        idx = 0;
+        Object.keys(votos).forEach(k => votos[k] = 0);
+        mostrar();
+      });
+    }
+
+    mostrar();
   })();
 </script>
 </body>
