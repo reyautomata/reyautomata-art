@@ -379,6 +379,55 @@
       gap: 0.85rem;
     }
 
+    /* ── OBRA DEL DÍA ── */
+    #obra-del-dia { margin-top: 2.2rem; }
+    .od-label {
+      font-family: var(--mono); font-size: 0.58rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 0.6rem;
+    }
+    .od-card {
+      display: flex; align-items: center; gap: 1rem;
+      background: rgba(15,15,22,0.7);
+      border: 1px solid rgba(201,162,77,0.22);
+      border-radius: 6px; padding: 0.85rem 1rem;
+      max-width: 460px; cursor: pointer;
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .od-card:hover {
+      border-color: rgba(201,162,77,0.5);
+      background: rgba(201,162,77,0.035);
+    }
+    .od-card:focus-visible { outline: 2px solid var(--copper); outline-offset: 3px; }
+    .od-img-wrap {
+      flex: 0 0 72px; width: 72px; height: 72px;
+      overflow: hidden; border-radius: 4px; background: #0c1222;
+    }
+    .od-img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.4s;
+    }
+    .od-card:hover .od-img { transform: scale(1.06); }
+    .od-body { display: flex; flex-direction: column; gap: 0.12rem; min-width: 0; }
+    .od-titulo {
+      font-family: var(--serif); font-style: italic;
+      font-size: 0.98rem; color: var(--oro);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .od-autor { font-family: var(--serif); font-size: 0.8rem; color: var(--ink); }
+    .od-meta {
+      font-family: var(--mono); font-size: 0.5rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-top: 0.08rem;
+    }
+    .od-cta {
+      font-family: var(--mono); font-size: 0.52rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--copper); margin-top: 0.3rem;
+      transition: letter-spacing 0.2s;
+    }
+    .od-card:hover .od-cta { letter-spacing: 0.2em; }
+
     .btn {
       font-family: var(--mono);
       font-size: 0.72rem;
@@ -3016,6 +3065,9 @@
         <a href="#biblioteca" class="btn btn-ghost">Biblioteca</a>
         <a href="https://instagram.com/reyautomata" target="_blank" class="btn btn-ghost">Instagram</a>
       </div>
+
+      <!-- Obra del día: poblado por JS usando la array galeria -->
+      <div id="obra-del-dia"></div>
     </section>
 
     <div class="rule"></div>
@@ -4951,6 +5003,31 @@
         zClamp(); zApply();
       }
     }, { passive: false });
+
+    // ── OBRA DEL DÍA ──
+    (function () {
+      const diaEl = document.getElementById('obra-del-dia');
+      if (!diaEl || !galeria.length) return;
+      const seed = Math.floor(Date.now() / 86400000);
+      const obra = galeria[seed % galeria.length];
+      diaEl.innerHTML = `
+        <div class="od-label">— Obra del día</div>
+        <div class="od-card" role="button" tabindex="0" aria-label="Ver ${obra.titulo} en el museo">
+          <div class="od-img-wrap">
+            <img src="${obra.img}" alt="${obra.titulo}" class="od-img" loading="lazy">
+          </div>
+          <div class="od-body">
+            <span class="od-titulo">${obra.titulo}</span>
+            <span class="od-autor">${obra.autor}</span>
+            <span class="od-meta">${obra.meta}</span>
+            <span class="od-cta">Ver en el museo →</span>
+          </div>
+        </div>`;
+      const card = diaEl.querySelector('.od-card');
+      function activar(e) { e.preventDefault(); abrir(obra); }
+      card.addEventListener('click', activar);
+      card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') activar(e); });
+    })();
 
   })();
 
