@@ -5465,9 +5465,14 @@
       porPais[pais].push(obra);
     });
 
-    // Proyección equirectangular sobre el viewBox 0 0 1000 500
+    // Proyección calibrada para la imagen mapa-mundo.jpg con slice 1000×500
+    // Contenido geográfico visible: lon [-170, +175] → x [59, 940]
+    //                               lat [+72.4, -45.2] → y [0, 500]
     function toXY(lat, lon) {
-      return { x: (lon + 180) * (1000 / 360), y: (90 - lat) * (500 / 180) };
+      return {
+        x: 59  + (lon + 170) * (881 / 345),
+        y: (72.4 - lat) * (500 / 117.6)
+      };
     }
 
     const NS = 'http://www.w3.org/2000/svg';
