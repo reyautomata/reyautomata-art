@@ -1901,10 +1901,31 @@
         line-height: 1.95;
       }
 
-      /* ── Poesía masonry: 2 columnas en mobile ── */
-      .poesia-mason { columns: 2 140px; column-gap: 0.6rem; }
+      /* ── 3 columnas Pinterest en mobile para galería y poesía ── */
+      .gallery-grid { column-count: 3; column-gap: 0.4rem; }
+      .gallery-item { margin-bottom: 0.4rem; }
 
-      /* Filtros: scroll horizontal en mobile */
+      /* Poesía: 3 columnas compactas */
+      .poesia-mason { columns: 3; column-gap: 0.45rem; }
+
+      /* Pins compactos a 120px de ancho: padding reducido, texto pequeño */
+      .poesia-pin {
+        padding: 0.75rem 0.65rem 0.6rem;
+        margin-bottom: 0.45rem;
+        border-radius: 8px;
+      }
+      .poesia-pin-autor { font-size: 0.42rem; letter-spacing: 0.12em; margin-bottom: 0.3rem; }
+      .poesia-pin-titulo { font-size: 0.72rem; margin-bottom: 0.35rem; line-height: 1.25; }
+      .poesia-pin-verso {
+        font-size: 0.65rem;
+        line-height: 1.55;
+        -webkit-line-clamp: 3;
+        margin-bottom: 0.3rem;
+      }
+      .poesia-pin-fuente { font-size: 0.38rem; }
+      .poesia-pin-cta { display: none; } /* sin CTA en mobile compacto */
+
+      /* Filtros: scroll horizontal */
       .poesia-filtros {
         flex-wrap: nowrap;
         overflow-x: auto;
@@ -1915,7 +1936,7 @@
         width: calc(100% + 2.5rem);
       }
       .poesia-filtros::-webkit-scrollbar { display: none; }
-      .poesia-filtro { flex-shrink: 0; }
+      .poesia-filtro { flex-shrink: 0; font-size: 0.5rem; padding: 0.38rem 0.75rem; }
 
       .about-wrap {
         grid-template-columns: 1fr;
@@ -1923,9 +1944,6 @@
       }
 
       .about-portrait { aspect-ratio: 4/3; }
-
-      .gallery-grid { column-count: 2; column-gap: 0.5rem; }
-      .gallery-item { margin-bottom: 0.5rem; }
 
       .typewriter {
         animation: typing 2.5s steps(12, end) forwards, blink 0.8s step-end 3s infinite;
@@ -1935,18 +1953,17 @@
       }
     }
 
-    /* Pantallas muy angostas (< 480px): ajustes adicionales */
+    /* Pantallas muy angostas (< 480px): mantener 3 columnas, ajustar hero */
     @media (max-width: 480px) {
       .hero-title { font-size: clamp(2.2rem, 11vw, 3rem); }
 
       .od-card, .pd-card { width: 82vw; }
 
-      .gallery-grid { column-count: 2; }
+      /* 3 columnas incluso en < 480px */
+      .gallery-grid { column-count: 3; column-gap: 0.35rem; }
+      .poesia-mason { columns: 3; column-gap: 0.35rem; }
 
-      /* Masonry de poesía: 1 columna en pantallas muy angostas */
-      .poesia-mason { columns: 1; }
-
-      /* Lector de poema: ocupa todo el ancho */
+      /* Lector de poema: bottom sheet full-width */
       .poem-reader { padding: 0.5rem 0 0; }
       .poem-reader-inner {
         border-radius: 16px 16px 0 0;
