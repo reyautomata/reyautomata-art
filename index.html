@@ -1561,11 +1561,158 @@
 
       .sidebar.open { transform: translateX(0); }
 
-      .menu-toggle { display: block; }
+      /* Hamburger más pulido: blur, borde suave, tamaño de toque correcto */
+      .menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border-radius: 10px;
+        background: rgba(10,10,15,0.82);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(184,70,10,0.35);
+        font-size: 1.15rem;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.45);
+      }
 
-      section { padding: 4rem 1.75rem; }
+      section { padding: 4rem 1.25rem; }
 
-      #inicio { padding: 5rem 1.75rem; }
+      #inicio {
+        padding: 4.5rem 1.25rem 3.5rem;
+        /* En móvil la imagen se centra arriba en lugar de quedarse a la derecha */
+        background-position: center top;
+      }
+
+      /* Imagen de fondo: menos zoom, se ve la composición completa en mobile.
+         background-size: auto 55% → la imagen ocupa el 55% del alto del hero,
+         sin agrandarla para cubrir todo el fondo. Queda centrada a la derecha. */
+      #inicio::before {
+        background-size: auto 55%;
+        background-position: center 12%;
+        background-repeat: no-repeat;
+      }
+
+      /* Overlay mobile: más oscuro para legibilidad del texto sobre la imagen */
+      #inicio::after {
+        background:
+          linear-gradient(180deg,
+            rgba(10,10,15,0.72) 0%,
+            rgba(10,10,15,0.50) 30%,
+            rgba(10,10,15,0.55) 65%,
+            var(--bg) 100%);
+      }
+
+      /* Eyebrow ("Arte · Poesía · Pensamientos"): sin salto de línea en mobile */
+      .hero-eyebrow {
+        font-size: 0.55rem;
+        letter-spacing: 0.12em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 0.9rem;
+      }
+      .hero-eyebrow::after { display: none; }
+
+      /* Título: más compacto */
+      .hero-title {
+        font-size: clamp(2.6rem, 11vw, 3.8rem);
+        margin-bottom: 0.6rem;
+      }
+
+      .hero-subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+        max-width: 100%;
+      }
+
+      /* Cuerpo: más pequeño, sin borde lateral para ganar espacio */
+      .hero-body {
+        font-size: 0.82rem;
+        line-height: 1.6;
+        margin-bottom: 1.4rem;
+        border-left: none;
+        padding-left: 0;
+        max-width: 100%;
+        color: rgba(232,224,208,0.75);
+        /* 3 líneas máximo para no ocupar todo el hero */
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      /* Botones: 2 columnas, solo los 4 principales visibles
+         "Ver Dibujos" ocupa fila completa como CTA primario */
+      .hero-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.55rem;
+      }
+
+      .hero-buttons .btn {
+        text-align: center;
+        padding: 0.8rem 0.5rem;
+        font-size: 0.62rem;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* "Ver Dibujos" ocupa todo el ancho — es el CTA más importante */
+      .hero-buttons .btn-primary {
+        grid-column: 1 / -1;
+        font-size: 0.68rem;
+      }
+
+      /* Biblioteca e Instagram: ocultos en mobile — no son prioritarios en el hero */
+      .hero-buttons a[href="#biblioteca"],
+      .hero-buttons a[href="https://instagram.com/reyautomata"] {
+        display: none;
+      }
+
+      /* ── TARJETAS DEL DÍA: carrusel horizontal con scroll-snap ── */
+      .dia-duo {
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 0.75rem;
+        padding-top: 0.15rem;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        /* Desborda el padding del section para aprovechar el ancho completo */
+        margin-left: -1.25rem;
+        width: calc(100% + 2.5rem);
+        padding-left: 1.25rem;
+        padding-right: 3rem; /* espacio extra al final para el fade */
+        /* Fade derecho: indica que hay más tarjetas al deslizar */
+        mask-image: linear-gradient(to right, black 78%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, black 78%, transparent 100%);
+      }
+      .dia-duo::-webkit-scrollbar { display: none; }
+
+      /* Los divs wrapper (#obra-del-dia, etc.) no deben encoger */
+      .dia-duo > div {
+        flex: 0 0 auto;
+        scroll-snap-align: start;
+      }
+
+      /* Tarjeta "card peek": 78vw, así se ve el borde de la siguiente */
+      .od-card, .pd-card {
+        width: 78vw !important;
+        max-width: 300px !important;
+        min-width: 220px;
+        box-sizing: border-box;
+      }
+
+      /* El título de obra no puede salirse de la tarjeta angosta */
+      .od-titulo { white-space: normal; font-size: 0.9rem; }
+      .pd-verso { -webkit-line-clamp: 3; }
 
       .about-wrap {
         grid-template-columns: 1fr;
@@ -1574,17 +1721,27 @@
 
       .about-portrait { aspect-ratio: 4/3; }
 
-      .gallery-grid { column-count: 3; column-gap: 0.5rem; }
+      .gallery-grid { column-count: 2; column-gap: 0.5rem; }
       .gallery-item { margin-bottom: 0.5rem; }
 
-      /* En movil el titulo se ve completo aunque la animacion no quepa:
-         al terminar de "escribirse" permite que el texto use todo el ancho. */
       .typewriter {
         animation: typing 2.5s steps(12, end) forwards, blink 0.8s step-end 3s infinite;
         white-space: normal;
         width: auto;
         border-right: none;
       }
+    }
+
+    /* Pantallas muy angostas (< 480px): ajustes adicionales */
+    @media (max-width: 480px) {
+      .hero-title { font-size: clamp(2.2rem, 11vw, 3rem); }
+
+      .od-card, .pd-card { width: 82vw; }
+
+      .gallery-grid { column-count: 2; }
+
+      section { padding: 3.5rem 1rem; }
+      #inicio { padding: 4rem 1rem 3rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
