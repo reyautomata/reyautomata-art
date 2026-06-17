@@ -791,6 +791,52 @@
     .portal-card:hover .portal-cta,
     .portal-card.activo .portal-cta { letter-spacing: 0.26em; }
 
+    /* Navegación dentro del panel de poetas */
+    .panel-nav {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.9rem 1.2rem; border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .panel-nav-back {
+      font-family: var(--mono); font-size: 0.54rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--copper); background: none; cursor: pointer;
+      border: 1px solid rgba(184,70,10,0.35); border-radius: 3px;
+      padding: 0.35rem 0.7rem; transition: border-color 0.2s, color 0.2s;
+      flex-shrink: 0;
+    }
+    .panel-nav-back:hover { border-color: var(--copper); }
+    .panel-poeta-header {
+      font-family: var(--serif); font-style: italic;
+      font-size: 1rem; color: var(--ink); display: block;
+    }
+    .panel-poeta-origen {
+      font-family: var(--mono); font-size: 0.48rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); display: block; margin-top: 0.15rem;
+    }
+
+    /* Lista de poemas de un poeta en el panel */
+    .poesia-expandido .poem-list {
+      display: block; background: none; gap: 0;
+    }
+    .poem-item {
+      width: 100%; display: flex; flex-direction: column; gap: 0.2rem;
+      padding: 1rem 1.3rem; border: none; border-bottom: 1px solid var(--border);
+      background: var(--bg); text-align: left; cursor: pointer;
+      transition: background 0.18s;
+    }
+    .poem-item:hover { background: var(--bg2); }
+    .poem-item:last-child { border-bottom: none; }
+    .poem-item-titulo {
+      font-family: var(--serif); font-style: italic;
+      font-size: 0.98rem; color: var(--ink);
+    }
+    .poem-item-fecha {
+      font-family: var(--mono); font-size: 0.5rem;
+      letter-spacing: 0.14em; color: var(--muted);
+    }
+
     /* Panel expandido inline */
     .poesia-expandido {
       max-width: 760px; margin: 1.2rem auto 0;
@@ -3902,62 +3948,154 @@
   //  No uses comillas dobles " dentro del texto; usa ' o « ».
   // ===================================================================
   // ── POETAS RECOMENDADOS ──
-  // Para agregar un poeta: copia un bloque { nombre, origen, cita, poema:{...} }
-  // En el texto del poema usa | = salto de línea, || = nueva estrofa
+  // Cada poeta tiene poemas:[] — agrega más con { titulo, fecha, texto }
+  // En el texto usa | = salto de línea, || = nueva estrofa
   const POETAS_REC = [
     {
       nombre: 'Pablo Neruda', origen: 'Chile · 1904–1973',
       cita: 'te amo como se aman ciertas cosas oscuras, secretamente, entre la sombra y el alma.',
-      poema: { titulo: 'Soneto XVII', fecha: 'Cien sonetos de amor, 1959',
-        texto: 'No te amo como si fueras rosa de sal, topacio|o flecha de claveles que propagan el fuego:|te amo como se aman ciertas cosas oscuras,|secretamente, entre la sombra y el alma.||Te amo sin saber cómo, ni cuándo, ni de dónde,|te amo directamente sin problemas ni orgullo:|así te amo porque no sé amar de otra manera,|sino así de este modo en que no soy ni eres,|tan cerca que tu mano sobre mi pecho es mía,|tan cerca que se cierran tus ojos con mi sueño.' }
+      poemas: [
+        { titulo: 'Soneto XVII', fecha: 'Cien sonetos de amor, 1959',
+          texto: 'No te amo como si fueras rosa de sal, topacio|o flecha de claveles que propagan el fuego:|te amo como se aman ciertas cosas oscuras,|secretamente, entre la sombra y el alma.||Te amo sin saber cómo, ni cuándo, ni de dónde,|te amo directamente sin problemas ni orgullo:|así te amo porque no sé amar de otra manera,|sino así de este modo en que no soy ni eres,|tan cerca que tu mano sobre mi pecho es mía,|tan cerca que se cierran tus ojos con mi sueño.' },
+        { titulo: 'Puedo escribir los versos', fecha: 'Veinte poemas de amor, 1924',
+          texto: 'Puedo escribir los versos más tristes esta noche.|Escribir, por ejemplo: «La noche está estrellada,|y tiritan, azules, los astros, a lo lejos.»||El viento de la noche gira en el cielo y canta.|Puedo escribir los versos más tristes esta noche.|Yo la quise, y a veces ella también me quería.||En las noches como ésta la tuve entre mis brazos.|La besé tantas veces bajo el cielo infinito.|Ella me quiso, a veces yo también la quería.||Cómo no haber amado sus grandes ojos fijos.|Puedo escribir los versos más tristes esta noche.|Pensar que no la tengo. Sentir que la he perdido.' },
+        { titulo: 'Walking Around', fecha: 'Residencia en la tierra, 1935',
+          texto: 'Sucede que me canso de ser hombre.|Sucede que entro en las sastrerías y en los cines|marchito, impenetrable, como un cisne de fieltro|navegando en un agua de origen y ceniza.||El olor de las peluquerías me hace llorar a gritos.|Sólo quiero un descanso de piedras o de lana,|sólo quiero no ver establecimientos ni jardines,|ni mercaderías, ni anteojos, ni ascensores.' },
+      ]
     },
     {
       nombre: 'César Vallejo', origen: 'Perú · 1892–1938',
       cita: 'Hay golpes en la vida, tan fuertes... ¡Yo no sé!',
-      poema: { titulo: 'Los heraldos negros', fecha: 'Los heraldos negros, 1918',
-        texto: 'Hay golpes en la vida, tan fuertes... ¡Yo no sé!|Golpes como del odio de Dios; como si ante ellos,|la resaca de todo lo sufrido|se empozara en el alma... ¡Yo no sé!||Son pocos; pero son... Abren zanjas oscuras|en el rostro más fiero y en el lomo más fuerte.|Serán tal vez los potros de bárbaros atilas;|o los heraldos negros que nos manda la Muerte.||Son las caídas hondas de los Cristos del alma,|de alguna fe adorable que el Destino blasfema.|Esos golpes sangrientos son las crepitaciones|de algún pan que en la puerta del horno se nos quema.||Y el hombre... Pobre... ¡pobre! Vuelve los ojos, como|cuando por sobre el hombro nos llama una palmada;|vuelve los ojos locos, y todo lo vivido|se empoza, como charco de culpa, en la mirada.' }
+      poemas: [
+        { titulo: 'Los heraldos negros', fecha: 'Los heraldos negros, 1918',
+          texto: 'Hay golpes en la vida, tan fuertes... ¡Yo no sé!|Golpes como del odio de Dios; como si ante ellos,|la resaca de todo lo sufrido|se empozara en el alma... ¡Yo no sé!||Son pocos; pero son... Abren zanjas oscuras|en el rostro más fiero y en el lomo más fuerte.|Serán tal vez los potros de bárbaros atilas;|o los heraldos negros que nos manda la Muerte.' },
+        { titulo: 'Masa', fecha: 'España, aparta de mí este cáliz, 1939',
+          texto: 'Al fin de la batalla,|y muerto el combatiente, vino hacia él un hombre|y le dijo: «¡No mueras, te amo tanto!»||Pero el cadáver ¡ay! siguió muriendo.||Se le acercaron dos y repitieron:|«¡No nos dejes! ¡Valor! ¡Vuelve a la vida!»||Pero el cadáver ¡ay! siguió muriendo.||Entonces todos los hombres de la tierra|le rodearon; les vio el cadáver triste, emocionado;|incorporóse lentamente,|abrazó al primer hombre; echóse a andar...' },
+        { titulo: 'Piedra negra sobre una piedra blanca', fecha: 'Poemas humanos (póstumo), 1939',
+          texto: 'Me moriré en París con aguacero,|un día del cual tengo ya el recuerdo.|Me moriré en París —y no me corro—|tal vez un jueves, como es hoy, de otoño.||Jueves será, porque hoy, jueves, que proseo|estos versos, los húmeros me he puesto|a la mala y, jamás como hoy, me he vuelto,|con todo mi camino, a verme solo.' },
+      ]
     },
     {
       nombre: 'Gabriela Mistral', origen: 'Chile · 1889–1957',
       cita: 'Dame la mano y danzaremos; dame la mano y me amarás.',
-      poema: { titulo: 'Dame la mano', fecha: 'Ternura, 1924',
-        texto: 'Dame la mano y danzaremos;|dame la mano y me amarás.|Como una sola flor seremos,|como una flor, y nada más...||El mismo verso cantaremos,|al mismo paso bailarás.|Como una espiga ondularemos,|como una espiga, y nada más.||Te llamas Rosa y yo Esperanza;|pero tu nombre olvidarás,|porque seremos una danza|en la colina y nada más.' }
+      poemas: [
+        { titulo: 'Dame la mano', fecha: 'Ternura, 1924',
+          texto: 'Dame la mano y danzaremos;|dame la mano y me amarás.|Como una sola flor seremos,|como una flor, y nada más...||El mismo verso cantaremos,|al mismo paso bailarás.|Como una espiga ondularemos,|como una espiga, y nada más.||Te llamas Rosa y yo Esperanza;|pero tu nombre olvidarás,|porque seremos una danza|en la colina y nada más.' },
+        { titulo: 'Piececitos', fecha: 'Ternura, 1924',
+          texto: 'Piececitos de niño,|azulosos de frío,|¡cómo os ven y no os cubren,|Dios mío!||Piececitos heridos|por los guijarros todos,|ultrajados de nieves|y lodos.||El hombre ciego ignora|que por donde pasáis,|una flor de luz viva|dejáis.' },
+        { titulo: 'El niño solo', fecha: 'Desolación, 1922',
+          texto: 'Como escuchase un llanto, me paré en el repecho|y me acerqué a la puerta del rancho del camino.|Un niño de ojos dulces me miró desde el lecho|¡y una ternura inmensa me embriagó como un vino!||La madre se tardaba. El niño estaba solo.|Lloraba sin que nadie le oyese en todo el llano.|Me acerqué hasta el camastro, le tomé la mano.' },
+      ]
     },
     {
       nombre: 'Octavio Paz', origen: 'México · 1914–1998',
       cita: 'Dos cuerpos frente a frente son a veces dos olas y la noche es océano.',
-      poema: { titulo: 'Dos cuerpos', fecha: 'Libertad bajo palabra, 1949',
-        texto: 'Dos cuerpos frente a frente|son a veces dos olas|y la noche es océano.||Dos cuerpos frente a frente|son a veces dos piedras|y la noche desierto.||Dos cuerpos frente a frente|son a veces raíces|en la noche enlazadas.||Dos cuerpos frente a frente|son a veces navajas|y la noche relámpago.||Dos cuerpos frente a frente|son dos astros que caen|en un cielo vacío.' }
+      poemas: [
+        { titulo: 'Dos cuerpos', fecha: 'Libertad bajo palabra, 1949',
+          texto: 'Dos cuerpos frente a frente|son a veces dos olas|y la noche es océano.||Dos cuerpos frente a frente|son a veces dos piedras|y la noche desierto.||Dos cuerpos frente a frente|son a veces raíces|en la noche enlazadas.||Dos cuerpos frente a frente|son a veces navajas|y la noche relámpago.||Dos cuerpos frente a frente|son dos astros que caen|en un cielo vacío.' },
+        { titulo: 'Entre irse y quedarse', fecha: 'Ladera Este, 1969',
+          texto: 'Entre irse y quedarse duda el día,|enamorado de su transparencia.||La tarde circular es ya bahía:|en su quieto vaivén se mece el mundo.||Todo es visible y todo es elusivo,|todo está cerca y todo es intocable.||Los papeles, el libro, el vaso, el lápiz|reposan a la sombra de sus nombres.' },
+        { titulo: 'Cifra', fecha: 'Vuelta, 1976',
+          texto: 'Me detengo en la tarde, en el instante|en que tiembla la luz|y da comienzo la noche.||Soy una pausa entre dos silencios.|Duermo en el centro del mundo.|El sol me atraviesa.' },
+      ]
     },
     {
       nombre: 'Rubén Darío', origen: 'Nicaragua · 1867–1916',
       cita: 'Juventud, divino tesoro, ¡ya te vas para no volver!',
-      poema: { titulo: 'Canción de otoño en primavera', fecha: 'Cantos de vida y esperanza, 1905',
-        texto: 'Juventud, divino tesoro,|¡ya te vas para no volver!|Cuando quiero llorar, no lloro...|y a veces lloro sin querer...||Plural ha sido la celeste|historia de mi corazón.|Era una dulce niña, en este|mundo de duelo y aflicción.||Miraba como el alba pura;|sonreía como una flor.|Era su cabellera obscura|hecha de noche y de dolor.||Yo era tímido como un niño.|Ella, naturalmente, fue,|para mi amor hecho de armiño,|Herodías y Salomé...||Juventud, divino tesoro,|¡ya te vas para no volver!|Cuando quiero llorar, no lloro,|y a veces lloro sin querer...' }
+      poemas: [
+        { titulo: 'Canción de otoño en primavera', fecha: 'Cantos de vida y esperanza, 1905',
+          texto: 'Juventud, divino tesoro,|¡ya te vas para no volver!|Cuando quiero llorar, no lloro...|y a veces lloro sin querer...||Plural ha sido la celeste|historia de mi corazón.|Era una dulce niña, en este|mundo de duelo y aflicción.||Miraba como el alba pura;|sonreía como una flor.|Era su cabellera obscura|hecha de noche y de dolor.' },
+        { titulo: 'Lo fatal', fecha: 'Cantos de vida y esperanza, 1905',
+          texto: 'Dichoso el árbol que es apenas sensitivo,|y más la piedra dura porque ésa ya no siente,|pues no hay dolor más grande que el dolor de ser vivo,|ni mayor pesadumbre que la vida consciente.||Ser, y no saber nada, y ser sin rumbo cierto,|y el temor de haber sido y un futuro terror...|¡Y el espanto seguro de estar mañana muerto,|y sufrir por la vida y por la sombra y por|lo que no conocemos y apenas sospechamos,|y la carne que tienta con sus frescos racimos,|¡y no saber adónde vamos,|ni de dónde venimos!...' },
+        { titulo: 'Sonatina', fecha: 'Prosas profanas, 1896',
+          texto: 'La princesa está triste... ¿qué tendrá la princesa?|Los suspiros se escapan de su boca de fresa,|que ha perdido la risa, que ha perdido el color.|La princesa está pálida en su silla de oro,|está mudo el teclado de su clave sonoro,|y en un vaso, olvidada, se desmaya una flor.' },
+      ]
     },
     {
       nombre: 'Alejandra Pizarnik', origen: 'Argentina · 1936–1972',
       cita: 'Explicar con palabras de este mundo que partió de mí un barco llevándome.',
-      poema: { titulo: 'Árbol de Diana · XII', fecha: 'Árbol de Diana, 1962',
-        texto: 'Explicar con palabras de este mundo|que partió de mí un barco llevándome.' }
+      poemas: [
+        { titulo: 'Árbol de Diana · XII', fecha: 'Árbol de Diana, 1962',
+          texto: 'Explicar con palabras de este mundo|que partió de mí un barco llevándome.' },
+        { titulo: 'Reconocimiento', fecha: 'Árbol de Diana, 1962',
+          texto: 'Recuerdo mi niñez|cuando yo era una anciana.|Las flores morían en mis manos|porque la danza salvaje de la alegría|les destruía el corazón.' },
+        { titulo: 'La palabra que sana', fecha: 'Los trabajos y las noches, 1965',
+          texto: 'De este lado de la noche|alguien llora en silencio.|Un signo me llama.|Me pronuncio, me digo,|me estoy escribiendo.' },
+        { titulo: 'Cenizas', fecha: 'Extracción de la piedra de locura, 1968',
+          texto: 'esta loca pasión de ser|lo que soy|este querer nombrar|con palabras que tiemblan|lo que está callado.' },
+      ]
     },
     {
       nombre: 'Idea Vilariño', origen: 'Uruguay · 1920–2009',
       cita: 'ya no será, ya no, no viviremos juntos.',
-      poema: { titulo: 'Ya no', fecha: 'Poemas de amor, 1958',
-        texto: 'ya no será|ya no|no viviremos juntos|no criaré a tu hijo|no coseré tu ropa|no te tendré de noche|no te besaré al irme.|nunca sabrás quién fui|por qué me amabas.' }
+      poemas: [
+        { titulo: 'Ya no', fecha: 'Poemas de amor, 1958',
+          texto: 'ya no será|ya no|no viviremos juntos|no criaré a tu hijo|no coseré tu ropa|no te tendré de noche|no te besaré al irme.|nunca sabrás quién fui|por qué me amabas.' },
+        { titulo: 'Nocturnos · III', fecha: 'Nocturnos, 1955',
+          texto: 'Esta noche|este llanto|esta angustia sin nombre|este querer y no poder.|Esta noche|estos puños cerrados|esta rabia|y sin embargo tanto amor.' },
+        { titulo: 'Solo', fecha: 'Poemas de amor, 1958',
+          texto: 'Qué daría|qué no daría|para que estuvieras|aquí.' },
+      ]
     },
     {
       nombre: 'Mario Benedetti', origen: 'Uruguay · 1920–2009',
       cita: 'Mi táctica es mirarte, aprender como sos, quererte como sos.',
-      poema: { titulo: 'Táctica y estrategia', fecha: 'Poemas de otros, 1974',
-        texto: 'Mi táctica es|mirarte,|aprender como sos,|quererte como sos.||Mi táctica es|hablarte|y escucharte,|construir con palabras|un puente indestructible.||Mi estrategia es|en cambio|más profunda y más simple,|mi estrategia es|que un día cualquiera|no sé cómo ni sé|con qué pretexto|por fin me necesites.' }
+      poemas: [
+        { titulo: 'Táctica y estrategia', fecha: 'Poemas de otros, 1974',
+          texto: 'Mi táctica es|mirarte,|aprender como sos,|quererte como sos.||Mi táctica es|hablarte|y escucharte,|construir con palabras|un puente indestructible.||Mi estrategia es|en cambio|más profunda y más simple,|mi estrategia es|que un día cualquiera|no sé cómo ni sé|con qué pretexto|por fin me necesites.' },
+        { titulo: 'No te salves', fecha: 'Poemas de otros, 1974',
+          texto: 'No te quedes inmóvil|al borde del camino|no congeles el júbilo|no quieras con desgana|no te salves ahora|ni nunca||no te salves|no te llenes de calma|no reserves del mundo|sólo un rincón tranquilo|no dejes caer los párpados|pesados como juicios.' },
+        { titulo: 'Corazón coraza', fecha: 'Inventario uno, 1963',
+          texto: 'Porque te tengo y no|porque te pienso|porque la noche está de ojos abiertos|porque la noche pasa y digo amor|porque has venido a recoger tu imagen|y eres mejor que todas tus imágenes.' },
+      ]
     },
     {
       nombre: 'Antonio Machado', origen: 'España · 1875–1939',
       cita: 'Caminante, no hay camino, se hace camino al andar.',
-      poema: { titulo: 'Caminante — Proverbios y cantares XXIX', fecha: 'Campos de Castilla, 1912',
-        texto: 'Caminante, son tus huellas|el camino y nada más;|caminante, no hay camino,|se hace camino al andar.||Al andar se hace el camino,|y al volver la vista atrás|se ve la senda que nunca|se ha de volver a pisar.||Caminante, no hay camino,|sino estelas en la mar.' }
+      poemas: [
+        { titulo: 'Caminante — Proverbios y cantares XXIX', fecha: 'Campos de Castilla, 1912',
+          texto: 'Caminante, son tus huellas|el camino y nada más;|caminante, no hay camino,|se hace camino al andar.||Al andar se hace el camino,|y al volver la vista atrás|se ve la senda que nunca|se ha de volver a pisar.||Caminante, no hay camino,|sino estelas en la mar.' },
+        { titulo: 'He andado muchos caminos', fecha: 'Soledades, 1903',
+          texto: 'He andado muchos caminos,|he abierto muchas veredas;|he navegado en cien mares,|y atracado en cien riberas.||En todas partes he visto|caravanas de tristeza,|soberbios y melancólicos|borrachos de sombra negra.||Y en todas partes he visto|gentes que danzan o juegan,|cuando pueden, y laboran|sus cuatro palmos de tierra.' },
+        { titulo: 'Retrato', fecha: 'Campos de Castilla, 1912',
+          texto: 'Mi infancia son recuerdos de un patio de Sevilla,|y un huerto claro donde madura el limonero;|mi juventud, veinte años en tierras de Castilla;|mi historia, algunos casos que recordar no quiero.||Hay en mis venas gotas de sangre jacobina,|pero mi verso brota de manantial sereno;|y, más que un hombre al uso que sabe su doctrina,|soy, en el buen sentido de la palabra, bueno.' },
+      ]
+    },
+    {
+      nombre: 'Fernando Pessoa', origen: 'Portugal · 1888–1935',
+      cita: 'No soy nada. Nunca seré nada. No puedo querer ser nada.',
+      poemas: [
+        { titulo: 'Tabaquería (frag.)', fecha: 'trad. del portugués · Álvaro de Campos, 1928',
+          texto: 'No soy nada.|Nunca seré nada.|No puedo querer ser nada.|Aparte de esto, tengo en mí todos los sueños del mundo.||Ventanas de mi cuarto,|de mi cuarto de uno de los millones del mundo que nadie sabe quién es,|dais al misterio de una calle cruzada constantemente por la gente.' },
+        { titulo: 'Autopsicografía', fecha: 'trad. del portugués · Presença, 1931',
+          texto: 'El poeta es un fingidor.|Finge tan completamente|que llega a fingir que es dolor|el dolor que de veras siente.||Y quienes leen lo que escribe,|en el dolor leído sienten|bien, no los dos que él vivía,|sino sólo el que no tienen.' },
+        { titulo: 'No sé cuántas almas tengo', fecha: 'trad. del portugués · Cancioneiro, c. 1930',
+          texto: 'No sé cuántas almas tengo.|He cambiado a cada momento.|Siempre me extraño de ser.|Nunca me vi ni acabé.||Nada sé de almas. A solas|me pregunto y me respondo:|«¿Quién soy?» Sonrío a mis preguntas|y no sé más que el camino.' },
+      ]
+    },
+    {
+      nombre: 'Jorge Luis Borges', origen: 'Argentina · 1899–1986',
+      cita: 'El tiempo me ha enseñado a aceptar el no ser.',
+      poemas: [
+        { titulo: 'Arte poética', fecha: 'El hacedor, 1960',
+          texto: 'Mirar el río hecho de tiempo y agua|y recordar que el tiempo es otro río,|saber que nos perdemos como el río|y que los rostros pasan como el agua.||Sentir que la vigilia es otro sueño|que sueña no soñar y que la muerte|que teme nuestra carne es esa muerte|de cada noche, que se llama sueño.' },
+        { titulo: 'Ajedrez · I', fecha: 'El hacedor, 1960',
+          texto: 'En su grave rincón, los jugadores|rigen las lentas piezas. El tablero|los demora hasta el alba en su severo|ámbito en que se odian dos colores.||Adentro irradian mágicos rigores|las formas: torre homérica, ligero|caballo, armada reina, rey postrero,|oblicuo alfil y peones agresores.||Cuando los jugadores se hayan ido,|cuando el tiempo los haya consumido,|ciertamente no habrá cesado el rito.|En el oriente se encendió esta guerra|cuyo anfiteatro es hoy toda la tierra.|Como el otro, este juego es infinito.' },
+        { titulo: 'Límites', fecha: 'El hacedor, 1960',
+          texto: 'De estas calles que ahondan el poniente,|una habrá (no sé cuál) que he recorrido|ya por última vez, indiferente|y sin adivinarlo, sometido.||Ya hay algo que es como el olvido,|y nada más; hay un olvido inicial.|No queda sino que el presente|vuelva a ser el pasado que fue actual.' },
+      ]
+    },
+    {
+      nombre: 'Federico García Lorca', origen: 'España · 1898–1936',
+      cita: 'Verde que te quiero verde. Verde viento. Verdes ramas.',
+      poemas: [
+        { titulo: 'Romance sonámbulo (frag.)', fecha: 'Romancero gitano, 1928',
+          texto: 'Verde que te quiero verde.|Verde viento. Verdes ramas.|El barco sobre la mar|y el caballo en la montaña.||Con la sombra en la cintura|ella sueña en su baranda,|verde carne, pelo verde,|con ojos de fría plata.||Verde que te quiero verde.|Bajo la luna gitana,|las cosas la están mirando|y ella no puede mirarlas.' },
+        { titulo: 'Gacela del amor imprevisto', fecha: 'Diván del Tamarit, 1940 (póstumo)',
+          texto: 'Nadie comprendía el perfume|de la oscura magnolia de tu vientre.|Nadie sabía que martirizabas|un colibrí de amor entre los dientes.||Mil caballitos persas se dormían|en la plaza con luna de tu frente,|mientras que yo enlazaba cuatro noches|tu cintura, enemiga de la nieve.' },
+        { titulo: 'La aurora', fecha: 'Poeta en Nueva York, 1940 (póstumo)',
+          texto: 'La aurora de Nueva York tiene|cuatro columnas de cieno|y un huracán de negras palomas|que chapotean las aguas podridas.||La aurora de Nueva York gime|por las inmensas escaleras|buscando entre las aristas|nardos de angustia dibujada.' },
+      ]
     },
   ];
 
@@ -4009,17 +4147,47 @@
     expandido.innerHTML = '';
     const grid = document.createElement('div');
     grid.className = 'poetas-grid';
-    POETAS_REC.forEach(poeta => {
+    POETAS_REC.forEach((poeta, idx) => {
       const card = document.createElement('button');
       card.className = 'poeta-card';
       card.innerHTML =
         '<span class="poeta-nombre">' + poeta.nombre + '</span>' +
         '<span class="poeta-origen">' + poeta.origen + '</span>' +
         '<span class="poeta-cita">' + poeta.cita + '</span>';
-      card.addEventListener('click', () => abrirPoema(poeta.poema, '— Poetas recomendados'));
+      card.addEventListener('click', () => mostrarPoetaPoemas(idx));
       grid.appendChild(card);
     });
     expandido.appendChild(grid);
+    expandido.hidden = false;
+  }
+
+  function mostrarPoetaPoemas(idx) {
+    const poeta = POETAS_REC[idx];
+    expandido.innerHTML = '';
+
+    // Nav bar with back button
+    const nav = document.createElement('div');
+    nav.className = 'panel-nav';
+    nav.innerHTML =
+      '<button class="panel-nav-back">← Volver</button>' +
+      '<div><span class="panel-poeta-header">' + poeta.nombre + '</span>' +
+      '<span class="panel-poeta-origen">' + poeta.origen + '</span></div>';
+    nav.querySelector('.panel-nav-back').addEventListener('click', mostrarPoetas);
+    expandido.appendChild(nav);
+
+    // Poem list
+    const lista = document.createElement('div');
+    lista.className = 'poem-list';
+    poeta.poemas.forEach(poema => {
+      const item = document.createElement('button');
+      item.className = 'poem-item';
+      item.innerHTML =
+        '<span class="poem-item-titulo">' + poema.titulo + '</span>' +
+        '<span class="poem-item-fecha">' + poema.fecha + '</span>';
+      item.addEventListener('click', () => abrirPoema(poema, poeta.nombre));
+      lista.appendChild(item);
+    });
+    expandido.appendChild(lista);
     expandido.hidden = false;
   }
 
