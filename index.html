@@ -687,6 +687,42 @@
     /* ── POETRY ── */
     #poesia { background: var(--bg2); }
 
+    /* ── CITAS ROTATIVAS DE POETAS ── */
+    .citas-wrap { max-width: 660px; margin: 0 auto 3.5rem; text-align: center; }
+    .cita-comilla {
+      font-family: var(--serif); font-size: 5.5rem; line-height: 0.4;
+      color: rgba(201,162,77,0.18); user-select: none; margin-bottom: 1.4rem;
+    }
+    .cita-display {
+      min-height: 9rem; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 0 1rem;
+    }
+    .cita-verso {
+      font-family: var(--serif); font-style: italic;
+      font-size: clamp(0.98rem, 2.2vw, 1.18rem); line-height: 2;
+      color: var(--ink); margin: 0 0 1.1rem; white-space: pre-line;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .cita-verso.visible { opacity: 1; transform: translateY(0); }
+    .cita-fuente {
+      font-family: var(--mono); font-size: 0.55rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--copper); font-style: normal;
+      opacity: 0; transition: opacity 0.7s ease 0.2s;
+    }
+    .cita-fuente.visible { opacity: 1; }
+    .cita-nav {
+      display: flex; gap: 0.55rem; justify-content: center; margin-top: 1.6rem;
+    }
+    .cita-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--border); border: none; cursor: pointer; padding: 0;
+      transition: background 0.25s, transform 0.25s;
+    }
+    .cita-dot.activo { background: var(--copper); transform: scale(1.6); }
+    .cita-dot:hover:not(.activo) { background: var(--muted); }
+
     /* ── TARJETAS DE CATEGORIA DE POESIA ── */
     .cat-hint {
       font-family: var(--mono);
@@ -3383,6 +3419,16 @@
 
       <p class="cat-hint reveal">↓ Presiona una categoría para abrirla, y luego toca cada texto para leerlo completo.</p>
 
+      <!-- Citas de poetas latinoamericanos -->
+      <div class="citas-wrap reveal" id="citas-poetas">
+        <div class="cita-comilla" aria-hidden="true">❝</div>
+        <div class="cita-display">
+          <blockquote class="cita-verso" id="cita-verso"></blockquote>
+          <cite class="cita-fuente" id="cita-fuente"></cite>
+        </div>
+        <div class="cita-nav" id="cita-nav" role="tablist" aria-label="Navegar entre citas"></div>
+      </div>
+
       <!-- Tarjetas de categoria: al hacer clic abren su ventana de poemas -->
       <div class="cat-grid reveal">
         <button class="cat-card" data-cat="nocturnos">
@@ -5504,6 +5550,96 @@
 
     // Primera nota a los 5 segundos (deja que la pagina respire primero)
     setTimeout(cicloNotas, 5000);
+  })();
+
+  // ── CITAS ROTATIVAS DE POETAS LATINOAMERICANOS ──
+  (function () {
+    const CITAS_POETAS = [
+      {
+        verso: "No te amo como si fueras rosa de sal, topacio\no flecha de claveles que propagan el fuego:\nte amo como se aman ciertas cosas oscuras,\nsecretamente, entre la sombra y el alma.",
+        autor: "Pablo Neruda",
+        libro: "Cien sonetos de amor",
+        anio: "1959"
+      },
+      {
+        verso: "Hay golpes en la vida, tan fuertes...\n¡Yo no sé!\nGolpes como del odio de Dios.",
+        autor: "César Vallejo",
+        libro: "Los heraldos negros",
+        anio: "1918"
+      },
+      {
+        verso: "ya no será\nya no\nno viviremos juntos\nno criaré a tu hijo\nno te tendré de noche\nno te besaré al irme.",
+        autor: "Idea Vilariño",
+        libro: "Poemas de amor",
+        anio: "1958"
+      },
+      {
+        verso: "Explicar con palabras de este mundo\nque partió de mí un barco llevándome.",
+        autor: "Alejandra Pizarnik",
+        libro: "Árbol de Diana",
+        anio: "1962"
+      },
+      {
+        verso: "Dos cuerpos frente a frente\nson a veces dos olas\ny la noche es océano.",
+        autor: "Octavio Paz",
+        libro: "Libertad bajo palabra",
+        anio: "1949"
+      },
+      {
+        verso: "Mi táctica es\nmirarte,\naprender como sos,\nquererte como sos.",
+        autor: "Mario Benedetti",
+        libro: "Poemas de otros",
+        anio: "1974"
+      },
+      {
+        verso: "Juventud, divino tesoro,\n¡ya te vas para no volver!\nCuando quiero llorar, no lloro...\ny a veces lloro sin querer.",
+        autor: "Rubén Darío",
+        libro: "Cantos de vida y esperanza",
+        anio: "1905"
+      },
+      {
+        verso: "El mar sus millares de olas\nmece, divino.\nOyendo a los mares amantes,\nmezo a mi niño.",
+        autor: "Gabriela Mistral",
+        libro: "Desolación",
+        anio: "1922"
+      },
+    ];
+
+    const versoEl  = document.getElementById('cita-verso');
+    const fuenteEl = document.getElementById('cita-fuente');
+    const navEl    = document.getElementById('cita-nav');
+    if (!versoEl || !fuenteEl || !navEl) return;
+
+    let idx = 0, timer;
+
+    CITAS_POETAS.forEach((_, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'cita-dot' + (i === 0 ? ' activo' : '');
+      btn.setAttribute('aria-label', 'Cita ' + (i + 1));
+      btn.addEventListener('click', () => { clearInterval(timer); mostrar(i); iniciarTimer(); });
+      navEl.appendChild(btn);
+    });
+
+    function mostrar(i) {
+      idx = i;
+      versoEl.classList.remove('visible');
+      fuenteEl.classList.remove('visible');
+      setTimeout(() => {
+        const c = CITAS_POETAS[idx];
+        versoEl.textContent = c.verso;
+        fuenteEl.textContent = '— ' + c.autor + '  ·  ' + c.libro + '  (' + c.anio + ')';
+        versoEl.classList.add('visible');
+        fuenteEl.classList.add('visible');
+        navEl.querySelectorAll('.cita-dot').forEach((d, j) => d.classList.toggle('activo', j === idx));
+      }, 450);
+    }
+
+    function iniciarTimer() {
+      timer = setInterval(() => mostrar((idx + 1) % CITAS_POETAS.length), 8000);
+    }
+
+    mostrar(0);
+    iniciarTimer();
   })();
 
   // ── QUIZ ¿QUÉ PERÍODO ARTÍSTICO ERES? ──
