@@ -2118,8 +2118,74 @@
       color: var(--copper);
     }
 
-    /* Handle oculto por defecto (solo visible en mobile) */
+    /* Handle oculto por defecto en desktop */
     .lb-handle { display: none; }
+
+    /* ── BARRA LATERAL DE NAVEGACIÓN DE SCROLL ── */
+    .scroll-nav {
+      position: fixed;
+      right: 1.1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .scroll-nav-dot {
+      display: block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(138,132,120,0.35);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.25s, transform 0.25s, width 0.25s, border-radius 0.25s;
+      position: relative;
+    }
+
+    .scroll-nav-dot::after {
+      content: attr(data-label);
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(10,10,16,0.88);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 0.52rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .scroll-nav-dot:hover::after { opacity: 1; }
+
+    .scroll-nav-dot:hover {
+      background: var(--muted);
+      transform: scale(1.5);
+    }
+
+    .scroll-nav-dot.activo {
+      background: var(--copper);
+      width: 6px;
+      height: 14px;
+      border-radius: 3px;
+      transform: none;
+    }
+
+    /* Ocultar en mobile: el espacio es muy justo */
+    @media (max-width: 900px) {
+      .scroll-nav { display: none; }
+    }
 
     /* ── LIGHTBOX MOBILE: imagen grande + bottom sheet de info ── */
     @media (max-width: 760px) {
@@ -2134,6 +2200,8 @@
         overflow: visible;
         position: relative;
         background: #000;
+        /* Overflow visible para que el botón hoja flote sobre la imagen */
+        clip-path: none;
       }
 
       /* Imagen ocupa todo el espacio */
@@ -2168,30 +2236,66 @@
         transform: translateY(0);
       }
 
-      /* Handle de toque: barra + etiqueta */
+      /* Botón "Ver info" — forma de hoja, centrado sobre el panel */
       .lb-handle {
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 10px 0 8px;
+        gap: 0;
         cursor: pointer;
         user-select: none;
         -webkit-user-select: none;
+        /* Flota sobre la imagen, encima del panel */
+        position: absolute;
+        top: -26px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 5;
       }
+
+      /* Barra de arrastre clásica (drag handle) */
       .lb-handle-bar {
-        display: block;
-        width: 40px; height: 4px;
-        background: rgba(255,255,255,0.22);
-        border-radius: 2px;
-        margin-bottom: 5px;
+        display: none; /* ocultamos la barra, usamos el botón hoja */
       }
+
+      /* Botón hoja: cápsula cobre con flecha y texto */
       .lb-handle-label {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: linear-gradient(135deg, #B8460A 0%, #c9a24d 100%);
+        color: #fff;
         font-family: var(--mono);
-        font-size: 0.5rem;
-        letter-spacing: 0.16em;
+        font-size: 0.58rem;
+        letter-spacing: 0.1em;
         text-transform: uppercase;
-        color: var(--copper);
+        padding: 0.5rem 1.1rem;
+        border-radius: 20px;
+        box-shadow:
+          0 4px 16px rgba(184,70,10,0.55),
+          0 1px 3px rgba(0,0,0,0.4);
+        white-space: nowrap;
+        transition: box-shadow 0.2s, transform 0.2s;
+        /* Ícono hoja antes del texto */
       }
+      .lb-handle-label::before {
+        content: '🍃';
+        font-size: 0.85rem;
+        filter: brightness(10); /* lo vuelve blanco */
+      }
+      /* Flecha arriba */
+      .lb-handle-label::after {
+        content: '↑';
+        font-size: 0.75rem;
+        opacity: 0.85;
+      }
+
+      .lightbox-info.expandido .lb-handle-label {
+        background: linear-gradient(135deg, #2A4A6B 0%, #3a6a8a 100%);
+        box-shadow: 0 4px 16px rgba(42,74,107,0.55), 0 1px 3px rgba(0,0,0,0.4);
+      }
+      .lightbox-info.expandido .lb-handle-label::before { content: '✕'; }
+      .lightbox-info.expandido .lb-handle-label::after { content: ''; }
 
       /* Botón cerrar: círculo semi-transparente sobre la imagen */
       .lightbox-close {
@@ -6769,6 +6873,58 @@
     }
 
     mostrar();
+  })();
+
+  // ── BARRA LATERAL DE NAVEGACIÓN DE SCROLL ──
+  (function () {
+    const secciones = [
+      { id: 'inicio',      label: 'Inicio'    },
+      { id: 'dibujos',     label: 'Dibujos'   },
+      { id: 'oraculo',     label: 'Oráculo'   },
+      { id: 'galeria-arte',label: 'Museo'     },
+      { id: 'juegos',      label: 'Juegos'    },
+      { id: 'poesia',      label: 'Poesía'    },
+      { id: 'biblioteca',  label: 'Biblioteca'},
+      { id: 'archivo',     label: 'Archivo'   },
+      { id: 'contacto',    label: 'Contacto'  },
+    ];
+
+    const nav = document.createElement('nav');
+    nav.className = 'scroll-nav';
+    nav.setAttribute('aria-label', 'Navegación por secciones');
+
+    const dots = secciones.map(({ id, label }) => {
+      const btn = document.createElement('button');
+      btn.className = 'scroll-nav-dot';
+      btn.dataset.label = label;
+      btn.setAttribute('aria-label', 'Ir a ' + label);
+      btn.addEventListener('click', () => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      });
+      nav.appendChild(btn);
+      return { btn, id };
+    });
+
+    document.body.appendChild(nav);
+
+    // Marca el dot activo según la sección visible
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const activo = dots.find(d => d.id === entry.target.id);
+          if (activo) {
+            dots.forEach(d => d.btn.classList.remove('activo'));
+            activo.btn.classList.add('activo');
+          }
+        }
+      });
+    }, { threshold: 0.3 });
+
+    secciones.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) io.observe(el);
+    });
   })();
 </script>
 </body>
