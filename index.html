@@ -379,8 +379,9 @@
       gap: 0.85rem;
     }
 
-    /* ── OBRA DEL DÍA ── */
-    #obra-del-dia { margin-top: 2.2rem; }
+    /* ── OBRA DEL DÍA + POEMA DEL DÍA ── */
+    .dia-duo { display: flex; flex-wrap: wrap; gap: 1.2rem; margin-top: 2.2rem; align-items: flex-start; }
+    #obra-del-dia, #poema-del-dia { margin-top: 0; }
     .od-label {
       font-family: var(--mono); font-size: 0.58rem;
       letter-spacing: 0.18em; text-transform: uppercase;
@@ -427,6 +428,46 @@
       transition: letter-spacing 0.2s;
     }
     .od-card:hover .od-cta { letter-spacing: 0.2em; }
+
+    /* ── POEMA DEL DÍA ── */
+    .pd-card {
+      display: flex; align-items: flex-start; gap: 0.85rem;
+      background: rgba(15,15,22,0.7);
+      border: 1px solid rgba(201,162,77,0.22);
+      border-radius: 6px; padding: 0.85rem 1rem;
+      max-width: 460px; cursor: pointer;
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .pd-card:hover {
+      border-color: rgba(201,162,77,0.5);
+      background: rgba(201,162,77,0.035);
+    }
+    .pd-card:focus-visible { outline: 2px solid var(--copper); outline-offset: 3px; }
+    .pd-comilla {
+      font-family: var(--serif); font-size: 2.6rem; line-height: 0.9;
+      color: var(--copper); opacity: 0.45; flex-shrink: 0;
+    }
+    .pd-body { display: flex; flex-direction: column; gap: 0.12rem; min-width: 0; }
+    .pd-verso {
+      font-family: var(--serif); font-style: italic;
+      font-size: 0.9rem; color: var(--ink); line-height: 1.4;
+      overflow: hidden; display: -webkit-box;
+      -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    }
+    .pd-titulo { font-family: var(--serif); font-size: 0.82rem; color: var(--oro); margin-top: 0.18rem; }
+    .pd-autor { font-family: var(--serif); font-size: 0.8rem; color: var(--ink); }
+    .pd-meta {
+      font-family: var(--mono); font-size: 0.5rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-top: 0.08rem;
+    }
+    .pd-cta {
+      font-family: var(--mono); font-size: 0.52rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--copper); margin-top: 0.3rem;
+      transition: letter-spacing 0.2s;
+    }
+    .pd-card:hover .pd-cta { letter-spacing: 0.2em; }
 
     .btn {
       font-family: var(--mono);
@@ -3315,8 +3356,11 @@
         <a href="https://instagram.com/reyautomata" target="_blank" class="btn btn-ghost">Instagram</a>
       </div>
 
-      <!-- Obra del día: poblado por JS usando la array galeria -->
-      <div id="obra-del-dia"></div>
+      <!-- Obra del día + Poema del día, poblados por JS -->
+      <div class="dia-duo">
+        <div id="obra-del-dia"></div>
+        <div id="poema-del-dia"></div>
+      </div>
     </section>
 
     <div class="rule"></div>
@@ -5671,6 +5715,47 @@
 
   })();
 
+
+  // ── POEMA DEL DÍA ──
+  (function () {
+    const diaEl = document.getElementById('poema-del-dia');
+    if (!diaEl || typeof POETAS_REC === 'undefined' || !POETAS_REC.length) return;
+
+    // Aplanar todos los poemas con datos del poeta
+    const todos = [];
+    POETAS_REC.forEach(poeta => {
+      poeta.poemas.forEach(poema => {
+        todos.push({ poema, autor: poeta.nombre, origen: poeta.origen });
+      });
+    });
+    if (!todos.length) return;
+
+    // Semilla diaria (offset +37 para no coincidir con la obra del día)
+    const seed = Math.floor(Date.now() / 86400000) + 37;
+    const { poema, autor } = todos[seed % todos.length];
+    const primerVerso = poema.texto.split('|')[0];
+
+    diaEl.innerHTML = `
+      <div class="od-label">— Poema del día</div>
+      <div class="pd-card" role="button" tabindex="0"
+           aria-label="Leer ${poema.titulo} de ${autor}">
+        <span class="pd-comilla" aria-hidden="true">❝</span>
+        <div class="pd-body">
+          <span class="pd-verso">${primerVerso}</span>
+          <span class="pd-titulo">${poema.titulo}</span>
+          <span class="pd-autor">${autor}</span>
+          <span class="pd-meta">${poema.fecha}</span>
+          <span class="pd-cta">Leer poema →</span>
+        </div>
+      </div>`;
+
+    const card = diaEl.querySelector('.pd-card');
+    function activar(e) { e.preventDefault(); abrirPoema(poema, autor); }
+    card.addEventListener('click', activar);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') activar(e);
+    });
+  })();
 
     // ── FONDOS DE LAS DEMAS SECCIONES ──
   // Cada seccion con clase .bg-img activa su fondo solo si la imagen existe.
