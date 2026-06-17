@@ -381,7 +381,8 @@
 
     /* ── OBRA DEL DÍA + POEMA DEL DÍA ── */
     .dia-duo { display: flex; flex-wrap: wrap; gap: 1.2rem; margin-top: 2.2rem; align-items: flex-start; }
-    #obra-del-dia, #poema-del-dia { margin-top: 0; }
+    #obra-del-dia, #poema-del-dia,
+    #dibujo-ilustracion-dia, #dibujo-pintura-dia, #dibujo-rostro-dia { margin-top: 0; }
     .od-label {
       font-family: var(--mono); font-size: 0.58rem;
       letter-spacing: 0.18em; text-transform: uppercase;
@@ -3356,10 +3357,13 @@
         <a href="https://instagram.com/reyautomata" target="_blank" class="btn btn-ghost">Instagram</a>
       </div>
 
-      <!-- Obra del día + Poema del día, poblados por JS -->
+      <!-- Tarjetas del día, pobladas por JS -->
       <div class="dia-duo">
         <div id="obra-del-dia"></div>
         <div id="poema-del-dia"></div>
+        <div id="dibujo-ilustracion-dia"></div>
+        <div id="dibujo-pintura-dia"></div>
+        <div id="dibujo-rostro-dia"></div>
       </div>
     </section>
 
@@ -4661,6 +4665,39 @@
           if (loading) loading.remove();
           dibujos.reverse(); // los últimos subidos, primero
           dibujos.forEach(d => grid.appendChild(crearTarjeta(d)));
+
+          // ── Tarjetas del día por categoría ──
+          const seedDia = Math.floor(Date.now() / 86400000);
+          [
+            { id: 'dibujo-ilustracion-dia', cat: 'Ilustraciones', label: 'Ilustración del día' },
+            { id: 'dibujo-pintura-dia',     cat: 'Pintura',       label: 'Pintura del día'      },
+            { id: 'dibujo-rostro-dia',      cat: 'Rostros',       label: 'Rostro del día'       },
+          ].forEach(({ id, cat, label }, ci) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const filtrados = dibujos.filter(d => (d.categoria || '').trim() === cat);
+            if (!filtrados.length) return;
+            const d = filtrados[(seedDia + ci * 17) % filtrados.length];
+            const meta = (d.tecnica || '') + (d.anio ? ' · ' + d.anio : '');
+            el.innerHTML = `
+              <div class="od-label">— ${label}</div>
+              <div class="od-card" role="button" tabindex="0" aria-label="Ver ${d.titulo}">
+                <div class="od-img-wrap">
+                  <img src="${d.imagen}" alt="${d.titulo}" class="od-img" loading="lazy">
+                </div>
+                <div class="od-body">
+                  <span class="od-titulo">${d.titulo}</span>
+                  <span class="od-autor">${d.tecnica || ''}</span>
+                  <span class="od-meta">${meta}</span>
+                  <span class="od-cta">Ver en galería →</span>
+                </div>
+              </div>`;
+            const card = el.querySelector('.od-card');
+            const fake = { dataset: { img: d.imagen, title: d.titulo, meta, desc: d.texto || '' } };
+            function activar(e) { e.preventDefault(); openLightbox(fake); }
+            card.addEventListener('click', activar);
+            card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') activar(e); });
+          });
         });
       })
       .catch(err => {
