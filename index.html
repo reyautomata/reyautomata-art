@@ -2217,85 +2217,69 @@
         object-fit: contain;
       }
 
-      /* Panel de info: bottom sheet colapsado por defecto */
+      /* Panel de info: bottom sheet — el handle es la franja superior visible */
       .lightbox-info {
         position: absolute;
         bottom: 0; left: 0; right: 0;
-        background: rgba(10,10,16,0.96);
+        background: rgba(10,10,16,0.97);
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
-        border-radius: 20px 20px 0 0;
-        border-top: 1px solid rgba(201,162,77,0.2);
-        padding: 0 1.3rem 2.5rem;
-        max-height: 72vh;
+        border-radius: 0;
+        border-top: none;
+        padding: 0;              /* el handle y el contenido manejan su propio padding */
+        max-height: 78vh;
         overflow-y: auto;
-        transform: translateY(calc(100% - 54px));
-        transition: transform 0.38s cubic-bezier(0.34,1.1,0.64,1);
+        display: flex;
+        flex-direction: column;
+        /* Colapsado: solo el handle (68px) asoma */
+        transform: translateY(calc(100% - 68px));
+        transition: transform 0.4s cubic-bezier(0.34,1.05,0.64,1);
       }
       .lightbox-info.expandido {
         transform: translateY(0);
       }
 
-      /* Botón "Ver info" — forma de hoja, centrado sobre el panel */
+      /* Handle = franja superior del panel, siempre visible */
       .lb-handle {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        gap: 0;
+        justify-content: center;
+        gap: 0.55rem;
+        height: 68px;
         cursor: pointer;
         user-select: none;
         -webkit-user-select: none;
-        /* Flota sobre la imagen, encima del panel */
-        position: absolute;
-        top: -26px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 5;
+        background: linear-gradient(135deg, #B8460A 0%, #c9a24d 100%);
+        /* Bordes redondeados solo arriba, como pestaña */
+        border-radius: 18px 18px 0 0;
+        margin: 0 -1.3rem;  /* compensa el padding del padre */
+        padding: 0 1.3rem;
+        flex-shrink: 0;
+        box-shadow: 0 -4px 20px rgba(184,70,10,0.4);
+        transition: background 0.25s;
+      }
+      .lightbox-info.expandido .lb-handle {
+        background: linear-gradient(135deg, #1c3550 0%, #2A4A6B 100%);
+        box-shadow: 0 -4px 20px rgba(42,74,107,0.4);
       }
 
-      /* Barra de arrastre clásica (drag handle) */
-      .lb-handle-bar {
-        display: none; /* ocultamos la barra, usamos el botón hoja */
-      }
+      .lb-handle-bar { display: none; }
 
-      /* Botón hoja: cápsula cobre con flecha y texto */
       .lb-handle-label {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
-        background: linear-gradient(135deg, #B8460A 0%, #c9a24d 100%);
+        gap: 0.5rem;
         color: #fff;
         font-family: var(--mono);
-        font-size: 0.58rem;
-        letter-spacing: 0.1em;
+        font-size: 0.62rem;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
-        padding: 0.5rem 1.1rem;
-        border-radius: 20px;
-        box-shadow:
-          0 4px 16px rgba(184,70,10,0.55),
-          0 1px 3px rgba(0,0,0,0.4);
-        white-space: nowrap;
-        transition: box-shadow 0.2s, transform 0.2s;
-        /* Ícono hoja antes del texto */
+        font-weight: 600;
       }
-      .lb-handle-label::before {
-        content: '🍃';
-        font-size: 0.85rem;
-        filter: brightness(10); /* lo vuelve blanco */
-      }
-      /* Flecha arriba */
-      .lb-handle-label::after {
-        content: '↑';
-        font-size: 0.75rem;
-        opacity: 0.85;
-      }
-
-      .lightbox-info.expandido .lb-handle-label {
-        background: linear-gradient(135deg, #2A4A6B 0%, #3a6a8a 100%);
-        box-shadow: 0 4px 16px rgba(42,74,107,0.55), 0 1px 3px rgba(0,0,0,0.4);
-      }
-      .lightbox-info.expandido .lb-handle-label::before { content: '✕'; }
-      .lightbox-info.expandido .lb-handle-label::after { content: ''; }
+      .lb-handle-label::before { content: '🍃'; font-size: 1rem; }
+      .lb-handle-label::after  { content: '↑'; font-size: 0.9rem; opacity: 0.8; }
+      .lightbox-info.expandido .lb-handle-label::before { content: '↓'; }
+      .lightbox-info.expandido .lb-handle-label::after  { content: ''; }
 
       /* Botón cerrar: círculo semi-transparente sobre la imagen */
       .lightbox-close {
@@ -2312,8 +2296,15 @@
       }
       .lightbox-close:hover { border-color: var(--copper); color: var(--copper); }
 
+      /* Contenido del panel con padding propio */
+      #lb-meta, #lb-title, #lb-desc {
+        padding-left: 1.3rem;
+        padding-right: 1.3rem;
+      }
+      #lb-meta  { padding-top: 1.2rem; }
+      #lb-desc  { padding-bottom: 2rem; }
       .lightbox-title { font-size: 1.25rem; margin-bottom: 0.75rem; }
-      .lightbox-meta { margin-bottom: 0.5rem; }
+      .lightbox-meta  { margin-bottom: 0.5rem; }
     }
 
     /* ── REPRODUCTOR DE MUSICA ── */
@@ -4468,7 +4459,7 @@
   if (lbHandle) {
     lbHandle.addEventListener('click', () => {
       const expandido = lbInfo.classList.toggle('expandido');
-      lbHandleLabel.textContent = expandido ? 'Cerrar info' : 'Ver info';
+      lbHandleLabel.textContent = expandido ? 'Cerrar' : 'Ver info';
     });
   }
 
@@ -5106,9 +5097,9 @@
   }
   function cerrarReader() {
     poemReader.classList.remove('open');
-    // Limpia el modo cine al cerrar (sin referencias colgadas)
     poemReaderText.classList.remove('cine-activo');
     poemReaderText.onclick = null;
+    document.body.style.overflow = ''; // restaurar scroll de página
   }
 
   // Cerrar ventanas
