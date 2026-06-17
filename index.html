@@ -1878,6 +1878,45 @@
       .od-titulo { white-space: normal; font-size: 0.9rem; }
       .pd-verso { -webkit-line-clamp: 3; }
 
+      /* ── Lector de poema: card crema ajustada a mobile ── */
+      .poem-reader {
+        padding: 1rem 0.75rem;
+        align-items: flex-end; /* desliza desde abajo como sheet */
+      }
+
+      .poem-reader-inner {
+        max-width: 100%;
+        max-height: 82vh;
+        border-radius: 18px 18px 10px 10px;
+        padding: 2.2rem 1.4rem 1.8rem;
+      }
+
+      .poem-reader-title {
+        font-size: clamp(1.4rem, 6vw, 2rem);
+        margin-bottom: 1.4rem;
+      }
+
+      .poem-reader-text {
+        font-size: 1rem;
+        line-height: 1.95;
+      }
+
+      /* ── Poesía masonry: 2 columnas en mobile ── */
+      .poesia-mason { columns: 2 140px; column-gap: 0.6rem; }
+
+      /* Filtros: scroll horizontal en mobile */
+      .poesia-filtros {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding-bottom: 0.4rem;
+        margin-left: -1.25rem;
+        padding-left: 1.25rem;
+        width: calc(100% + 2.5rem);
+      }
+      .poesia-filtros::-webkit-scrollbar { display: none; }
+      .poesia-filtro { flex-shrink: 0; }
+
       .about-wrap {
         grid-template-columns: 1fr;
         gap: 2.5rem;
@@ -1903,6 +1942,18 @@
       .od-card, .pd-card { width: 82vw; }
 
       .gallery-grid { column-count: 2; }
+
+      /* Masonry de poesía: 1 columna en pantallas muy angostas */
+      .poesia-mason { columns: 1; }
+
+      /* Lector de poema: ocupa todo el ancho */
+      .poem-reader { padding: 0.5rem 0 0; }
+      .poem-reader-inner {
+        border-radius: 16px 16px 0 0;
+        max-height: 90vh;
+        padding: 2rem 1.2rem 1.5rem;
+      }
+      .poem-reader-text { font-size: 0.97rem; line-height: 1.85; }
 
       section { padding: 3.5rem 1rem; }
       #inicio { padding: 4rem 1rem 3rem; }
