@@ -2285,16 +2285,63 @@
     /* ── MEMORICE DE POESÍA ── */
     #memorice {
       background: var(--bg2);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       text-align: center;
-      padding: 5rem 1.5rem;
+      padding: 0;
     }
 
-    .mem-intro { max-width: 560px; margin: 0 auto 2rem; }
+    /* Cabecera siempre visible */
+    .mem-header {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 3.5rem 1.5rem 2.5rem;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.25s;
+    }
+    .mem-header.abierto { border-bottom-color: var(--border); }
+
+    .mem-intro { max-width: 560px; margin: 0 auto 1.5rem; }
+
+    /* Selector de dificultad */
+    .mem-dificultad {
+      display: flex; align-items: center; gap: 0.45rem;
+      margin-bottom: 1.5rem; flex-wrap: wrap; justify-content: center;
+    }
+    .mem-dif-label {
+      font-family: var(--mono); font-size: 0.52rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); margin-right: 0.2rem;
+    }
+    .mem-dif-btn {
+      font-family: var(--mono); font-size: 0.56rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 0.38rem 0.8rem;
+      background: none; border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer; border-radius: 3px;
+      transition: all 0.2s;
+    }
+    .mem-dif-btn:hover { border-color: var(--copper); color: var(--copper); }
+    .mem-dif-btn.activo { border-color: var(--copper); color: var(--copper); background: rgba(184,70,10,0.08); }
+
+    /* Botón colapsar / expandir */
+    .mem-toggle-btn {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 0.65rem 1.5rem;
+      background: none; border: 1px solid var(--copper);
+      color: var(--copper); cursor: pointer; border-radius: 3px;
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      transition: background 0.2s, color 0.2s;
+    }
+    .mem-toggle-btn:hover { background: rgba(184,70,10,0.1); }
+    .mem-toggle-icon { transition: transform 0.3s; display: inline-block; font-size: 0.5rem; }
+    .mem-header.abierto .mem-toggle-icon { transform: rotate(180deg); }
+
+    /* Cuerpo colapsable */
+    .mem-body {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 2.5rem 1.5rem 3rem;
+      overflow: hidden;
+    }
+    .mem-body[hidden] { display: none; }
 
     .mem-stats {
       display: flex; gap: 2.5rem; justify-content: center;
@@ -3423,25 +3470,45 @@
 
     <div class="rule"></div>
 
-    <!-- MEMORICE DE POESÍA (juego de parejas: poeta + su verso) -->
+    <!-- MEMORICE DE POESÍA (juego de parejas: pintura + artista) -->
     <section id="memorice">
-      <div class="mem-intro">
-        <p class="section-label reveal">— Juego de memoria</p>
-        <h2 class="section-title reveal">Memorice del arte</h2>
-        <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Encuentra cada pintura famosa junto al artista que la creó. Voltea dos cartas y descubre las parejas.</p>
+
+      <!-- Cabecera siempre visible -->
+      <div class="mem-header" id="mem-header">
+        <div class="mem-intro">
+          <p class="section-label reveal">— Juego de memoria</p>
+          <h2 class="section-title reveal">Memorice del arte</h2>
+          <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Encuentra cada pintura famosa junto al artista que la creó. Voltea dos cartas y descubre las parejas.</p>
+        </div>
+
+        <!-- Selector de dificultad -->
+        <div class="mem-dificultad reveal">
+          <span class="mem-dif-label">Dificultad</span>
+          <button class="mem-dif-btn activo" data-pares="4">4 parejas</button>
+          <button class="mem-dif-btn" data-pares="6">6 parejas</button>
+          <button class="mem-dif-btn" data-pares="8">Completo</button>
+        </div>
+
+        <button class="mem-toggle-btn reveal" id="mem-toggle-btn" aria-expanded="false">
+          <span class="mem-toggle-icon" id="mem-toggle-icon">▼</span>
+          <span id="mem-toggle-label">Iniciar juego</span>
+        </button>
       </div>
 
-      <div class="mem-stats reveal">
-        <div><b id="mem-pares">0</b> Parejas</div>
-        <div><b id="mem-intentos">0</b> Intentos</div>
+      <!-- Cuerpo colapsable -->
+      <div class="mem-body" id="mem-body" hidden>
+        <div class="mem-stats">
+          <div><b id="mem-pares">0</b> Parejas</div>
+          <div><b id="mem-intentos">0</b> Intentos</div>
+        </div>
+
+        <div class="mem-board" id="mem-board"></div>
+
+        <p class="mem-win" id="mem-win"></p>
+        <button class="mem-btn" id="mem-btn">Reiniciar juego</button>
       </div>
 
-      <div class="mem-board" id="mem-board"></div>
-
-      <p class="mem-win" id="mem-win"></p>
-      <button class="mem-btn" id="mem-btn">Reiniciar juego</button>
-
-      <!-- Visor de zoom de las pinturas -->
+      <!-- Visor de zoom de las pinturas (fixed, fuera del cuerpo) -->
       <div class="mem-zoom" id="mem-zoom">
         <img src="" alt="Pintura ampliada" id="mem-zoom-img">
         <div class="mem-zoom-cap" id="mem-zoom-cap"></div>
@@ -4821,13 +4888,41 @@
   // ===================================================================
 
   (function () {
-    const board = document.getElementById('mem-board');
-    const btn = document.getElementById('mem-btn');
-    const elPares = document.getElementById('mem-pares');
-    const elIntentos = document.getElementById('mem-intentos');
-    const elWin = document.getElementById('mem-win');
+    const board     = document.getElementById('mem-board');
+    const btn       = document.getElementById('mem-btn');
+    const elPares   = document.getElementById('mem-pares');
+    const elIntentos= document.getElementById('mem-intentos');
+    const elWin     = document.getElementById('mem-win');
+    const memHeader = document.getElementById('mem-header');
+    const memBody   = document.getElementById('mem-body');
+    const toggleBtn = document.getElementById('mem-toggle-btn');
+    const toggleLbl = document.getElementById('mem-toggle-label');
     if (!board) return;
 
+    // ── Colapsar / expandir ──
+    let abierto = false;
+    function toggleMem() {
+      abierto = !abierto;
+      memBody.hidden = !abierto;
+      memHeader.classList.toggle('abierto', abierto);
+      toggleBtn.setAttribute('aria-expanded', abierto);
+      toggleLbl.textContent = abierto ? 'Cerrar juego' : 'Iniciar juego';
+      if (abierto && board.children.length === 0) crear();
+    }
+    toggleBtn.addEventListener('click', toggleMem);
+
+    // ── Dificultad ──
+    let modoParejas = 4;
+    document.querySelectorAll('.mem-dif-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('.mem-dif-btn').forEach(x => x.classList.remove('activo'));
+        b.classList.add('activo');
+        modoParejas = parseInt(b.dataset.pares, 10);
+        if (abierto) crear();
+      });
+    });
+
+    // ── Lógica del juego ──
     let cartas = [], primera = null, segunda = null;
     let bloqueo = false, pares = 0, intentos = 0;
 
@@ -4848,9 +4943,10 @@
       pares = 0; intentos = 0;
       elPares.textContent = '0'; elIntentos.textContent = '0';
 
-      // Genera dos cartas por pareja: una con la imagen, otra con el nombre
+      // Toma N parejas aleatorias según dificultad
+      const seleccionadas = barajar(parejas).slice(0, modoParejas);
       cartas = [];
-      parejas.forEach((p, i) => {
+      seleccionadas.forEach((p, i) => {
         cartas.push({ id: i, tipo: 'obra',   img: p.img, autor: p.autor, obra: p.obra });
         cartas.push({ id: i, tipo: 'nombre', img: null,  autor: p.autor, obra: p.obra });
       });
@@ -4862,14 +4958,12 @@
         card.dataset.id = c.id;
         let frente;
         if (c.tipo === 'obra') {
-          // Carta con la imagen de la pintura
           frente = `
             <span class="mem-tipo">Pintura</span>
             <img class="mem-img" src="${c.img}" alt="${c.obra}"
                  loading="lazy"
                  onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span class=\\'mem-texto\\'>${c.obra}</span>')">`;
         } else {
-          // Carta con el nombre del artista + obra
           frente = `
             <span class="mem-tipo">Artista</span>
             <span class="mem-texto">${c.autor}</span>
@@ -4886,7 +4980,6 @@
     }
 
     function voltear(card) {
-      // Si la carta ya está emparejada y tiene imagen, hacer zoom en vez de jugar
       if (card.classList.contains('matched')) {
         const img = card.querySelector('.mem-img');
         if (img) abrirZoom(img.src, img.alt);
@@ -4894,16 +4987,12 @@
       }
       if (bloqueo) return;
       if (card.classList.contains('flip')) return;
-
       card.classList.add('flip');
-
       if (!primera) { primera = card; return; }
       segunda = card;
       bloqueo = true;
       intentos++;
       elIntentos.textContent = intentos;
-
-      // ¿Son pareja? (mismo id, distinto tipo ya está garantizado al tocar dos)
       if (primera.dataset.id === segunda.dataset.id) {
         setTimeout(() => {
           primera.classList.add('matched');
@@ -4913,7 +5002,7 @@
           resetTurno();
           pares++;
           elPares.textContent = pares;
-          if (pares === parejas.length) ganar();
+          if (pares === modoParejas) ganar();
         }, 600);
       } else {
         setTimeout(() => {
@@ -4931,14 +5020,13 @@
       elWin.classList.add('show');
     }
 
-    // — Zoom de las pinturas emparejadas —
-    const zoom = document.getElementById('mem-zoom');
+    // ── Zoom de pinturas emparejadas ──
+    const zoom    = document.getElementById('mem-zoom');
     const zoomImg = document.getElementById('mem-zoom-img');
     const zoomCap = document.getElementById('mem-zoom-cap');
     function abrirZoom(src, cap) {
       if (!zoom) return;
-      zoomImg.src = src;
-      zoomCap.textContent = cap || '';
+      zoomImg.src = src; zoomCap.textContent = cap || '';
       zoom.classList.add('open');
     }
     function cerrarZoom() { if (zoom) zoom.classList.remove('open'); }
@@ -4948,7 +5036,6 @@
     }
 
     btn.addEventListener('click', crear);
-    crear();
   })();
 
   // ── TRIVIA DEL ARTE ──
