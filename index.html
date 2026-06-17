@@ -1936,7 +1936,18 @@
         width: calc(100% + 2.5rem);
       }
       .poesia-filtros::-webkit-scrollbar { display: none; }
-      .poesia-filtro { flex-shrink: 0; font-size: 0.5rem; padding: 0.38rem 0.75rem; }
+      .poesia-filtro {
+        flex-shrink: 0;
+        font-size: 0.62rem;
+        padding: 0.5rem 0.9rem;
+        border-color: rgba(201,162,77,0.35);
+        color: var(--ink);
+      }
+      .poesia-filtro.activo {
+        border-color: var(--copper);
+        color: var(--copper);
+        background: rgba(184,70,10,0.12);
+      }
 
       .about-wrap {
         grid-template-columns: 1fr;
@@ -2107,23 +2118,98 @@
       color: var(--copper);
     }
 
+    /* Handle oculto por defecto (solo visible en mobile) */
+    .lb-handle { display: none; }
+
+    /* ── LIGHTBOX MOBILE: imagen grande + bottom sheet de info ── */
     @media (max-width: 760px) {
-      .lightbox { padding: 1rem; }
+      .lightbox { padding: 0; }
+
       .lightbox-panel {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
-        height: 90vh;
-        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        overflow: visible;
+        position: relative;
+        background: #000;
       }
+
+      /* Imagen ocupa todo el espacio */
       .lightbox-image {
-        height: 45vh;
-        min-height: 45vh;
+        flex: 1;
+        min-height: 0;
+        width: 100%;
+        height: 100%;
       }
+      .lightbox-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      /* Panel de info: bottom sheet colapsado por defecto */
       .lightbox-info {
-        padding: 1.75rem 1.5rem;
-        overflow-y: visible;
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        background: rgba(10,10,16,0.96);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-radius: 20px 20px 0 0;
+        border-top: 1px solid rgba(201,162,77,0.2);
+        padding: 0 1.3rem 2.5rem;
+        max-height: 72vh;
+        overflow-y: auto;
+        transform: translateY(calc(100% - 54px));
+        transition: transform 0.38s cubic-bezier(0.34,1.1,0.64,1);
       }
-      .lightbox-title { font-size: 1.5rem; }
+      .lightbox-info.expandido {
+        transform: translateY(0);
+      }
+
+      /* Handle de toque: barra + etiqueta */
+      .lb-handle {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px 0 8px;
+        cursor: pointer;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      .lb-handle-bar {
+        display: block;
+        width: 40px; height: 4px;
+        background: rgba(255,255,255,0.22);
+        border-radius: 2px;
+        margin-bottom: 5px;
+      }
+      .lb-handle-label {
+        font-family: var(--mono);
+        font-size: 0.5rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--copper);
+      }
+
+      /* Botón cerrar: círculo semi-transparente sobre la imagen */
+      .lightbox-close {
+        position: fixed;
+        top: 1rem; right: 1rem;
+        width: 42px; height: 42px;
+        border-radius: 50%;
+        background: rgba(0,0,0,0.55);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.18);
+        color: #fff;
+        font-size: 1.1rem;
+        z-index: 10;
+      }
+      .lightbox-close:hover { border-color: var(--copper); color: var(--copper); }
+
+      .lightbox-title { font-size: 1.25rem; margin-bottom: 0.75rem; }
+      .lightbox-meta { margin-bottom: 0.5rem; }
     }
 
     /* ── REPRODUCTOR DE MUSICA ── */
@@ -3257,8 +3343,11 @@
 
     /* ── MODO CINEMATOGRÁFICO DE POESÍA ── */
 
-    /* Botón de toggle en el lector de poemas */
+    /* Botón verso a verso eliminado por petición del usuario */
     .poem-cine-btn {
+      display: none !important;
+    }
+    .poem-cine-btn-DISABLED {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
@@ -4188,7 +4277,12 @@
     <div class="lightbox-image">
       <img id="lb-img" src="" alt="">
     </div>
-    <div class="lightbox-info">
+    <div class="lightbox-info" id="lb-info">
+      <!-- Handle para expandir/colapsar el panel de info en mobile -->
+      <div class="lb-handle" id="lb-handle" aria-label="Ver información">
+        <span class="lb-handle-bar"></span>
+        <span class="lb-handle-label" id="lb-handle-label">Ver info</span>
+      </div>
       <div class="lightbox-meta" id="lb-meta"></div>
       <h3 class="lightbox-title" id="lb-title"></h3>
       <p class="lightbox-desc" id="lb-desc"></p>
@@ -4262,6 +4356,17 @@
   const lbTitle = document.getElementById('lb-title');
   const lbMeta = document.getElementById('lb-meta');
   const lbDesc = document.getElementById('lb-desc');
+  const lbInfo = document.getElementById('lb-info');
+  const lbHandle = document.getElementById('lb-handle');
+  const lbHandleLabel = document.getElementById('lb-handle-label');
+
+  // Handle: expande/colapsa el panel de info en mobile
+  if (lbHandle) {
+    lbHandle.addEventListener('click', () => {
+      const expandido = lbInfo.classList.toggle('expandido');
+      lbHandleLabel.textContent = expandido ? 'Cerrar info' : 'Ver info';
+    });
+  }
 
   function openLightbox(item) {
     lbImg.src = item.dataset.img;
@@ -4280,6 +4385,9 @@
         '</span>'
       )
       .join('');
+    // Siempre empieza con la info colapsada para mostrar la imagen completa
+    lbInfo.classList.remove('expandido');
+    if (lbHandleLabel) lbHandleLabel.textContent = 'Ver info';
     lightbox.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
