@@ -782,7 +782,135 @@
       background: rgba(184,70,10,0.05);
     }
 
-    /* ── PORTALES DE POESÍA ── */
+    /* ── POESÍA ESTILO PINTEREST ── */
+
+    /* Filtros por poeta */
+    .poesia-filtros {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1.8rem 0 1.6rem;
+    }
+    .poesia-filtro {
+      font-family: var(--mono);
+      font-size: 0.56rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.45rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: none;
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    .poesia-filtro:hover { border-color: var(--muted); color: var(--ink); }
+    .poesia-filtro.activo {
+      border-color: var(--copper);
+      color: var(--copper);
+      background: rgba(184,70,10,0.08);
+    }
+
+    /* Masonry grid */
+    .poesia-mason {
+      columns: 3 200px;
+      column-gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Pin individual */
+    .poesia-pin {
+      break-inside: avoid;
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: rgba(12,12,19,0.92);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.3rem 1.15rem 1rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.22s, transform 0.22s, background 0.22s;
+    }
+    .poesia-pin::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 2px; height: 100%;
+      background: var(--copper);
+      opacity: 0;
+      transition: opacity 0.22s;
+    }
+    .poesia-pin:hover {
+      border-color: rgba(201,162,77,0.4);
+      background: rgba(15,15,24,0.98);
+      transform: translateY(-4px);
+    }
+    .poesia-pin:hover::before { opacity: 0.6; }
+
+    .poesia-pin-autor {
+      font-family: var(--mono);
+      font-size: 0.48rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--copper);
+      margin-bottom: 0.55rem;
+      display: block;
+    }
+    .poesia-pin-titulo {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.98rem;
+      color: var(--oro);
+      line-height: 1.3;
+      margin-bottom: 0.7rem;
+      display: block;
+    }
+    .poesia-pin-verso {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 0.75rem;
+      display: block;
+      /* Límite de 4 líneas, suficiente para el efecto masonry */
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .poesia-pin-fuente {
+      font-family: var(--mono);
+      font-size: 0.44rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(138,132,120,0.55);
+      display: block;
+    }
+    .poesia-pin-cta {
+      font-family: var(--mono);
+      font-size: 0.46rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--copper);
+      display: block;
+      margin-top: 0.6rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .poesia-pin:hover .poesia-pin-cta { opacity: 1; }
+
+    /* Ocultar pin filtrado */
+    .poesia-pin[hidden] { display: none; }
+
+    @media (max-width: 700px) { .poesia-mason { columns: 2 160px; } }
+    @media (max-width: 420px) { .poesia-mason { columns: 1; } }
+
+    /* ── PORTALES DE POESÍA (legado, mantenido por si acaso) ── */
     .poesia-portales {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -3743,8 +3871,6 @@
       <h2 class="section-title reveal">Poesía</h2>
       <p class="section-desc reveal">Cuaderno de Medianoche — textos escritos entre estudio, cansancio, té, pan caliente y silencio. Elige una categoría para entrar.</p>
 
-      <p class="cat-hint reveal">↓ Presiona una categoría para abrirla, y luego toca cada texto para leerlo completo.</p>
-
       <!-- Citas de poetas latinoamericanos -->
       <div class="citas-wrap reveal" id="citas-poetas">
         <div class="cita-comilla" aria-hidden="true">❝</div>
@@ -3755,22 +3881,9 @@
         <div class="cita-nav" id="cita-nav" role="tablist" aria-label="Navegar entre citas"></div>
       </div>
 
-      <!-- Dos portales: Poetas recomendados / Mis escritos -->
-      <div class="poesia-portales reveal">
-        <button class="portal-card" id="portal-poetas">
-          <span class="portal-num">— I</span>
-          <h3 class="portal-titulo">Poetas recomendados</h3>
-          <p class="portal-desc">Voces que admiro y guardo. Obras de dominio público y fragmentos escogidos de poetas latinoamericanos.</p>
-          <span class="portal-cta">↓ Explorar</span>
-        </button>
-        <button class="portal-card" id="portal-propios">
-          <span class="portal-num">— II</span>
-          <h3 class="portal-titulo">Mis escritos</h3>
-          <p class="portal-desc">Poemas y textos de mi autoría. Lo que sale de mí en silencio, entre estudio, cansancio y té.</p>
-          <span class="portal-cta">↓ Leer</span>
-        </button>
-      </div>
-      <div class="poesia-expandido" id="poesia-expandido" hidden></div>
+      <!-- Filtros y masonry tipo Pinterest -->
+      <div class="poesia-filtros reveal" id="poesia-filtros"></div>
+      <div class="poesia-mason" id="poesia-mason"></div>
     </section>
 
     <div class="rule"></div>
@@ -4502,100 +4615,75 @@
   const poemReaderText = document.getElementById('poem-reader-text');
   const poemReaderDate = document.getElementById('poem-reader-date');
 
-  // ── PORTALES DE POESÍA ──
-  const portalPoetas = document.getElementById('portal-poetas');
-  const portalPropios = document.getElementById('portal-propios');
-  const expandido = document.getElementById('poesia-expandido');
-  let panelActivo = null;
+  // ── POESÍA MASONRY TIPO PINTEREST ──
+  (function () {
+    const mason = document.getElementById('poesia-mason');
+    const filtrosEl = document.getElementById('poesia-filtros');
+    if (!mason || !filtrosEl) return;
 
-  function mostrarPoetas() {
-    expandido.innerHTML = '';
-    const grid = document.createElement('div');
-    grid.className = 'poetas-grid';
-    POETAS_REC.forEach((poeta, idx) => {
-      const card = document.createElement('button');
-      card.className = 'poeta-card';
-      card.innerHTML =
-        '<span class="poeta-nombre">' + poeta.nombre + '</span>' +
-        '<span class="poeta-origen">' + poeta.origen + '</span>' +
-        '<span class="poeta-cita">' + poeta.cita + '</span>';
-      card.addEventListener('click', () => mostrarPoetaPoemas(idx));
-      grid.appendChild(card);
-    });
-    expandido.appendChild(grid);
-    expandido.hidden = false;
-  }
+    // Reúne todos los poemas: recomendados + propios
+    const todasLasTarjetas = [];
 
-  function mostrarPoetaPoemas(idx) {
-    const poeta = POETAS_REC[idx];
-    expandido.innerHTML = '';
-
-    // Nav bar with back button
-    const nav = document.createElement('div');
-    nav.className = 'panel-nav';
-    nav.innerHTML =
-      '<button class="panel-nav-back">← Volver</button>' +
-      '<div><span class="panel-poeta-header">' + poeta.nombre + '</span>' +
-      '<span class="panel-poeta-origen">' + poeta.origen + '</span></div>';
-    nav.querySelector('.panel-nav-back').addEventListener('click', mostrarPoetas);
-    expandido.appendChild(nav);
-
-    // Poem list
-    const lista = document.createElement('div');
-    lista.className = 'poem-list';
-    poeta.poemas.forEach(poema => {
-      const item = document.createElement('button');
-      item.className = 'poem-item';
-      item.innerHTML =
-        '<span class="poem-item-titulo">' + poema.titulo + '</span>' +
-        '<span class="poem-item-fecha">' + poema.fecha + '</span>';
-      item.addEventListener('click', () => abrirPoema(poema, poeta.nombre));
-      lista.appendChild(item);
-    });
-    expandido.appendChild(lista);
-    expandido.hidden = false;
-  }
-
-  function mostrarPropios() {
-    expandido.innerHTML = '';
-    const lista = document.createElement('div');
-    lista.className = 'poem-list';
-    if (!ESCRITOS_PROPIOS.length) {
-      lista.innerHTML = '<div style="padding:3rem 2rem;color:var(--muted);font-style:italic;grid-column:1/-1;">Pronto aparecerán tus escritos aquí.</div>';
-    } else {
-      ESCRITOS_PROPIOS.forEach(poema => {
-        const tile = document.createElement('button');
-        tile.className = 'poem-tile';
-        const preview = poema.texto.split(/\|\|?/)[0].trim();
-        tile.innerHTML =
-          '<span class="poem-tile-title">' + poema.titulo + '</span>' +
-          '<span class="poem-tile-preview">' + preview + '</span>' +
-          '<span class="poem-tile-date">' + poema.fecha + '</span>';
-        tile.addEventListener('click', () => abrirPoema(poema, '— Mis escritos'));
-        lista.appendChild(tile);
+    POETAS_REC.forEach(poeta => {
+      poeta.poemas.forEach(poema => {
+        todasLasTarjetas.push({ poema, autor: poeta.nombre, fuente: poema.fecha, tipo: 'rec' });
       });
-    }
-    expandido.appendChild(lista);
-    expandido.hidden = false;
-  }
+    });
 
-  if (portalPoetas) portalPoetas.addEventListener('click', () => {
-    if (panelActivo === 'poetas') {
-      expandido.hidden = true; panelActivo = null;
-      portalPoetas.classList.remove('activo'); return;
-    }
-    portalPoetas.classList.add('activo'); portalPropios.classList.remove('activo');
-    panelActivo = 'poetas'; mostrarPoetas();
-  });
+    (typeof ESCRITOS_PROPIOS !== 'undefined' ? ESCRITOS_PROPIOS : []).forEach(poema => {
+      todasLasTarjetas.push({ poema, autor: '— Mis escritos', fuente: poema.fecha, tipo: 'propio' });
+    });
 
-  if (portalPropios) portalPropios.addEventListener('click', () => {
-    if (panelActivo === 'propios') {
-      expandido.hidden = true; panelActivo = null;
-      portalPropios.classList.remove('activo'); return;
+    // Crea todos los pins en el masonry
+    todasLasTarjetas.forEach(({ poema, autor, fuente, tipo }) => {
+      const primer_verso = poema.texto.split(/\|/)[0].trim();
+      const pin = document.createElement('button');
+      pin.className = 'poesia-pin';
+      pin.dataset.tipo = tipo;
+      pin.dataset.autor = autor;
+      pin.innerHTML =
+        '<span class="poesia-pin-autor">' + autor + '</span>' +
+        '<span class="poesia-pin-titulo">' + poema.titulo + '</span>' +
+        '<span class="poesia-pin-verso">' + primer_verso + '</span>' +
+        '<span class="poesia-pin-fuente">' + fuente + '</span>' +
+        '<span class="poesia-pin-cta">Leer poema →</span>';
+      pin.addEventListener('click', () => abrirPoema(poema, autor));
+      mason.appendChild(pin);
+    });
+
+    // Construye los filtros: Todos + apellido de cada poeta + Mis escritos
+    const filtros = [{ label: 'Todos', valor: 'todos' }];
+    POETAS_REC.forEach(p => {
+      const apellido = p.nombre.split(' ').pop();
+      filtros.push({ label: apellido, valor: p.nombre });
+    });
+    if ((typeof ESCRITOS_PROPIOS !== 'undefined') && ESCRITOS_PROPIOS.length) {
+      filtros.push({ label: 'Mis escritos', valor: 'propio' });
     }
-    portalPropios.classList.add('activo'); portalPoetas.classList.remove('activo');
-    panelActivo = 'propios'; mostrarPropios();
-  });
+
+    let filtroActivo = 'todos';
+
+    filtros.forEach(({ label, valor }) => {
+      const btn = document.createElement('button');
+      btn.className = 'poesia-filtro' + (valor === 'todos' ? ' activo' : '');
+      btn.textContent = label;
+      btn.addEventListener('click', () => {
+        filtroActivo = valor;
+        filtrosEl.querySelectorAll('.poesia-filtro').forEach(b => b.classList.remove('activo'));
+        btn.classList.add('activo');
+        mason.querySelectorAll('.poesia-pin').forEach(pin => {
+          if (valor === 'todos') {
+            pin.hidden = false;
+          } else if (valor === 'propio') {
+            pin.hidden = pin.dataset.tipo !== 'propio';
+          } else {
+            pin.hidden = pin.dataset.autor !== valor;
+          }
+        });
+      });
+      filtrosEl.appendChild(btn);
+    });
+  })();
 
   // Abre el lector para un poema individual
   function abrirPoema(poema, labelText) {
