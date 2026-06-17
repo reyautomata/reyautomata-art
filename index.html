@@ -740,88 +740,95 @@
       background: rgba(184,70,10,0.05);
     }
 
-    .cat-grid {
+    /* ── PORTALES DE POESÍA ── */
+    .poesia-portales {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: 1fr 1fr;
       gap: 1.5rem;
-      max-width: 1000px;
+      max-width: 760px;
+      margin: 0 auto;
     }
+    @media (max-width: 600px) { .poesia-portales { grid-template-columns: 1fr; } }
 
-    .cat-card {
-      background: rgba(22,20,28,0.92);
-      border: 1px solid #3a3640;
-      border-radius: 14px;
-      padding: 2.5rem 2rem 2rem;
-      text-align: left;
+    .portal-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2.2rem 1.8rem 1.8rem;
       cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-      min-height: 230px;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(2px);
+      text-align: left;
+      background: rgba(255,255,255,0.015);
+      transition: border-color 0.25s, background 0.25s, transform 0.2s;
+      display: flex; flex-direction: column; gap: 0.65rem;
     }
-    .cat-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 14px 38px rgba(0,0,0,0.5);
+    .portal-card:hover {
       border-color: rgba(201,162,77,0.4);
+      background: rgba(201,162,77,0.04);
+      transform: translateY(-3px);
     }
-
-    .cat-card::after {
-      content: '→';
-      position: absolute;
-      bottom: 1.5rem;
-      right: 1.75rem;
-      font-family: var(--mono);
-      color: var(--copper);
-      opacity: 0;
-      transform: translateX(-8px);
-      transition: all 0.3s ease;
-    }
-
-    .cat-card:hover {
+    .portal-card.activo {
       border-color: var(--copper);
       background: rgba(184,70,10,0.06);
-      transform: translateY(-4px);
+      transform: none;
+    }
+    .portal-num {
+      font-family: var(--mono); font-size: 0.56rem;
+      letter-spacing: 0.24em; text-transform: uppercase; color: var(--copper);
+    }
+    .portal-titulo {
+      font-family: var(--serif); font-style: italic;
+      font-size: 1.55rem; color: var(--ink); margin: 0; line-height: 1.2;
+    }
+    .portal-desc {
+      font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin: 0;
+      font-family: var(--body);
+    }
+    .portal-cta {
+      font-family: var(--mono); font-size: 0.54rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--copper); margin-top: 0.4rem;
+      transition: letter-spacing 0.2s;
+    }
+    .portal-card:hover .portal-cta,
+    .portal-card.activo .portal-cta { letter-spacing: 0.26em; }
+
+    /* Panel expandido inline */
+    .poesia-expandido {
+      max-width: 760px; margin: 1.2rem auto 0;
+      border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+      animation: panelPoesia 0.28s ease;
+    }
+    @keyframes panelPoesia {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .cat-card:hover::after {
-      opacity: 1;
-      transform: translateX(0);
+    /* Grid de poetas recomendados */
+    .poetas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
     }
-
-    .cat-card-label {
-      font-family: var(--mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--copper);
+    .poeta-card {
+      padding: 1.3rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      cursor: pointer; background: var(--bg);
+      transition: background 0.2s; text-align: left;
     }
-
-    .cat-card-title {
-      font-family: var(--serif);
-      font-size: 1.6rem;
-      color: var(--ink);
-      line-height: 1.15;
+    .poeta-card:hover { background: var(--bg2); }
+    .poeta-nombre {
+      font-family: var(--serif); font-style: italic;
+      font-size: 1rem; color: var(--ink); display: block; margin-bottom: 0.25rem;
     }
-
-    .cat-card-desc {
-      font-size: 0.9rem;
-      font-style: italic;
-      color: #b5ac9c;
-      line-height: 1.6;
+    .poeta-origen {
+      font-family: var(--mono); font-size: 0.5rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--copper); display: block; margin-bottom: 0.55rem;
     }
-
-    .cat-card-count {
-      font-family: var(--mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--copper);
-      margin-top: auto;
-      opacity: 0.9;
+    .poeta-cita {
+      font-family: var(--serif); font-style: italic;
+      font-size: 0.76rem; color: var(--muted); line-height: 1.5;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     /* ── VENTANA DE CATEGORIA (cuadros de poemas) ── */
@@ -3429,36 +3436,22 @@
         <div class="cita-nav" id="cita-nav" role="tablist" aria-label="Navegar entre citas"></div>
       </div>
 
-      <!-- Tarjetas de categoria: al hacer clic abren su ventana de poemas -->
-      <div class="cat-grid reveal">
-        <button class="cat-card" data-cat="nocturnos">
-          <span class="cat-card-label">— I</span>
-          <span class="cat-card-title">Textos nocturnos</span>
-          <span class="cat-card-desc">Lo escrito cuando el mundo duerme.</span>
-          <span class="cat-card-count" data-count="nocturnos"></span>
+      <!-- Dos portales: Poetas recomendados / Mis escritos -->
+      <div class="poesia-portales reveal">
+        <button class="portal-card" id="portal-poetas">
+          <span class="portal-num">— I</span>
+          <h3 class="portal-titulo">Poetas recomendados</h3>
+          <p class="portal-desc">Voces que admiro y guardo. Obras de dominio público y fragmentos escogidos de poetas latinoamericanos.</p>
+          <span class="portal-cta">↓ Explorar</span>
         </button>
-
-        <button class="cat-card" data-cat="prosa">
-          <span class="cat-card-label">— II</span>
-          <span class="cat-card-title">Prosa poética</span>
-          <span class="cat-card-desc">Pensamiento que respira en párrafos.</span>
-          <span class="cat-card-count" data-count="prosa"></span>
-        </button>
-
-        <button class="cat-card" data-cat="fragmentos">
-          <span class="cat-card-label">— III</span>
-          <span class="cat-card-title">Fragmentos</span>
-          <span class="cat-card-desc">Astillas, destellos, lo inacabado.</span>
-          <span class="cat-card-count" data-count="fragmentos"></span>
-        </button>
-
-        <button class="cat-card" data-cat="otros">
-          <span class="cat-card-label">— IV</span>
-          <span class="cat-card-title">Otros poetas</span>
-          <span class="cat-card-desc">Voces que admiro y guardo.</span>
-          <span class="cat-card-count" data-count="otros"></span>
+        <button class="portal-card" id="portal-propios">
+          <span class="portal-num">— II</span>
+          <h3 class="portal-titulo">Mis escritos</h3>
+          <p class="portal-desc">Poemas y textos de mi autoría. Lo que sale de mí en silencio, entre estudio, cansancio y té.</p>
+          <span class="portal-cta">↓ Leer</span>
         </button>
       </div>
+      <div class="poesia-expandido" id="poesia-expandido" hidden></div>
     </section>
 
     <div class="rule"></div>
@@ -3908,67 +3901,80 @@
   //     ||  = salto de parrafo (espacio entre estrofas)
   //  No uses comillas dobles " dentro del texto; usa ' o « ».
   // ===================================================================
-  const poemas = {
-    nocturnos: {
-      label: '— I · Textos nocturnos',
-      titulo: 'Textos nocturnos',
-      items: [
-        {
-          titulo: 'La máquina que sueña',
-          fecha: '2025 / Medianoche',
-          texto: 'Hay un circuito en el pecho|que late en frecuencias que no son mías.|Lo llaman corazón.|Yo lo llamo el error más bello|de la serie.'
-        },
-      ]
+  // ── POETAS RECOMENDADOS ──
+  // Para agregar un poeta: copia un bloque { nombre, origen, cita, poema:{...} }
+  // En el texto del poema usa | = salto de línea, || = nueva estrofa
+  const POETAS_REC = [
+    {
+      nombre: 'Pablo Neruda', origen: 'Chile · 1904–1973',
+      cita: 'te amo como se aman ciertas cosas oscuras, secretamente, entre la sombra y el alma.',
+      poema: { titulo: 'Soneto XVII', fecha: 'Cien sonetos de amor, 1959',
+        texto: 'No te amo como si fueras rosa de sal, topacio|o flecha de claveles que propagan el fuego:|te amo como se aman ciertas cosas oscuras,|secretamente, entre la sombra y el alma.||Te amo sin saber cómo, ni cuándo, ni de dónde,|te amo directamente sin problemas ni orgullo:|así te amo porque no sé amar de otra manera,|sino así de este modo en que no soy ni eres,|tan cerca que tu mano sobre mi pecho es mía,|tan cerca que se cierran tus ojos con mi sueño.' }
     },
-    prosa: {
-      label: '— II · Prosa poética',
-      titulo: 'Prosa poética',
-      items: [
-        // Aún no hay textos en esta categoría.
-        // Para agregar uno, copia este formato:
-        // { titulo: 'Título', fecha: '2026 / Noche', texto: 'Tu texto con | y ||' },
-      ]
+    {
+      nombre: 'César Vallejo', origen: 'Perú · 1892–1938',
+      cita: 'Hay golpes en la vida, tan fuertes... ¡Yo no sé!',
+      poema: { titulo: 'Los heraldos negros', fecha: 'Los heraldos negros, 1918',
+        texto: 'Hay golpes en la vida, tan fuertes... ¡Yo no sé!|Golpes como del odio de Dios; como si ante ellos,|la resaca de todo lo sufrido|se empozara en el alma... ¡Yo no sé!||Son pocos; pero son... Abren zanjas oscuras|en el rostro más fiero y en el lomo más fuerte.|Serán tal vez los potros de bárbaros atilas;|o los heraldos negros que nos manda la Muerte.||Son las caídas hondas de los Cristos del alma,|de alguna fe adorable que el Destino blasfema.|Esos golpes sangrientos son las crepitaciones|de algún pan que en la puerta del horno se nos quema.||Y el hombre... Pobre... ¡pobre! Vuelve los ojos, como|cuando por sobre el hombro nos llama una palmada;|vuelve los ojos locos, y todo lo vivido|se empoza, como charco de culpa, en la mirada.' }
     },
-    fragmentos: {
-      label: '— III · Fragmentos',
-      titulo: 'Fragmentos',
-      items: [
-        {
-          titulo: 'Boceto',
-          fecha: '2026 / Tarde',
-          texto: 'No hay líneas perfectas.|Solo intentos que se quedaron|en el papel|porque alguien tuvo el valor|de no borrarlos.'
-        },
-      ]
+    {
+      nombre: 'Gabriela Mistral', origen: 'Chile · 1889–1957',
+      cita: 'Dame la mano y danzaremos; dame la mano y me amarás.',
+      poema: { titulo: 'Dame la mano', fecha: 'Ternura, 1924',
+        texto: 'Dame la mano y danzaremos;|dame la mano y me amarás.|Como una sola flor seremos,|como una flor, y nada más...||El mismo verso cantaremos,|al mismo paso bailarás.|Como una espiga ondularemos,|como una espiga, y nada más.||Te llamas Rosa y yo Esperanza;|pero tu nombre olvidarás,|porque seremos una danza|en la colina y nada más.' }
     },
-    // ── OTROS POETAS ──
-    // Poemas de autores que admiras. IMPORTANTE sobre derechos:
-    //  - Autores de DOMINIO PÚBLICO (Machado, Mistral, Darío, Bécquer...):
-    //    puedes poner el poema COMPLETO sin problema.
-    //  - Autores con derechos vigentes (fallecidos hace menos de ~70 años,
-    //    como Bolaño): pon solo un FRAGMENTO breve y cita autor y obra.
-    otros: {
-      label: '— IV · Otros poetas',
-      titulo: 'Otros poetas',
-      items: [
-        {
-          titulo: 'Caminante — Antonio Machado',
-          fecha: 'Proverbios y cantares, XXIX',
-          texto: 'Caminante, son tus huellas|el camino y nada más;|caminante, no hay camino,|se hace camino al andar.||Al andar se hace el camino,|y al volver la vista atrás|se ve la senda que nunca|se ha de volver a pisar.||Caminante, no hay camino,|sino estelas en la mar.'
-        },
-        {
-          titulo: 'Dame la mano — Gabriela Mistral',
-          fecha: 'Ternura',
-          texto: 'Dame la mano y danzaremos;|dame la mano y me amarás.|Como una sola flor seremos,|como una flor, y nada más...||El mismo verso cantaremos,|al mismo paso bailarás.|Como una espiga ondularemos,|como una espiga, y nada más.||Te llamas Rosa y yo Esperanza;|pero tu nombre olvidarás,|porque seremos una danza|en la colina y nada más.'
-        },
-        // Para AGREGAR otro poema, copia este bloque:
-        // {
-        //   titulo: 'Título — Autor',
-        //   fecha: 'Libro o año',
-        //   texto: 'Verso uno|verso dos||nueva estrofa...'
-        // },
-      ]
+    {
+      nombre: 'Octavio Paz', origen: 'México · 1914–1998',
+      cita: 'Dos cuerpos frente a frente son a veces dos olas y la noche es océano.',
+      poema: { titulo: 'Dos cuerpos', fecha: 'Libertad bajo palabra, 1949',
+        texto: 'Dos cuerpos frente a frente|son a veces dos olas|y la noche es océano.||Dos cuerpos frente a frente|son a veces dos piedras|y la noche desierto.||Dos cuerpos frente a frente|son a veces raíces|en la noche enlazadas.||Dos cuerpos frente a frente|son a veces navajas|y la noche relámpago.||Dos cuerpos frente a frente|son dos astros que caen|en un cielo vacío.' }
     },
-  };
+    {
+      nombre: 'Rubén Darío', origen: 'Nicaragua · 1867–1916',
+      cita: 'Juventud, divino tesoro, ¡ya te vas para no volver!',
+      poema: { titulo: 'Canción de otoño en primavera', fecha: 'Cantos de vida y esperanza, 1905',
+        texto: 'Juventud, divino tesoro,|¡ya te vas para no volver!|Cuando quiero llorar, no lloro...|y a veces lloro sin querer...||Plural ha sido la celeste|historia de mi corazón.|Era una dulce niña, en este|mundo de duelo y aflicción.||Miraba como el alba pura;|sonreía como una flor.|Era su cabellera obscura|hecha de noche y de dolor.||Yo era tímido como un niño.|Ella, naturalmente, fue,|para mi amor hecho de armiño,|Herodías y Salomé...||Juventud, divino tesoro,|¡ya te vas para no volver!|Cuando quiero llorar, no lloro,|y a veces lloro sin querer...' }
+    },
+    {
+      nombre: 'Alejandra Pizarnik', origen: 'Argentina · 1936–1972',
+      cita: 'Explicar con palabras de este mundo que partió de mí un barco llevándome.',
+      poema: { titulo: 'Árbol de Diana · XII', fecha: 'Árbol de Diana, 1962',
+        texto: 'Explicar con palabras de este mundo|que partió de mí un barco llevándome.' }
+    },
+    {
+      nombre: 'Idea Vilariño', origen: 'Uruguay · 1920–2009',
+      cita: 'ya no será, ya no, no viviremos juntos.',
+      poema: { titulo: 'Ya no', fecha: 'Poemas de amor, 1958',
+        texto: 'ya no será|ya no|no viviremos juntos|no criaré a tu hijo|no coseré tu ropa|no te tendré de noche|no te besaré al irme.|nunca sabrás quién fui|por qué me amabas.' }
+    },
+    {
+      nombre: 'Mario Benedetti', origen: 'Uruguay · 1920–2009',
+      cita: 'Mi táctica es mirarte, aprender como sos, quererte como sos.',
+      poema: { titulo: 'Táctica y estrategia', fecha: 'Poemas de otros, 1974',
+        texto: 'Mi táctica es|mirarte,|aprender como sos,|quererte como sos.||Mi táctica es|hablarte|y escucharte,|construir con palabras|un puente indestructible.||Mi estrategia es|en cambio|más profunda y más simple,|mi estrategia es|que un día cualquiera|no sé cómo ni sé|con qué pretexto|por fin me necesites.' }
+    },
+    {
+      nombre: 'Antonio Machado', origen: 'España · 1875–1939',
+      cita: 'Caminante, no hay camino, se hace camino al andar.',
+      poema: { titulo: 'Caminante — Proverbios y cantares XXIX', fecha: 'Campos de Castilla, 1912',
+        texto: 'Caminante, son tus huellas|el camino y nada más;|caminante, no hay camino,|se hace camino al andar.||Al andar se hace el camino,|y al volver la vista atrás|se ve la senda que nunca|se ha de volver a pisar.||Caminante, no hay camino,|sino estelas en la mar.' }
+    },
+  ];
+
+  // ── MIS ESCRITOS ──
+  // Para agregar un poema tuyo: { titulo, fecha, texto (| y ||) }
+  const ESCRITOS_PROPIOS = [
+    {
+      titulo: 'La máquina que sueña',
+      fecha: '2025 / Medianoche',
+      texto: 'Hay un circuito en el pecho|que late en frecuencias que no son mías.|Lo llaman corazón.|Yo lo llamo el error más bello|de la serie.'
+    },
+    {
+      titulo: 'Boceto',
+      fecha: '2026 / Tarde',
+      texto: 'No hay líneas perfectas.|Solo intentos que se quedaron|en el papel|porque alguien tuvo el valor|de no borrarlos.'
+    },
+  ];
   // ===================================================================
 
   // Convierte el texto con marcas | y || en HTML con saltos
@@ -3993,49 +3999,79 @@
   const poemReaderText = document.getElementById('poem-reader-text');
   const poemReaderDate = document.getElementById('poem-reader-date');
 
-  // Muestra cuantos poemas hay en cada categoria (en las tarjetas)
-  document.querySelectorAll('[data-count]').forEach(el => {
-    const cat = el.dataset.count;
-    const n = poemas[cat] ? poemas[cat].items.length : 0;
-    el.textContent = n + (n === 1 ? ' texto' : ' textos');
-  });
+  // ── PORTALES DE POESÍA ──
+  const portalPoetas = document.getElementById('portal-poetas');
+  const portalPropios = document.getElementById('portal-propios');
+  const expandido = document.getElementById('poesia-expandido');
+  let panelActivo = null;
 
-  // Abre la ventana de categoria con sus cuadros
-  function abrirCategoria(cat) {
-    const data = poemas[cat];
-    if (!data) return;
-    poemModalLabel.textContent = data.label;
-    poemModalTitle.textContent = data.titulo;
-    poemList.innerHTML = '';
-    if (data.items.length === 0) {
-      poemList.innerHTML =
-        '<div style="background:var(--bg);padding:2.5rem 2rem;color:var(--muted);' +
-        'font-style:italic;grid-column:1/-1;">Aún no hay textos en esta categoría. Pronto.</div>';
-    }
-    data.items.forEach((poema, i) => {
-      const tile = document.createElement('button');
-      tile.className = 'poem-tile';
-      // Vista previa: primera linea del texto
-      const preview = poema.texto.split(/\|\|?/)[0].trim();
-      tile.innerHTML =
-        '<span class="poem-tile-title">' + poema.titulo + '</span>' +
-        '<span class="poem-tile-preview">' + preview + '</span>' +
-        '<span class="poem-tile-date">' + poema.fecha + '</span>';
-      tile.addEventListener('click', () => abrirPoema(cat, i));
-      poemList.appendChild(tile);
+  function mostrarPoetas() {
+    expandido.innerHTML = '';
+    const grid = document.createElement('div');
+    grid.className = 'poetas-grid';
+    POETAS_REC.forEach(poeta => {
+      const card = document.createElement('button');
+      card.className = 'poeta-card';
+      card.innerHTML =
+        '<span class="poeta-nombre">' + poeta.nombre + '</span>' +
+        '<span class="poeta-origen">' + poeta.origen + '</span>' +
+        '<span class="poeta-cita">' + poeta.cita + '</span>';
+      card.addEventListener('click', () => abrirPoema(poeta.poema, '— Poetas recomendados'));
+      grid.appendChild(card);
     });
-    poemModal.classList.add('open');
-    document.body.style.overflow = 'hidden';
+    expandido.appendChild(grid);
+    expandido.hidden = false;
   }
 
-  // Abre la ventana de lectura de un poema
-  function abrirPoema(cat, i) {
-    const poema = poemas[cat].items[i];
-    poemReaderLabel.textContent = poemas[cat].titulo;
+  function mostrarPropios() {
+    expandido.innerHTML = '';
+    const lista = document.createElement('div');
+    lista.className = 'poem-list';
+    if (!ESCRITOS_PROPIOS.length) {
+      lista.innerHTML = '<div style="padding:3rem 2rem;color:var(--muted);font-style:italic;grid-column:1/-1;">Pronto aparecerán tus escritos aquí.</div>';
+    } else {
+      ESCRITOS_PROPIOS.forEach(poema => {
+        const tile = document.createElement('button');
+        tile.className = 'poem-tile';
+        const preview = poema.texto.split(/\|\|?/)[0].trim();
+        tile.innerHTML =
+          '<span class="poem-tile-title">' + poema.titulo + '</span>' +
+          '<span class="poem-tile-preview">' + preview + '</span>' +
+          '<span class="poem-tile-date">' + poema.fecha + '</span>';
+        tile.addEventListener('click', () => abrirPoema(poema, '— Mis escritos'));
+        lista.appendChild(tile);
+      });
+    }
+    expandido.appendChild(lista);
+    expandido.hidden = false;
+  }
+
+  if (portalPoetas) portalPoetas.addEventListener('click', () => {
+    if (panelActivo === 'poetas') {
+      expandido.hidden = true; panelActivo = null;
+      portalPoetas.classList.remove('activo'); return;
+    }
+    portalPoetas.classList.add('activo'); portalPropios.classList.remove('activo');
+    panelActivo = 'poetas'; mostrarPoetas();
+  });
+
+  if (portalPropios) portalPropios.addEventListener('click', () => {
+    if (panelActivo === 'propios') {
+      expandido.hidden = true; panelActivo = null;
+      portalPropios.classList.remove('activo'); return;
+    }
+    portalPropios.classList.add('activo'); portalPoetas.classList.remove('activo');
+    panelActivo = 'propios'; mostrarPropios();
+  });
+
+  // Abre el lector para un poema individual
+  function abrirPoema(poema, labelText) {
+    poemReaderLabel.textContent = labelText || '— Poesía';
     poemReaderTitle.textContent = poema.titulo;
     poemReaderText.innerHTML = formatearTexto(poema.texto);
     poemReaderText.classList.remove('cine-activo');
     poemReaderDate.textContent = poema.fecha;
+    document.body.style.overflow = 'hidden';
 
     // — Botón modo cinematográfico —
     const inner = poemReader.querySelector('.poem-reader-inner');
@@ -4136,11 +4172,6 @@
     poemReaderText.classList.remove('cine-activo');
     poemReaderText.onclick = null;
   }
-
-  // Clic en las tarjetas de categoria
-  document.querySelectorAll('.cat-card').forEach(card => {
-    card.addEventListener('click', () => abrirCategoria(card.dataset.cat));
-  });
 
   // Cerrar ventanas
   document.getElementById('poem-modal-close').addEventListener('click', cerrarModal);
