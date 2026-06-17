@@ -629,11 +629,9 @@
     }
 
     .gallery-grid {
-      /* Estilo Pinterest: columnas tipo mampostería */
-      column-count: 4;
+      column-count: 3;
       column-gap: 0.9rem;
     }
-    @media (max-width: 1100px) { .gallery-grid { column-count: 3; } }
 
     .gallery-item {
       background: var(--bg2);
@@ -1149,17 +1147,18 @@
       margin-top: auto;
     }
 
-    /* ── VENTANA DEL POEMA INDIVIDUAL ── */
+    /* ── VENTANA DEL POEMA INDIVIDUAL — estilo card flotante Pinterest ── */
     .poem-reader {
       position: fixed;
       inset: 0;
       z-index: 1100;
-      background: rgba(5,5,8,0.97);
-      backdrop-filter: blur(10px);
+      background: rgba(8,5,3,0.62);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 3rem clamp(1.5rem, 6vw, 6rem);
+      padding: 1.5rem;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s ease;
@@ -1170,40 +1169,71 @@
       pointer-events: auto;
     }
 
+    /* Card flotante crema cálida */
     .poem-reader-inner {
-      max-width: 640px;
+      max-width: 560px;
       width: 100%;
-      max-height: 85vh;
+      max-height: 88vh;
       overflow-y: auto;
       text-align: center;
+      background: linear-gradient(160deg, #fdf6ec 0%, #f5e9d5 100%);
+      border-radius: 18px;
+      padding: 2.8rem 2.4rem 2.2rem;
+      box-shadow:
+        0 32px 80px rgba(0,0,0,0.55),
+        0 0 0 1px rgba(184,70,10,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.6);
+      position: relative;
     }
 
-    .poem-reader-inner::-webkit-scrollbar { width: 6px; }
-    .poem-reader-inner::-webkit-scrollbar-thumb { background: var(--copper); border-radius: 3px; }
+    .poem-reader-inner::-webkit-scrollbar { width: 5px; }
+    .poem-reader-inner::-webkit-scrollbar-track { background: transparent; }
+    .poem-reader-inner::-webkit-scrollbar-thumb { background: #c9a24d; border-radius: 3px; }
+
+    /* Línea de acento cobre en la parte superior de la card */
+    .poem-reader-inner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #B8460A 30%, #c9a24d 70%, transparent);
+      border-radius: 0 0 3px 3px;
+    }
 
     .poem-reader-label {
       font-family: var(--mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.25em;
+      font-size: 0.55rem;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--copper);
-      margin-bottom: 1.5rem;
+      color: #B8460A;
+      margin-bottom: 1rem;
     }
 
     .poem-reader-title {
       font-family: var(--serif);
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
       font-style: italic;
-      color: var(--ink);
-      margin-bottom: 2.5rem;
+      color: #1e130a;
+      margin-bottom: 2rem;
       line-height: 1.2;
+    }
+
+    /* Separador decorativo entre título y cuerpo */
+    .poem-reader-title::after {
+      content: '✦';
+      display: block;
+      font-size: 0.7rem;
+      color: #B8460A;
+      opacity: 0.5;
+      margin-top: 1.2rem;
+      letter-spacing: 0.5em;
     }
 
     .poem-reader-text {
       font-family: var(--serif);
-      font-size: 1.15rem;
-      line-height: 2.1;
-      color: var(--ink);
+      font-size: 1.08rem;
+      line-height: 2;
+      color: #2e1f12;
     }
 
     .poem-reader-text .desc-parrafo { display: block; }
@@ -1211,25 +1241,28 @@
 
     .poem-reader-date {
       font-family: var(--mono);
-      font-size: 0.6rem;
+      font-size: 0.55rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-top: 2.5rem;
+      color: #9a8070;
+      margin-top: 2rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid rgba(184,70,10,0.18);
     }
 
-    /* Boton cerrar (reutilizado para ambas ventanas de poesia) */
+    /* Botón cerrar — dentro de la card, esquina superior derecha */
     .poem-close {
-      position: fixed;
-      top: 1.5rem;
-      right: 1.5rem;
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
       z-index: 10;
-      width: 44px;
-      height: 44px;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      color: var(--ink);
-      font-size: 1.3rem;
+      width: 36px;
+      height: 36px;
+      background: rgba(184,70,10,0.1);
+      border: 1px solid rgba(184,70,10,0.25);
+      border-radius: 50%;
+      color: #B8460A;
+      font-size: 1rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1238,7 +1271,11 @@
       line-height: 1;
     }
 
-    .poem-close:hover { border-color: var(--copper); color: var(--copper); }
+    .poem-close:hover {
+      background: #B8460A;
+      color: #fdf6ec;
+      border-color: #B8460A;
+    }
 
     .poetry-grid {
       display: grid;
@@ -4067,8 +4104,8 @@
 
 <!-- ── VENTANA DEL POEMA INDIVIDUAL ── -->
 <div class="poem-reader" id="poem-reader" aria-hidden="true">
-  <button class="poem-close" id="poem-reader-close" aria-label="Cerrar">✕</button>
   <div class="poem-reader-inner">
+    <button class="poem-close" id="poem-reader-close" aria-label="Cerrar">✕</button>
     <div class="poem-reader-label" id="poem-reader-label"></div>
     <h2 class="poem-reader-title" id="poem-reader-title"></h2>
     <div class="poem-reader-text" id="poem-reader-text"></div>
