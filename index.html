@@ -4319,7 +4319,7 @@
         <span class="nav-icon">✦</span> El Oráculo
       </a></li>
       <li><a href="#maniqui">
-        <span class="nav-icon">⊹</span> Maniquí 3D
+        <span class="nav-icon">⊹</span> Anatomía 3D
       </a></li>
       <li class="nav-museo">
         <a href="#galeria-arte" id="nav-museo-link">
@@ -4368,7 +4368,7 @@
       <div class="hero-buttons">
         <a href="#dibujos" class="btn btn-primary">Ver dibujos</a>
         <a href="#oraculo" class="btn btn-ghost">El Oráculo</a>
-        <a href="#maniqui" class="btn btn-ghost">Maniquí 3D</a>
+        <a href="#maniqui" class="btn btn-ghost">Anatomía 3D</a>
         <a href="#juegos" class="btn btn-juegos">◆ Juegos</a>
         <a href="#poesia" class="btn btn-ghost">Leer poesía</a>
         <a href="#galeria-arte" class="btn btn-ghost">Museo</a>
@@ -4432,27 +4432,27 @@
 
     <div class="rule"></div>
 
-    <!-- MANIQUÍ ANATÓMICO 3D (práctica de poses) -->
+    <!-- ANATOMÍA 3D (modelos de esqueleto/cráneo para estudiar) -->
     <section id="maniqui">
       <div class="maniqui-intro">
         <p class="section-label reveal">— Figura humana</p>
-        <h2 class="section-title reveal">Maniquí 3D</h2>
+        <h2 class="section-title reveal">Anatomía 3D</h2>
         <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">
-          Un muñeco articulado para estudiar la figura. Gíralo con el dedo o el mouse
-          para dibujarlo desde cualquier ángulo, y cambia de pose cuando quieras.
+          Modelos anatómicos reales para estudiar la estructura ósea. Gíralos con el dedo
+          o el mouse para observarlos desde cualquier ángulo, y acércate al detalle.
         </p>
       </div>
 
       <div class="maniqui-escena reveal" id="maniqui-escena">
         <div class="maniqui-pose-nombre" id="maniqui-pose-nombre"></div>
         <div class="maniqui-hintgiro">Arrastra para girar · rueda para acercar</div>
-        <div class="maniqui-cargando" id="maniqui-cargando">Cargando el maniquí 3D…</div>
+        <div class="maniqui-cargando" id="maniqui-cargando">Cargando modelo 3D…</div>
       </div>
 
       <div class="maniqui-controles reveal">
-        <button class="maniqui-btn" id="maniqui-prev">‹ Pose</button>
-        <button class="maniqui-btn" id="maniqui-next">Pose ›</button>
-        <button class="maniqui-btn destacado" id="maniqui-random">🎲 Pose aleatoria</button>
+        <button class="maniqui-btn" data-modelo="0">💀 Cráneo</button>
+        <button class="maniqui-btn activo" data-modelo="1">Esqueleto masculino</button>
+        <button class="maniqui-btn" data-modelo="2">Esqueleto femenino</button>
         <button class="maniqui-btn" id="maniqui-girar">⟳ Giro automático</button>
         <button class="maniqui-btn" id="maniqui-reset">⌂ Centrar vista</button>
       </div>
@@ -4871,6 +4871,8 @@
 
 <!-- Three.js — motor 3D para el Maniquí (se carga desde la web) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- Cargador de modelos 3D (.glb/.gltf) para la sección Anatomía 3D -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 
 <script>
   // ── ACTIVE NAV ──
@@ -7479,7 +7481,7 @@
       { id: 'inicio',      label: 'Inicio'    },
       { id: 'dibujos',     label: 'Dibujos'   },
       { id: 'oraculo',     label: 'Oráculo'   },
-      { id: 'maniqui',     label: 'Maniquí 3D'},
+      { id: 'maniqui',     label: 'Anatomía 3D'},
       { id: 'galeria-arte',label: 'Museo'     },
       { id: 'juegos',      label: 'Juegos'    },
       { id: 'poesia',      label: 'Poesía'    },
@@ -7896,8 +7898,10 @@
   })();
 
 
-  // ── MANIQUÍ ANATÓMICO 3D (práctica de poses) ──
-  // Muñeco de madera articulado. Se gira con el mouse/dedo y cambia de pose.
+  // ── ANATOMÍA 3D (modelos .glb de esqueleto/cráneo para estudiar) ──
+  // Carga modelos 3D reales y permite girarlos y acercarse al detalle.
+  // Los archivos van en la carpeta modelos/ del repo:
+  //   modelos/craneo.glb · modelos/esqueleto-masculino.glb · modelos/esqueleto-femenino.glb
   (function () {
     const cont = document.getElementById('maniqui-escena');
     if (!cont) return;
@@ -7908,6 +7912,10 @@
       if (cargando) cargando.textContent = 'No se pudo cargar el motor 3D. Revisa tu conexión y recarga.';
       return;
     }
+    if (typeof THREE.GLTFLoader === 'undefined') {
+      if (cargando) cargando.textContent = 'No se pudo cargar el lector de modelos 3D. Revisa tu conexión y recarga.';
+      return;
+    }
 
     // ---- Escena / cámara / render ----
     const scene = new THREE.Scene();
@@ -7916,12 +7924,13 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    if ('outputEncoding' in renderer) renderer.outputEncoding = THREE.sRGBEncoding;
     cont.appendChild(renderer.domElement);
 
     // ---- Luces ----
-    scene.add(new THREE.AmbientLight(0x3b4452, 0.9));
-    scene.add(new THREE.HemisphereLight(0xcfe0ff, 0x241708, 0.55));
-    const key = new THREE.DirectionalLight(0xffe8c8, 1.15);
+    scene.add(new THREE.AmbientLight(0x3b4452, 0.95));
+    scene.add(new THREE.HemisphereLight(0xcfe0ff, 0x241708, 0.6));
+    const key = new THREE.DirectionalLight(0xffe8c8, 1.2);
     key.position.set(4, 8, 6);
     key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024);
@@ -7930,16 +7939,15 @@
     key.shadow.camera.top = 6; key.shadow.camera.bottom = -3;
     key.shadow.bias = -0.0008;
     scene.add(key);
-    const rim = new THREE.DirectionalLight(0xB8460A, 0.45);
+    const rim = new THREE.DirectionalLight(0xB8460A, 0.5);
     rim.position.set(-6, 3, -5);
     scene.add(rim);
-
-    // ---- Materiales (madera de maniquí) ----
-    const matCuerpo = new THREE.MeshStandardMaterial({ color: 0xd8c3a0, roughness: 0.72, metalness: 0.04 });
-    const matJunta  = new THREE.MeshStandardMaterial({ color: 0xbfa586, roughness: 0.6, metalness: 0.05 });
+    const fill = new THREE.DirectionalLight(0x8aa0c0, 0.4);
+    fill.position.set(2, 2, -6);
+    scene.add(fill);
 
     // ---- Suelo + anillo de escenario ----
-    const suelo = new THREE.Mesh(new THREE.CircleGeometry(3.4, 48), new THREE.ShadowMaterial({ opacity: 0.33 }));
+    const suelo = new THREE.Mesh(new THREE.CircleGeometry(3.4, 48), new THREE.ShadowMaterial({ opacity: 0.32 }));
     suelo.rotation.x = -Math.PI / 2; suelo.receiveShadow = true; scene.add(suelo);
     const anillo = new THREE.Mesh(
       new THREE.RingGeometry(1.0, 3.1, 64),
@@ -7947,209 +7955,96 @@
     );
     anillo.rotation.x = -Math.PI / 2; anillo.position.y = 0.002; scene.add(anillo);
 
-    // ---- Constructor de huesos ----
-    // dir = 1 crece hacia -Y (abajo); dir = -1 crece hacia +Y (arriba)
-    function hueso(parent, len, rNear, rFar, dir) {
-      const g = new THREE.Group();
-      const rTop = dir === 1 ? rNear : rFar;
-      const rBot = dir === 1 ? rFar : rNear;
-      const mesh = new THREE.Mesh(new THREE.CylinderGeometry(rTop, rBot, len, 18), matCuerpo);
-      mesh.castShadow = true; mesh.receiveShadow = true;
-      mesh.position.y = (dir === 1 ? -len : len) / 2;
-      g.add(mesh);
-      const ball = new THREE.Mesh(new THREE.SphereGeometry(rNear * 1.18, 16, 14), matJunta);
-      ball.castShadow = true; g.add(ball);
-      g.userData.end = (dir === 1 ? -len : len);
-      if (parent) parent.add(g);
-      return g;
-    }
-
-    // ---- Esqueleto ----
-    const fig = new THREE.Group();
-    scene.add(fig);
-
-    // Pelvis
-    const pelvis = new THREE.Group();
-    pelvis.position.y = 1.0;
-    fig.add(pelvis);
-    const pelvisMesh = new THREE.Mesh(new THREE.SphereGeometry(0.16, 18, 14), matCuerpo);
-    pelvisMesh.scale.set(1.3, 0.85, 0.95); pelvisMesh.castShadow = true; pelvis.add(pelvisMesh);
-
-    // Torso (pivota en la cintura para inclinar el cuerpo)
-    const torso = new THREE.Group();
-    torso.position.y = 0.06; pelvis.add(torso);
-    const spine = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.12, 0.22, 16), matCuerpo);
-    spine.position.y = 0.11; spine.castShadow = true; torso.add(spine);
-    const ribcage = new THREE.Mesh(new THREE.SphereGeometry(0.19, 20, 16), matCuerpo);
-    ribcage.scale.set(1.15, 1.1, 0.78); ribcage.position.y = 0.32; ribcage.castShadow = true; torso.add(ribcage);
-
-    const HOMBRO_Y = 0.42;   // altura de los hombros dentro de torso
-    const HOMBRO_X = 0.2;    // separación lateral de los hombros
-    const CADERA_X = 0.1;    // separación lateral de las caderas
-
-    // Cuello + cabeza
-    const cuello = new THREE.Group();
-    cuello.position.y = HOMBRO_Y; torso.add(cuello);
-    const cuelloMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 0.1, 14), matCuerpo);
-    cuelloMesh.position.y = 0.05; cuelloMesh.castShadow = true; cuello.add(cuelloMesh);
-    const cabeza = new THREE.Group();
-    cabeza.position.y = 0.1; cuello.add(cabeza);
-    const craneo = new THREE.Mesh(new THREE.SphereGeometry(0.125, 20, 16), matCuerpo);
-    craneo.scale.set(0.92, 1.12, 1.0); craneo.position.y = 0.12; craneo.castShadow = true; cabeza.add(craneo);
-    const menton = new THREE.Mesh(new THREE.SphereGeometry(0.075, 16, 12), matCuerpo);
-    menton.position.set(0, 0.06, 0.06); menton.castShadow = true; cabeza.add(menton);
-
-    // Brazos
-    function brazo(lado) { // lado: -1 izq, +1 der
-      const hombro = new THREE.Group();
-      hombro.position.set(HOMBRO_X * lado, HOMBRO_Y, 0);
-      torso.add(hombro);
-      const upper = hueso(hombro, 0.3, 0.07, 0.055, 1);
-      const codo = new THREE.Group(); codo.position.y = upper.userData.end; upper.add(codo);
-      const fore = hueso(codo, 0.28, 0.055, 0.04, 1);
-      const muneca = new THREE.Group(); muneca.position.y = fore.userData.end; fore.add(muneca);
-      const mano = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.14, 0.03), matCuerpo);
-      mano.position.y = -0.07; mano.castShadow = true; muneca.add(mano);
-      return { hombro, codo, muneca };
-    }
-    const bI = brazo(-1), bD = brazo(1);
-
-    // Piernas
-    function pierna(lado) {
-      const cadera = new THREE.Group();
-      cadera.position.set(CADERA_X * lado, -0.02, 0);
-      pelvis.add(cadera);
-      const muslo = hueso(cadera, 0.46, 0.1, 0.075, 1);
-      const rodilla = new THREE.Group(); rodilla.position.y = muslo.userData.end; muslo.add(rodilla);
-      const shin = hueso(rodilla, 0.44, 0.075, 0.05, 1);
-      const tobillo = new THREE.Group(); tobillo.position.y = shin.userData.end; shin.add(tobillo);
-      const pie = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.055, 0.24), matCuerpo);
-      pie.position.set(0, -0.025, 0.07); pie.castShadow = true; tobillo.add(pie);
-      return { cadera, rodilla, tobillo };
-    }
-    const pI = pierna(-1), pD = pierna(1);
-
-    // ---- Mapa de huesos posables ----
-    const B = {
-      torso: torso, cuello: cuello, cabeza: cabeza,
-      hombroL: bI.hombro, codoL: bI.codo, munecaL: bI.muneca,
-      hombroR: bD.hombro, codoR: bD.codo, munecaR: bD.muneca,
-      caderaL: pI.cadera, rodillaL: pI.rodilla, tobilloL: pI.tobillo,
-      caderaR: pD.cadera, rodillaR: pD.rodilla, tobilloR: pD.tobillo,
-    };
-
-    // ---- Pose neutra (brazos al costado, piernas rectas) ----
-    const NEUTRO = {
-      torso: [0, 0, 0], cuello: [0, 0, 0], cabeza: [0, 0, 0],
-      hombroL: [0, 0, -0.14], codoL: [0, 0, 0], munecaL: [0, 0, 0],
-      hombroR: [0, 0, 0.14], codoR: [0, 0, 0], munecaR: [0, 0, 0],
-      caderaL: [0, 0, -0.04], rodillaL: [0, 0, 0], tobilloL: [0, 0, 0],
-      caderaR: [0, 0, 0.04], rodillaR: [0, 0, 0], tobilloR: [0, 0, 0],
-    };
-
-    function base() { const o = {}; for (const k in NEUTRO) o[k] = NEUTRO[k].slice(); return o; }
-    function fusion(cambios) { const o = base(); for (const k in cambios) o[k] = cambios[k]; return o; }
-
-    // ---- Poses predefinidas ----
-    const POSES = [
-      { nombre: 'Reposo', rot: base() },
-      { nombre: 'Contrapposto', rot: fusion({
-        torso: [0, 0, 0.08], cabeza: [0, 0.25, -0.05],
-        caderaR: [-0.1, 0, 0.04], rodillaL: [0.25, 0, 0],
-        hombroL: [0.15, 0, -0.18], hombroR: [0.1, 0, 0.1], codoR: [-0.5, 0, 0],
-      }) },
-      { nombre: 'Caminando', rot: fusion({
-        caderaL: [0.5, 0, -0.04], rodillaL: [0.2, 0, 0],
-        caderaR: [-0.45, 0, 0.04], rodillaR: [0.55, 0, 0], tobilloR: [0.3, 0, 0],
-        hombroL: [-0.5, 0, -0.14], codoL: [-0.4, 0, 0],
-        hombroR: [0.5, 0, 0.14], codoR: [-0.4, 0, 0],
-        torso: [0.05, 0.08, 0],
-      }) },
-      { nombre: 'Corriendo', rot: fusion({
-        torso: [0.28, 0.1, 0],
-        caderaL: [0.9, 0, -0.04], rodillaL: [0.5, 0, 0],
-        caderaR: [-0.7, 0, 0.04], rodillaR: [1.5, 0, 0], tobilloR: [0.4, 0, 0],
-        hombroL: [-1.1, 0.2, -0.1], codoL: [-1.4, 0, 0],
-        hombroR: [1.0, -0.2, 0.1], codoR: [-1.5, 0, 0],
-        cabeza: [-0.15, 0, 0],
-      }) },
-      { nombre: 'Brazos arriba', rot: fusion({
-        hombroL: [-2.9, 0, -0.1], hombroR: [2.9, 0, 0.1],
-        cabeza: [-0.2, 0, 0], torso: [-0.05, 0, 0],
-      }) },
-      { nombre: 'Sentado', rot: fusion({
-        caderaL: [1.55, 0, -0.08], rodillaL: [1.5, 0, 0],
-        caderaR: [1.55, 0, 0.08], rodillaR: [1.5, 0, 0],
-        torso: [0.1, 0, 0], hombroL: [0.3, 0, -0.2], hombroR: [0.3, 0, 0.2],
-        codoL: [-0.4, 0, 0], codoR: [-0.4, 0, 0],
-      }) },
-      { nombre: 'Alcanzando', rot: fusion({
-        hombroR: [2.6, -0.4, 0.2], codoR: [-0.2, 0, 0],
-        torso: [-0.1, -0.15, 0.05], cabeza: [-0.25, -0.2, 0],
-        caderaL: [0.1, 0, -0.04], rodillaL: [0.15, 0, 0],
-        hombroL: [0.3, 0, -0.25], codoL: [-0.7, 0, 0],
-      }) },
-      { nombre: 'Agachado', rot: fusion({
-        torso: [0.4, 0, 0], cabeza: [-0.2, 0, 0],
-        caderaL: [1.9, 0, -0.1], rodillaL: [1.9, 0, 0], tobilloL: [0.4, 0, 0],
-        caderaR: [1.9, 0, 0.1], rodillaR: [1.9, 0, 0], tobilloR: [0.4, 0, 0],
-        hombroL: [0.8, 0, -0.2], codoL: [-0.9, 0, 0],
-        hombroR: [0.8, 0, 0.2], codoR: [-0.9, 0, 0],
-      }) },
-      { nombre: 'En T (referencia)', rot: fusion({
-        hombroL: [0, 0, -1.57], hombroR: [0, 0, 1.57],
-      }) },
+    // ---- Modelos disponibles ----
+    const MODELOS = [
+      { label: 'Cráneo',              url: 'modelos/craneo.glb',              rotX: 0 },
+      { label: 'Esqueleto masculino', url: 'modelos/esqueleto-masculino.glb', rotX: -Math.PI / 2 },
+      { label: 'Esqueleto femenino',  url: 'modelos/esqueleto-femenino.glb',  rotX: -Math.PI / 2 },
     ];
+    const FOCO_Y = 1.1;
+    const loader = new THREE.GLTFLoader();
+    let actual = null, cargandoAhora = false, idxActual = 1;
 
-    // ---- Rangos para pose aleatoria (radianes) ----
-    const RANGO = {
-      torso: [[-0.3, 0.45], [-0.6, 0.6], [-0.3, 0.3]],
-      cuello: [[-0.2, 0.3], [-0.4, 0.4], [-0.15, 0.15]],
-      cabeza: [[-0.3, 0.35], [-0.6, 0.6], [-0.2, 0.2]],
-      hombroL: [[-2.9, 1.0], [-0.6, 0.8], [-1.5, 0.3]],
-      codoL: [[-2.3, -0.05], [0, 0], [0, 0]],
-      munecaL: [[-0.4, 0.4], [0, 0], [-0.4, 0.4]],
-      hombroR: [[-2.9, 1.0], [-0.8, 0.6], [-0.3, 1.5]],
-      codoR: [[-2.3, -0.05], [0, 0], [0, 0]],
-      munecaR: [[-0.4, 0.4], [0, 0], [-0.4, 0.4]],
-      caderaL: [[-0.7, 1.9], [-0.25, 0.25], [-0.25, 0.1]],
-      rodillaL: [[0.0, 2.0], [0, 0], [0, 0]],
-      tobilloL: [[-0.3, 0.45], [0, 0], [0, 0]],
-      caderaR: [[-0.7, 1.9], [-0.25, 0.25], [-0.1, 0.25]],
-      rodillaR: [[0.0, 2.0], [0, 0], [0, 0]],
-      tobilloR: [[-0.3, 0.45], [0, 0], [0, 0]],
-    };
-    function rnd(a, b) { return a + Math.random() * (b - a); }
-    function poseAleatoria() {
-      const o = base();
-      for (const k in RANGO) {
-        const r = RANGO[k];
-        o[k] = [rnd(r[0][0], r[0][1]), rnd(r[1][0], r[1][1]), rnd(r[2][0], r[2][1])];
-      }
-      return o;
+    const foco = new THREE.Vector3(0, FOCO_Y, 0);
+
+    function limpiarModelo() {
+      if (!actual) return;
+      scene.remove(actual);
+      actual.traverse(o => {
+        if (o.geometry) o.geometry.dispose();
+        if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose());
+      });
+      actual = null;
     }
 
-    // ---- Aplicar / animar poses ----
-    const objetivo = {}; // rotaciones objetivo por hueso
-    function fijarObjetivo(rot) { for (const k in rot) objetivo[k] = rot[k]; }
-    // inicia en neutro, ya colocado
-    fijarObjetivo(base());
-    for (const k in objetivo) B[k].rotation.set(objetivo[k][0], objetivo[k][1], objetivo[k][2]);
-
-    let idxPose = 0;
-    function mostrarPose(i) {
-      idxPose = (i + POSES.length) % POSES.length;
-      fijarObjetivo(POSES[idxPose].rot);
-      nombreEl.textContent = POSES[idxPose].nombre;
+    // Centra, escala y orienta el modelo para que entre bien en el escenario
+    function encuadrar(obj, rotX) {
+      const pivot = new THREE.Group();
+      obj.rotation.x = rotX || 0;
+      pivot.add(obj);
+      // 1) centrar en el origen
+      let box = new THREE.Box3().setFromObject(pivot);
+      const center = new THREE.Vector3(); box.getCenter(center);
+      obj.position.x -= center.x; obj.position.y -= center.y; obj.position.z -= center.z;
+      // 2) escalar para que la dimensión mayor mida ~2.4
+      box = new THREE.Box3().setFromObject(pivot);
+      const size = new THREE.Vector3(); box.getSize(size);
+      const maxDim = Math.max(size.x, size.y, size.z) || 1;
+      pivot.scale.setScalar(2.4 / maxDim);
+      pivot.position.y = FOCO_Y;
+      // sombras
+      obj.traverse(o => {
+        if (o.isMesh) {
+          o.castShadow = true; o.receiveShadow = true;
+          if (o.material) o.material.needsUpdate = true;
+        }
+      });
+      return pivot;
     }
-    mostrarPose(0);
+
+    function marcarBoton(i) {
+      document.querySelectorAll('.maniqui-controles [data-modelo]').forEach(b =>
+        b.classList.toggle('activo', +b.dataset.modelo === i));
+    }
+
+    function cargar(i) {
+      if (cargandoAhora) return;
+      const m = MODELOS[i];
+      idxActual = i;
+      cargandoAhora = true;
+      marcarBoton(i);
+      nombreEl.textContent = m.label;
+      if (cargando) { cargando.style.display = 'flex'; cargando.textContent = 'Cargando ' + m.label + '…'; }
+      loader.load(
+        m.url,
+        gltf => {
+          limpiarModelo();
+          actual = encuadrar(gltf.scene, m.rotX);
+          scene.add(actual);
+          cargandoAhora = false;
+          if (cargando) cargando.style.display = 'none';
+        },
+        xhr => {
+          if (cargando && xhr && xhr.total) {
+            cargando.textContent = 'Cargando ' + m.label + '… ' + Math.round(xhr.loaded / xhr.total * 100) + '%';
+          }
+        },
+        () => {
+          cargandoAhora = false;
+          if (cargando) {
+            cargando.style.display = 'flex';
+            cargando.innerHTML = 'No se pudo cargar <b>' + m.url + '</b>.<br>' +
+              'Sube el archivo a la carpeta <code>modelos/</code> de tu repositorio.';
+          }
+        }
+      );
+    }
 
     // ---- Órbita de cámara (controles propios) ----
-    let az = 0.5, pol = 1.4, rad = 3.9;
-    const foco = new THREE.Vector3(0, 0.95, 0);
+    let az = 0.6, pol = 1.45, rad = 4.3;
     function actualizarCam() {
-      pol = Math.max(0.35, Math.min(Math.PI - 0.22, pol));
-      rad = Math.max(2.2, Math.min(7.5, rad));
+      pol = Math.max(0.3, Math.min(Math.PI - 0.2, pol));
+      rad = Math.max(1.6, Math.min(9, rad));
       camera.position.set(
         foco.x + rad * Math.sin(pol) * Math.sin(az),
         foco.y + rad * Math.cos(pol),
@@ -8161,7 +8056,8 @@
     let giroAuto = false, arrastrando = false, lastX = 0, lastY = 0;
     cont.addEventListener('pointerdown', e => {
       arrastrando = true; lastX = e.clientX; lastY = e.clientY;
-      cont.classList.add('arrastrando'); cont.setPointerCapture(e.pointerId);
+      cont.classList.add('arrastrando');
+      try { cont.setPointerCapture(e.pointerId); } catch (x) {}
     });
     cont.addEventListener('pointermove', e => {
       if (!arrastrando) return;
@@ -8169,10 +8065,10 @@
       pol -= (e.clientY - lastY) * 0.008;
       lastX = e.clientX; lastY = e.clientY;
     });
-    function soltar(e) { arrastrando = false; cont.classList.remove('arrastrando'); }
+    function soltar() { arrastrando = false; cont.classList.remove('arrastrando'); }
     cont.addEventListener('pointerup', soltar);
     cont.addEventListener('pointercancel', soltar);
-    cont.addEventListener('wheel', e => { e.preventDefault(); rad += e.deltaY * 0.0022; }, { passive: false });
+    cont.addEventListener('wheel', e => { e.preventDefault(); rad += e.deltaY * 0.0025; }, { passive: false });
 
     // ---- Tamaño responsivo ----
     function redimensionar() {
@@ -8184,17 +8080,14 @@
     window.addEventListener('resize', redimensionar);
 
     // ---- Botones ----
-    document.getElementById('maniqui-prev').addEventListener('click', () => mostrarPose(idxPose - 1));
-    document.getElementById('maniqui-next').addEventListener('click', () => mostrarPose(idxPose + 1));
-    document.getElementById('maniqui-random').addEventListener('click', () => {
-      fijarObjetivo(poseAleatoria()); nombreEl.textContent = 'Pose aleatoria';
-    });
+    document.querySelectorAll('.maniqui-controles [data-modelo]').forEach(b =>
+      b.addEventListener('click', () => cargar(+b.dataset.modelo)));
     const btnGiro = document.getElementById('maniqui-girar');
     btnGiro.addEventListener('click', () => {
       giroAuto = !giroAuto; btnGiro.classList.toggle('activo', giroAuto);
     });
     document.getElementById('maniqui-reset').addEventListener('click', () => {
-      az = 0.5; pol = 1.4; rad = 3.9;
+      az = 0.6; pol = 1.45; rad = 4.3;
     });
 
     // ---- Pausa cuando la sección no está visible ----
@@ -8205,22 +8098,15 @@
     }
 
     // ---- Bucle ----
-    let primera = true;
     function anim() {
       requestAnimationFrame(anim);
       if (!visible) return;
       if (giroAuto && !arrastrando) az += 0.004;
-      // interpola rotaciones hacia el objetivo
-      for (const k in objetivo) {
-        const b = B[k], o = objetivo[k];
-        b.rotation.x += (o[0] - b.rotation.x) * 0.12;
-        b.rotation.y += (o[1] - b.rotation.y) * 0.12;
-        b.rotation.z += (o[2] - b.rotation.z) * 0.12;
-      }
       actualizarCam();
       renderer.render(scene, camera);
-      if (primera) { primera = false; if (cargando) cargando.style.display = 'none'; }
     }
+    redimensionar();
+    cargar(1);   // esqueleto masculino por defecto
     anim();
   })();
 </script>
