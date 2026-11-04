@@ -2328,6 +2328,46 @@
       border-color: var(--copper);
     }
 
+    /* ── NOTAS MUSICALES que emanan del boton (para llamar la atencion) ── */
+    /* Contenedor de las notas, encima del reproductor */
+    .music-notes {
+      position: absolute;
+      left: 50%;
+      bottom: 100%;
+      width: 60px;
+      height: 70px;
+      transform: translateX(-50%);
+      pointer-events: none;
+      overflow: visible;
+    }
+    /* Cuando la musica ya suena, dejan de aparecer las notas */
+    .music-player.playing .music-notes { display: none; }
+
+    .music-notes span {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      font-size: 0.85rem;
+      color: var(--copper);
+      opacity: 0;
+      animation: nota-sube 2.6s ease-in infinite;
+      text-shadow: 0 0 6px rgba(184,70,10,0.5);
+    }
+    .music-notes span:nth-child(1) { animation-delay: 0s;    }
+    .music-notes span:nth-child(2) { animation-delay: 0.9s;  font-size: 0.7rem; }
+    .music-notes span:nth-child(3) { animation-delay: 1.7s;  font-size: 0.95rem; }
+
+    @keyframes nota-sube {
+      0%   { transform: translate(-50%, 0) rotate(0deg) scale(0.6); opacity: 0; }
+      15%  { opacity: 0.9; }
+      50%  { transform: translate(-130%, -35px) rotate(-18deg) scale(1); opacity: 0.8; }
+      100% { transform: translate(40%, -70px) rotate(14deg) scale(0.8); opacity: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .music-notes span { animation: none; display: none; }
+    }
+
     /* Boton principal de play/pausa */
     .music-btn {
       width: 48px;
@@ -2707,25 +2747,56 @@
       margin: 0 auto 3rem;
     }
 
-    /* Escenario de la carta (da perspectiva 3D) */
-    .card-stage {
-      perspective: 1400px;
-      width: min(340px, 80vw);
-      height: 460px;
-      margin: 0 auto 2.5rem;
-    }
-
-    .oracle-card {
+    /* Escenario del Oráculo: mazo → abanico de 5 → carta elegida */
+    .oraculo-escena {
       position: relative;
-      width: 100%;
-      height: 100%;
+      width: min(700px, 94vw);
+      height: 440px;
+      margin: 0 auto 2.5rem;
+      perspective: 1500px;
+    }
+    .carta-slot {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 208px; height: 318px;
+      margin: -159px 0 0 -104px;
       transform-style: preserve-3d;
-      transition: transform 0.9s cubic-bezier(0.4, 0.0, 0.2, 1);
+      transition: transform 0.75s cubic-bezier(0.22,0.61,0.36,1), opacity 0.55s ease;
       cursor: pointer;
+      will-change: transform;
+    }
+    .carta-slot.no-click { cursor: default; pointer-events: none; }
+    .carta-slot:hover:not(.no-click) { filter: drop-shadow(0 0 18px rgba(201,162,77,0.4)); }
+    .carta-inner {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      transition: transform 0.9s cubic-bezier(0.4,0,0.2,1);
+    }
+    .carta-inner.flip { transform: rotateY(180deg); }
+
+    /* Ajustes de la carta a tamaño del abanico */
+    .carta-slot .card-face { padding: 1.5rem 1.1rem; border-radius: 9px; box-shadow: 0 10px 34px rgba(0,0,0,0.6); }
+    .carta-slot .card-back-emblema { width: 66px; height: 66px; margin-bottom: 1rem; }
+    .carta-slot .card-back-titulo { font-size: 1.15rem; margin-bottom: 1rem; }
+    .carta-slot .card-back-text { font-size: 0.52rem; letter-spacing: 0.24em; }
+    .carta-slot .card-front { padding-top: 32%; }
+    .carta-slot .card-front-signo { font-size: 0.5rem; margin-bottom: 0.85rem; }
+    .carta-slot .card-front-theme { font-size: 1.02rem; line-height: 1.35; }
+    .carta-slot .card-front-tecnica { font-size: 0.52rem; margin-top: 0.9rem; padding-top: 0.8rem; max-width: 94%; }
+
+    @media (max-width: 560px) {
+      .oraculo-escena { height: 380px; }
+      .carta-slot { width: 158px; height: 242px; margin: -121px 0 0 -79px; }
+      .carta-slot .card-front-theme { font-size: 0.9rem; }
     }
 
-    .oracle-card.flipped {
-      transform: rotateY(180deg);
+    @keyframes carta-baraja {
+      0%   { transform: translate(0,0) rotateZ(0); }
+      25%  { transform: translate(-64px,-6px) rotateZ(-7deg); }
+      50%  { transform: translate(58px,4px) rotateZ(6deg); }
+      75%  { transform: translate(-30px,-2px) rotateZ(-3deg); }
+      100% { transform: translate(0,0) rotateZ(0); }
     }
 
     /* Las dos caras de la carta */
@@ -3809,6 +3880,273 @@
       max-width: 400px; margin: 0 auto; line-height: 2;
     }
 
+    /* ── MODO GALERÍA INMERSIVA ── */
+    /* Botón flotante para entrar (abajo a la izquierda) */
+    .immersive-fab {
+      position: fixed;
+      bottom: 1.5rem; left: 1.5rem;
+      z-index: 300;
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: var(--bg2);
+      border: 1px solid rgba(201,162,77,0.5);
+      color: var(--oro, #c9a24d);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      transition: all 0.25s;
+    }
+    .immersive-fab:hover {
+      border-color: var(--copper); color: var(--copper);
+      transform: scale(1.08);
+      box-shadow: 0 6px 26px rgba(184,70,10,0.4);
+    }
+    .immersive-fab-tip {
+      position: absolute; left: 110%; white-space: nowrap;
+      font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted);
+      background: var(--bg2); border: 1px solid var(--border);
+      padding: 0.35rem 0.6rem; border-radius: 4px;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .immersive-fab:hover .immersive-fab-tip { opacity: 1; }
+
+    /* El visor a pantalla completa */
+    .immersive {
+      position: fixed; inset: 0;
+      z-index: 2000;
+      background: #060608;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    .immersive.open { opacity: 1; pointer-events: auto; }
+
+    .immersive-stage {
+      position: relative;
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    /* Cada imagen se cruza con fundido */
+    .immersive-img {
+      position: absolute;
+      max-width: 82vw; max-height: 78vh;
+      object-fit: contain;
+      border: 1px solid rgba(201,162,77,0.25);
+      box-shadow: 0 20px 70px rgba(0,0,0,0.8);
+      opacity: 0;
+      transform: scale(1.04);
+      transition: opacity 1.1s ease, transform 6s ease;
+    }
+    .immersive-img.visible { opacity: 1; transform: scale(1); }
+
+    /* Ficha de la obra actual (abajo) */
+    .immersive-caption {
+      position: absolute; bottom: 2.2rem; left: 0; right: 0;
+      text-align: center; pointer-events: none;
+    }
+    .immersive-caption .t {
+      font-family: var(--serif); font-style: italic;
+      font-size: 1.3rem; color: var(--ink);
+      text-shadow: 0 2px 12px rgba(0,0,0,0.9);
+    }
+    .immersive-caption .m {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--oro, #c9a24d); margin-top: 0.4rem;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+    }
+
+    /* Controles arriba */
+    .immersive-controls {
+      position: absolute; top: 1.5rem; right: 1.5rem;
+      display: flex; gap: 0.6rem; z-index: 3;
+    }
+    .immersive-controls button {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(20,20,28,0.8);
+      border: 1px solid var(--border); color: var(--ink);
+      font-size: 1.1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; line-height: 1;
+    }
+    .immersive-controls button:hover { border-color: var(--copper); color: var(--copper); }
+
+    /* Flechas laterales */
+    .immersive-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 50px; height: 50px; border-radius: 50%;
+      background: rgba(20,20,28,0.6);
+      border: 1px solid var(--border); color: var(--ink);
+      font-size: 1.3rem; cursor: pointer; z-index: 3;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .immersive-nav:hover { border-color: var(--copper); color: var(--copper); background: rgba(20,20,28,0.9); }
+    .immersive-prev { left: 1.5rem; }
+    .immersive-next { right: 1.5rem; }
+
+    /* Indicador de progreso (barra que se llena) */
+    .immersive-progress {
+      position: absolute; bottom: 0; left: 0; height: 2px;
+      background: var(--copper); width: 0;
+    }
+
+    @media (max-width: 760px) {
+      .immersive-nav { width: 42px; height: 42px; }
+      .immersive-caption .t { font-size: 1rem; }
+      .immersive-fab { bottom: 1rem; left: 1rem; width: 46px; height: 46px; }
+    }
+
+    /* ── DIBUJO CON TIEMPO (práctica de gesto) ── */
+    #gesto {
+      background: var(--bg2);
+      padding: 5rem 1.5rem;
+      text-align: center;
+    }
+    .gesto-intro { max-width: 640px; margin: 0 auto 2.8rem; }
+
+    .gesto-setup {
+      max-width: 660px; margin: 0 auto;
+      display: flex; flex-direction: column; align-items: center; gap: 2.4rem;
+    }
+    .gesto-grupo { width: 100%; }
+    .gesto-grupo-label {
+      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--copper); margin-bottom: 1.1rem;
+    }
+    .gesto-ops {
+      display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center;
+    }
+    .gesto-op {
+      font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.05em;
+      padding: 0.8rem 1.25rem; min-width: 80px;
+      background: transparent; color: var(--ink);
+      border: 1px solid var(--border); border-radius: 10px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .gesto-op:hover { border-color: var(--oro); color: var(--oro); }
+    .gesto-op.sel {
+      background: var(--copper); border-color: var(--copper); color: var(--bg);
+    }
+    .gesto-start {
+      font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.15em;
+      text-transform: uppercase; padding: 1rem 2.4rem;
+      background: var(--oro); border: 1px solid var(--oro); color: var(--bg);
+      cursor: pointer; transition: all 0.2s; border-radius: 4px;
+    }
+    .gesto-start:hover:not(:disabled) { background: transparent; color: var(--oro); }
+    .gesto-start:disabled { opacity: 0.45; cursor: not-allowed; }
+    .gesto-aviso {
+      max-width: 520px; margin: 0 auto;
+      font-family: var(--mono); font-size: 0.62rem; line-height: 1.8;
+      letter-spacing: 0.04em; color: var(--muted);
+      border-left: 2px solid var(--border); padding: 0.4rem 0 0.4rem 1rem;
+      text-align: left;
+    }
+    .gesto-aviso code {
+      color: var(--oro); background: rgba(201,162,77,0.08);
+      padding: 0.1rem 0.35rem; border-radius: 3px;
+    }
+
+    /* Visor a pantalla completa de la práctica */
+    .gesto-visor {
+      position: fixed; inset: 0; z-index: 500;
+      background: #07070b;
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .gesto-visor.on { display: flex; }
+
+    .gesto-img-wrap {
+      flex: 1; width: 100%;
+      display: flex; align-items: center; justify-content: center;
+      padding: 4.5rem 1.5rem 1rem;
+    }
+    .gesto-img {
+      max-width: 90vw; max-height: 74vh; object-fit: contain;
+      border: 1px solid rgba(201,162,77,0.2);
+      box-shadow: 0 20px 70px rgba(0,0,0,0.8);
+    }
+    /* Barra superior: tiempo + anillo + progreso */
+    .gesto-barra {
+      position: absolute; top: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 1.5rem; z-index: 2;
+      background: linear-gradient(to bottom, rgba(7,7,11,0.95), rgba(7,7,11,0));
+    }
+    .gesto-reloj {
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .gesto-ring { width: 54px; height: 54px; transform: rotate(-90deg); }
+    .gesto-ring circle { fill: none; stroke-width: 4; }
+    .gesto-ring .bg { stroke: var(--border); }
+    .gesto-ring .fg {
+      stroke: var(--oro); stroke-linecap: round;
+      transition: stroke-dashoffset 1s linear, stroke 0.3s;
+    }
+    .gesto-ring.alerta .fg { stroke: var(--copper); }
+    .gesto-tiempo-txt {
+      font-family: var(--mono); font-size: 1.6rem; color: var(--ink);
+      min-width: 86px; text-align: left; letter-spacing: 0.03em;
+    }
+    .gesto-tiempo-txt.alerta { color: var(--copper); }
+    .gesto-cuenta {
+      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .gesto-salir {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: rgba(20,20,28,0.8); border: 1px solid var(--border);
+      color: var(--ink); font-size: 1.1rem; cursor: pointer; line-height: 1;
+      transition: all 0.2s;
+    }
+    .gesto-salir:hover { border-color: var(--copper); color: var(--copper); }
+
+    /* Controles inferiores */
+    .gesto-controles {
+      display: flex; align-items: center; gap: 1rem; justify-content: center;
+      padding: 1rem 1.5rem 2rem; z-index: 2;
+    }
+    .gesto-ctrl {
+      min-width: 48px; height: 48px; padding: 0 1rem; border-radius: 26px;
+      background: rgba(20,20,28,0.85); border: 1px solid var(--border);
+      color: var(--ink); font-family: var(--mono); font-size: 0.68rem;
+      letter-spacing: 0.08em; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+    }
+    .gesto-ctrl:hover { border-color: var(--oro); color: var(--oro); }
+    .gesto-ctrl.play {
+      width: 60px; height: 60px; border-radius: 50%; font-size: 1.1rem;
+      background: var(--copper); border-color: var(--copper); color: var(--bg);
+    }
+    .gesto-ctrl.play:hover { background: transparent; color: var(--copper); }
+
+    /* Botón flotante de acceso rápido */
+    .gesto-fab {
+      position: fixed; bottom: 1.4rem; left: 5rem; z-index: 300;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: rgba(20,20,28,0.9); border: 1px solid var(--border);
+      color: var(--ink); font-size: 1.2rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .gesto-fab:hover { border-color: var(--oro); color: var(--oro); transform: translateY(-3px); }
+    .gesto-fab-tip {
+      position: absolute; left: 115%; white-space: nowrap;
+      font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted);
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .gesto-fab:hover .gesto-fab-tip { opacity: 1; }
+
+    @media (max-width: 760px) {
+      .gesto-fab { left: 1rem; bottom: 4.8rem; width: 46px; height: 46px; }
+      .gesto-tiempo-txt { font-size: 1.3rem; min-width: 70px; }
+      .gesto-img { max-height: 66vh; }
+      .gesto-ctrl { font-size: 0.6rem; }
+    }
 
   </style>
 </head>
@@ -3832,6 +4170,11 @@
      y escribe ahi el nombre de archivo y el titulo de cada cancion.
 -->
 <div class="music-player" id="music-player">
+  <div class="music-notes" aria-hidden="true">
+    <span>♪</span>
+    <span>♫</span>
+    <span>♩</span>
+  </div>
   <button class="music-nav" id="music-prev" aria-label="Canción anterior">◄</button>
   <button class="music-btn" id="music-btn" aria-label="Reproducir música">▶</button>
   <div class="music-bars" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -3847,6 +4190,62 @@
 </div>
 
 <audio id="bg-music" preload="none"></audio>
+
+<!-- ── MODO GALERÍA INMERSIVA ── -->
+<!-- Botón flotante para entrar -->
+<button class="immersive-fab" id="immersive-fab" aria-label="Modo galería inmersiva">
+  <span>⛶</span>
+  <span class="immersive-fab-tip">Galería inmersiva</span>
+</button>
+
+<!-- Visor a pantalla completa -->
+<div class="immersive" id="immersive" aria-hidden="true">
+  <div class="immersive-controls">
+    <button id="immersive-play" aria-label="Pausar/Reanudar">❚❚</button>
+    <button id="immersive-close" aria-label="Salir">✕</button>
+  </div>
+  <button class="immersive-nav immersive-prev" id="immersive-prev" aria-label="Anterior">‹</button>
+  <button class="immersive-nav immersive-next" id="immersive-next" aria-label="Siguiente">›</button>
+  <div class="immersive-stage" id="immersive-stage"></div>
+  <div class="immersive-caption">
+    <div class="t" id="immersive-titulo"></div>
+    <div class="m" id="immersive-meta"></div>
+  </div>
+  <div class="immersive-progress" id="immersive-progress"></div>
+</div>
+
+<!-- ── DIBUJO CON TIEMPO: botón flotante + visor ── -->
+<button class="gesto-fab" id="gesto-fab" aria-label="Dibujo con tiempo" style="display:none;">
+  <span>✎</span>
+  <span class="gesto-fab-tip">Dibujo con tiempo</span>
+</button>
+
+<div class="gesto-visor" id="gesto-visor" aria-hidden="true">
+  <div class="gesto-barra">
+    <div class="gesto-reloj">
+      <svg class="gesto-ring" id="gesto-ring" viewBox="0 0 54 54">
+        <circle class="bg" cx="27" cy="27" r="23"></circle>
+        <circle class="fg" id="gesto-ring-fg" cx="27" cy="27" r="23"></circle>
+      </svg>
+      <div>
+        <div class="gesto-tiempo-txt" id="gesto-tiempo-txt">00:60</div>
+        <div class="gesto-cuenta" id="gesto-cuenta">Dibujo 1</div>
+      </div>
+    </div>
+    <button class="gesto-salir" id="gesto-salir" aria-label="Terminar práctica">✕</button>
+  </div>
+
+  <div class="gesto-img-wrap">
+    <img class="gesto-img" id="gesto-img" alt="Referencia para dibujar" />
+  </div>
+
+  <div class="gesto-controles">
+    <button class="gesto-ctrl" id="gesto-prev" aria-label="Anterior">‹ Atrás</button>
+    <button class="gesto-ctrl play" id="gesto-play" aria-label="Pausar/Reanudar">❚❚</button>
+    <button class="gesto-ctrl" id="gesto-next" aria-label="Siguiente">Saltar ›</button>
+    <button class="gesto-ctrl" id="gesto-mute" aria-label="Silenciar aviso sonoro">♪</button>
+  </div>
+</div>
 
 <div class="layout">
 
@@ -3906,8 +4305,8 @@
       <h1 class="hero-title typewriter">Rey Autómata</h1>
       <p class="hero-subtitle">Dibujo, poesía y pensamiento<br>desde el árbol interior.</p>
       <p class="hero-body">
-        Un espacio donde conviven el arte, la técnica, la escritura y la contemplación. 
-        Aquí guardo dibujos, poemas, libros, apuntes y fragmentos de una búsqueda personal.
+        Un espacio para caminar por mi arte, la poesía que me inspira
+        y los fragmentos de mi búsqueda personal.
       </p>
       <div class="hero-buttons">
         <a href="#dibujos" class="btn btn-primary">Ver dibujos</a>
@@ -3964,31 +4363,62 @@
       <div class="oraculo-intro">
         <p class="section-label reveal">— El Oráculo</p>
         <h2 class="section-title reveal">¿Qué dibujo hoy?</h2>
-        <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Cuando la página en blanco pesa, deja que el azar decida. Invoca una carta y acepta su desafío.</p>
+        <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">Cuando la página en blanco pesa, deja que el azar decida. Baraja el mazo, saca una carta de las cinco y acepta su desafío.</p>
       </div>
 
-      <div class="card-stage reveal">
-        <div class="oracle-card" id="oracle-card">
-          <!-- Dorso (se ve primero) -->
-          <div class="card-face card-back">
-            <div class="card-svg" id="card-svg-back"></div>
-            <div class="card-back-emblema" id="card-emblema"></div>
-            <div class="card-back-titulo">El Oráculo<br>del Dibujo</div>
-            <div class="card-back-text">Toca para revelar</div>
-          </div>
-          <!-- Frente (signo zodiacal + desafío) -->
-          <div class="card-face card-front">
-            <div class="card-svg" id="card-svg-front"></div>
-            <div class="card-front-label">— Tu carta</div>
-            <div class="card-front-signo" id="oracle-signo"></div>
-            <div class="card-front-theme" id="oracle-theme">…</div>
-            <div class="card-front-tecnica" id="oracle-tecnica"></div>
+      <div class="oraculo-escena reveal" id="oraculo-escena"></div>
+
+      <button class="oracle-btn" id="oracle-btn">Barajar el mazo</button>
+      <p class="oracle-hint" id="oracle-hint">Baraja, y deja que tu mano elija por ti.</p>
+    </section>
+
+    <div class="rule"></div>
+
+    <!-- DIBUJO CON TIEMPO (práctica de gesto) — EN TRABAJO, oculto por ahora.
+         Para reactivarlo: quita el style="display:none" de abajo, y vuelve a poner
+         el <li> del menú, el botón del hero, el botón flotante y la entrada en la
+         navegación de puntos (todos marcados con "EN TRABAJO"). -->
+    <section id="gesto" style="display:none;">
+      <div class="gesto-intro">
+        <p class="section-label reveal">— Práctica de gesto</p>
+        <h2 class="section-title reveal">Dibujo con tiempo</h2>
+        <p class="section-desc reveal" style="margin-left:auto;margin-right:auto;">
+          Rostros y poses de mis propias fotos aparecen al azar. Elige cuánto duras,
+          respira, y dibuja antes de que el reloj se apague. La prisa suelta la mano.
+        </p>
+      </div>
+
+      <div class="gesto-setup reveal">
+        <div class="gesto-grupo">
+          <div class="gesto-grupo-label">1 · ¿Cuánto tiempo por dibujo?</div>
+          <div class="gesto-ops" id="gesto-tiempos">
+            <button class="gesto-op" data-seg="10">10 seg</button>
+            <button class="gesto-op" data-seg="30">30 seg</button>
+            <button class="gesto-op sel" data-seg="60">60 seg</button>
+            <button class="gesto-op" data-seg="300">5 min</button>
+            <button class="gesto-op" data-seg="900">15 min</button>
+            <button class="gesto-op" data-seg="1800">30 min</button>
           </div>
         </div>
-      </div>
 
-      <button class="oracle-btn" id="oracle-btn">Invocar un tema</button>
-      <p class="oracle-hint">Cada carta es un punto de partida, no una regla. Rómpela si quieres.</p>
+        <div class="gesto-grupo">
+          <div class="gesto-grupo-label">2 · ¿Cuántos dibujos?</div>
+          <div class="gesto-ops" id="gesto-cantidad">
+            <button class="gesto-op" data-cant="5">5</button>
+            <button class="gesto-op sel" data-cant="10">10</button>
+            <button class="gesto-op" data-cant="20">20</button>
+            <button class="gesto-op" data-cant="0">Sin fin</button>
+          </div>
+        </div>
+
+        <button class="gesto-start" id="gesto-start">Comenzar práctica</button>
+
+        <p class="gesto-aviso" id="gesto-aviso">
+          Las imágenes se toman solas desde la carpeta <code>img/referencias/</code> de tu repo.
+          Sube ahí tus fotos (<code>.jpg</code>, <code>.png</code> o <code>.webp</code>, sin tildes ni espacios)
+          y aparecerán al azar. Mientras no haya fotos, no podrás iniciar.
+        </p>
+      </div>
     </section>
 
     <div class="rule"></div>
@@ -5164,14 +5594,73 @@
       return art;
     }
 
+    // Pinta todos los dibujos en la galería + tarjetas del día.
+    // Se usa tanto con datos frescos de GitHub como con los del caché.
+    function pintar(dibujos) {
+      if (loading) loading.remove();
+      dibujos.forEach(d => grid.appendChild(crearTarjeta(d)));
+
+      // ── Tarjetas del día por categoría ──
+      const seedDia = Math.floor(Date.now() / 86400000);
+      [
+        { id: 'dibujo-ilustracion-dia', cat: 'Ilustraciones', label: 'Ilustración del día' },
+        { id: 'dibujo-pintura-dia',     cat: 'Pintura',       label: 'Pintura del día'      },
+        { id: 'dibujo-rostro-dia',      cat: 'Rostros',       label: 'Rostro del día'       },
+      ].forEach(({ id, cat, label }, ci) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const filtrados = dibujos.filter(d => (d.categoria || '').trim() === cat);
+        if (!filtrados.length) return;
+        const d = filtrados[(seedDia + ci * 17) % filtrados.length];
+        const meta = (d.tecnica || '') + (d.anio ? ' · ' + d.anio : '');
+        el.innerHTML = `
+          <div class="od-label">— ${label}</div>
+          <div class="od-card" role="button" tabindex="0" aria-label="Ver ${d.titulo}">
+            <div class="od-img-wrap">
+              <img src="${d.imagen}" alt="${d.titulo}" class="od-img" loading="lazy">
+            </div>
+            <div class="od-body">
+              <span class="od-titulo">${d.titulo}</span>
+              <span class="od-autor">${d.tecnica || ''}</span>
+              <span class="od-meta">${meta}</span>
+              <span class="od-cta">Ver en galería →</span>
+            </div>
+          </div>`;
+        const card = el.querySelector('.od-card');
+        const fake = { dataset: { img: d.imagen, title: d.titulo, meta, desc: d.texto || '' } };
+        function activar(e) { e.preventDefault(); openLightbox(fake); }
+        card.addEventListener('click', activar);
+        card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') activar(e); });
+      });
+    }
+
+    // Guarda / recupera los dibujos del navegador (para no depender siempre de GitHub)
+    function guardarCache(dibujos) {
+      try { localStorage.setItem('ra_dibujos_cache', JSON.stringify({ fecha: Date.now(), dibujos })); } catch (e) {}
+    }
+    function leerCache() {
+      try {
+        const c = JSON.parse(localStorage.getItem('ra_dibujos_cache') || 'null');
+        return (c && c.dibujos && c.dibujos.length) ? c.dibujos : null;
+      } catch (e) { return null; }
+    }
+
     // Pide la lista de archivos a GitHub y arma la galería
     fetch(api)
       .then(r => r.ok ? r.json() : Promise.reject(r.status))
       .then(archivos => {
-        const mds = archivos.filter(a => a.name.endsWith('.md'));
+        let mds = archivos.filter(a => a.name.endsWith('.md'));
         if (!mds.length) {
           loading.textContent = 'Aún no hay dibujos. Sube el primero desde /admin/';
           return;
+        }
+        // La API de GitHub limita a 60 peticiones/hora sin autenticar.
+        // Para no pasarnos, leemos solo los últimos 50 archivos (los más recientes).
+        // GitHub devuelve los archivos en orden alfabético; tomamos el final de la lista
+        // y luego los invertimos para mostrar "los últimos subidos" primero.
+        const LIMITE = 50;
+        if (mds.length > LIMITE) {
+          mds = mds.slice(mds.length - LIMITE);
         }
         // Leer cada archivo .md (más nuevos primero)
         return Promise.all(
@@ -5184,46 +5673,19 @@
             texto: leerCampo(txt, 'texto')
           })))
         ).then(dibujos => {
-          if (loading) loading.remove();
           dibujos.reverse(); // los últimos subidos, primero
-          dibujos.forEach(d => grid.appendChild(crearTarjeta(d)));
-
-          // ── Tarjetas del día por categoría ──
-          const seedDia = Math.floor(Date.now() / 86400000);
-          [
-            { id: 'dibujo-ilustracion-dia', cat: 'Ilustraciones', label: 'Ilustración del día' },
-            { id: 'dibujo-pintura-dia',     cat: 'Pintura',       label: 'Pintura del día'      },
-            { id: 'dibujo-rostro-dia',      cat: 'Rostros',       label: 'Rostro del día'       },
-          ].forEach(({ id, cat, label }, ci) => {
-            const el = document.getElementById(id);
-            if (!el) return;
-            const filtrados = dibujos.filter(d => (d.categoria || '').trim() === cat);
-            if (!filtrados.length) return;
-            const d = filtrados[(seedDia + ci * 17) % filtrados.length];
-            const meta = (d.tecnica || '') + (d.anio ? ' · ' + d.anio : '');
-            el.innerHTML = `
-              <div class="od-label">— ${label}</div>
-              <div class="od-card" role="button" tabindex="0" aria-label="Ver ${d.titulo}">
-                <div class="od-img-wrap">
-                  <img src="${d.imagen}" alt="${d.titulo}" class="od-img" loading="lazy">
-                </div>
-                <div class="od-body">
-                  <span class="od-titulo">${d.titulo}</span>
-                  <span class="od-autor">${d.tecnica || ''}</span>
-                  <span class="od-meta">${meta}</span>
-                  <span class="od-cta">Ver en galería →</span>
-                </div>
-              </div>`;
-            const card = el.querySelector('.od-card');
-            const fake = { dataset: { img: d.imagen, title: d.titulo, meta, desc: d.texto || '' } };
-            function activar(e) { e.preventDefault(); openLightbox(fake); }
-            card.addEventListener('click', activar);
-            card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') activar(e); });
-          });
+          guardarCache(dibujos);
+          pintar(dibujos);
         });
       })
       .catch(err => {
-        if (loading) loading.textContent = 'No se pudieron cargar los dibujos (' + err + ').';
+        // Si GitHub falla (p. ej. límite de peticiones), usa el caché del navegador
+        const cache = leerCache();
+        if (cache) {
+          pintar(cache);
+        } else if (loading) {
+          loading.innerHTML = 'Los dibujos se están cargando. Si no aparecen,<br>recarga la página en un momento.';
+        }
       });
   })();
 
@@ -5282,6 +5744,35 @@
     { consigna: 'Un paisaje que solo existe en tu cabeza', tecnica: 'Imaginación libre, técnica mixta' },
     { consigna: 'Las raíces de un árbol como venas', tecnica: 'Tinta, líneas orgánicas' },
     { consigna: 'Un instrumento musical en reposo', tecnica: 'Curvas y brillos, grafito blando' },
+    { consigna: 'El perfil de alguien que duerme a tu lado', tecnica: 'Línea continua, luz tenue' },
+    { consigna: 'Una ciudad vista desde muy arriba', tecnica: 'Solo puntos y líneas, vista aérea' },
+    { consigna: 'Tus zapatos más usados', tecnica: 'Estudio de desgaste, grafito' },
+    { consigna: 'Un rostro partido en dos mitades distintas', tecnica: 'Simetría rota, tinta' },
+    { consigna: 'El vapor de una taza caliente', tecnica: 'Difuminado suave, carboncillo' },
+    { consigna: 'Una figura envuelta en una sábana', tecnica: 'Estudio de pliegues y volumen' },
+    { consigna: 'Un pájaro a punto de alzar vuelo', tecnica: 'Gestual, capturando la tensión' },
+    { consigna: 'Lo que hay bajo tu cama', tecnica: 'Boceto rápido, perspectiva baja' },
+    { consigna: 'Un árbol en cada estación, en un solo dibujo', tecnica: 'Cuatro mitades, técnica mixta' },
+    { consigna: 'Una mano que suelta algo', tecnica: 'Movimiento congelado, línea suelta' },
+    { consigna: 'El mapa de una isla que no existe', tecnica: 'Tinta fina, estilo cartográfico' },
+    { consigna: 'Tu reflejo en una cuchara', tecnica: 'Distorsión, brillos metálicos' },
+    { consigna: 'Alguien riendo de verdad', tecnica: 'Expresión viva, trazo rápido' },
+    { consigna: 'Una silla vacía que cuenta una historia', tecnica: 'Claroscuro, tono melancólico' },
+    { consigna: 'La lluvia cayendo sobre un vidrio', tecnica: 'Gotas y reflejos, aguada' },
+    { consigna: 'Un monstruo amable', tecnica: 'Diseño de personaje, línea limpia' },
+    { consigna: 'El esqueleto de una hoja seca', tecnica: 'Detalle de nervaduras, lápiz duro' },
+    { consigna: 'Dos manos a punto de tocarse', tecnica: 'Estudio anatómico, tensión en el aire' },
+    { consigna: 'Tu habitación si fuera un bosque', tecnica: 'Imaginación libre, técnica mixta' },
+    { consigna: 'El rostro de alguien escuchando música', tecnica: 'Ojos cerrados, línea expresiva' },
+    { consigna: 'Una ola justo antes de romper', tecnica: 'Fuerza y movimiento, carboncillo' },
+    { consigna: 'Objetos que caben en la palma de tu mano', tecnica: 'Bodegón pequeño, grafito' },
+    { consigna: 'Una figura hecha solo de líneas rectas', tecnica: 'Geometría, sin curvas' },
+    { consigna: 'El mismo rostro joven y viejo, lado a lado', tecnica: 'Estudio del tiempo, claroscuro' },
+    { consigna: 'Una puerta entreabierta hacia la oscuridad', tecnica: 'Contraste fuerte, negro profundo' },
+    { consigna: 'Alguien de espaldas mirando el horizonte', tecnica: 'Silueta, degradado de fondo' },
+    { consigna: 'Las nubes como si fueran criaturas', tecnica: 'Formas sugeridas, aguada suave' },
+    { consigna: 'Tu corazón como lo imaginas por dentro', tecnica: 'Anatomía libre, tinta y color' },
+    { consigna: 'Un gato en la posición más imposible', tecnica: 'Gestual, curvas imposibles' },
   ];
   // ===================================================================
 
@@ -5373,23 +5864,9 @@
       </svg>`;
   }
 
-  (function () {
-    const card = document.getElementById('oracle-card');
-    const btn = document.getElementById('oracle-btn');
-    const themeEl = document.getElementById('oracle-theme');
-    const tecnicaEl = document.getElementById('oracle-tecnica');
-    const signoEl = document.getElementById('oracle-signo');
-    const svgBack = document.getElementById('card-svg-back');
-    const svgFront = document.getElementById('card-svg-front');
-    if (!card || !btn) return;
-
-    // Dibuja los marcos fijos (dorso con rayos, frente con marco)
-    svgBack.innerHTML = svgMarco(true);
-
-    // Emblema del mazo: bola de cristal + lápiz + constelación, fundidos
-    const emblema = document.getElementById('card-emblema');
-    if (emblema) {
-      emblema.innerHTML = `
+  // Emblema del dorso: bola de cristal + lápiz-varita + constelación (reutilizable)
+  function emblemaSVG() {
+    return `
         <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <radialGradient id="bola" cx="42%" cy="38%" r="60%">
@@ -5398,14 +5875,10 @@
               <stop offset="100%" stop-color="rgba(12,18,34,0.1)"/>
             </radialGradient>
           </defs>
-          <!-- Bola de cristal -->
           <circle cx="50" cy="48" r="26" fill="url(#bola)" stroke="#c9a24d" stroke-width="1.2"/>
-          <!-- Brillo de la bola -->
           <ellipse cx="42" cy="40" rx="7" ry="4" fill="#f0e6cf" opacity="0.4"/>
-          <!-- Base/soporte de la bola -->
           <path d="M38,74 Q50,82 62,74 L58,78 Q50,84 42,78 Z" fill="#c9a24d" opacity="0.8"/>
           <path d="M44,72 L56,72" stroke="#c9a24d" stroke-width="1.4" stroke-linecap="round"/>
-          <!-- Constelación dentro de la bola (estrellas + líneas) -->
           <g opacity="0.9">
             <line x1="40" y1="52" x2="48" y2="44" stroke="#c9a24d" stroke-width="0.5"/>
             <line x1="48" y1="44" x2="58" y2="50" stroke="#c9a24d" stroke-width="0.5"/>
@@ -5415,62 +5888,139 @@
             <circle cx="58" cy="50" r="1.3" fill="#f0e6cf"/>
             <circle cx="62" cy="42" r="1.1" fill="#f0e6cf"/>
           </g>
-          <!-- Lápiz cruzando, como varita mágica (de abajo-izq a arriba-der) -->
           <g transform="rotate(-38 50 50)">
-            <!-- cuerpo -->
             <rect x="47" y="14" width="6" height="48" fill="rgba(201,162,77,0.2)" stroke="#c9a24d" stroke-width="1.1"/>
-            <!-- punta -->
             <path d="M47,62 L53,62 L50,72 Z" fill="#c9a24d"/>
             <path d="M48.5,67 L51.5,67 L50,72 Z" fill="#0c1222"/>
-            <!-- goma/tope arriba -->
             <rect x="47" y="11" width="6" height="4" fill="#c9a24d"/>
             <line x1="47" y1="24" x2="53" y2="24" stroke="#c9a24d" stroke-width="0.8"/>
           </g>
-          <!-- Pequeños destellos alrededor -->
           <path d="M22,30 l1.5,3 l3,1.5 l-3,1.5 l-1.5,3 l-1.5,-3 l-3,-1.5 l3,-1.5 Z" fill="#c9a24d" opacity="0.7"/>
           <path d="M80,60 l1,2 l2,1 l-2,1 l-1,2 l-1,-2 l-2,-1 l2,-1 Z" fill="#c9a24d" opacity="0.6"/>
         </svg>`;
-    }
-    svgFront.innerHTML = svgMarco(false);
+  }
 
-    let girada = false;
-    let ultimoTema = -1, ultimoSigno = -1;
+  // ── EL ORÁCULO: barajar el mazo → sacar 1 de 5 cartas → revelar el desafío ──
+  (function () {
+    const escena = document.getElementById('oraculo-escena');
+    const btn    = document.getElementById('oracle-btn');
+    const hint   = document.getElementById('oracle-hint');
+    if (!escena || !btn) return;
 
-    function elegir(arr, ultimo) {
+    const N = 5; // cuántas cartas se sacan del mazo
+    let estado = 'vacio'; // vacio | barajando | abanico | revelada
+
+    function idxUnico(arr, usados) {
       let i;
       do { i = Math.floor(Math.random() * arr.length); }
-      while (i === ultimo && arr.length > 1);
+      while (usados.has(i) && arr.length > usados.size);
       return i;
     }
 
-    function pintar() {
-      const ti = elegir(temasDibujo, ultimoTema); ultimoTema = ti;
-      const si = elegir(zodiaco, ultimoSigno); ultimoSigno = si;
-      const tema = temasDibujo[ti];
-      const signo = zodiaco[si];
-
-      themeEl.textContent = tema.consigna;
-      tecnicaEl.innerHTML = '<strong>Técnica:</strong> ' + tema.tecnica;
-      signoEl.textContent = signo.simbolo + '  ' + signo.nombre;
-      // Marco + constelación + símbolo grande tenue de fondo
-      svgFront.innerHTML = svgMarco(false) + svgConstelacion(signo);
+    // Crea una carta completa (dorso + frente con su propio desafío)
+    function crearCarta(tema, signo) {
+      const slot = document.createElement('div');
+      slot.className = 'carta-slot no-click';
+      slot.innerHTML =
+        '<div class="carta-inner">' +
+          '<div class="card-face card-back">' +
+            '<div class="card-svg">' + svgMarco(true) + '</div>' +
+            '<div class="card-back-emblema">' + emblemaSVG() + '</div>' +
+            '<div class="card-back-titulo">El Oráculo<br>del Dibujo</div>' +
+            '<div class="card-back-text">Elígeme</div>' +
+          '</div>' +
+          '<div class="card-face card-front">' +
+            '<div class="card-svg">' + svgMarco(false) + svgConstelacion(signo) + '</div>' +
+            '<div class="card-front-label">— Tu carta</div>' +
+            '<div class="card-front-signo">' + signo.simbolo + '  ' + signo.nombre + '</div>' +
+            '<div class="card-front-theme">' + tema.consigna + '</div>' +
+            '<div class="card-front-tecnica"><strong>Técnica:</strong> ' + tema.tecnica + '</div>' +
+          '</div>' +
+        '</div>';
+      return slot;
     }
 
-    function revelar() {
-      if (!card.classList.contains('flipped')) {
-        // Está boca abajo → revela un resultado nuevo
-        pintar();
-        card.classList.add('flipped');
-        btn.textContent = 'Bajar carta';
-      } else {
-        // Está mostrando → la baja (boca abajo) y se queda así, sin mostrar nada
-        card.classList.remove('flipped');
-        btn.textContent = 'Invocar un tema';
+    // Posiciona las 5 cartas en abanico
+    function abanico(slots) {
+      const w = escena.clientWidth;
+      const cardW = slots[0].offsetWidth || 208;
+      const spread = Math.min((w - cardW) / 2 * 0.98, 250);
+      const medio = (N - 1) / 2;
+      slots.forEach((s, i) => {
+        const t = (i - medio) / medio;        // -1 .. 1
+        const x = t * spread;
+        const rot = t * 15;
+        const y = Math.abs(t) * 30 - 12;       // leve arco
+        s.dataset.x = x;
+        s.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) rotateZ(' + rot.toFixed(1) + 'deg)';
+        s.style.zIndex = 20 - Math.round(Math.abs(t) * 10); // centro arriba
+        s.style.opacity = '1';
+      });
+    }
+
+    function barajar() {
+      if (estado === 'barajando') return;
+      estado = 'barajando';
+      btn.disabled = true;
+      escena.innerHTML = '';
+      hint.textContent = 'Barajando el mazo…';
+
+      const usadosT = new Set(), usadosS = new Set();
+      const slots = [];
+      for (let k = 0; k < N; k++) {
+        const ti = idxUnico(temasDibujo, usadosT); usadosT.add(ti);
+        const si = idxUnico(zodiaco, usadosS);     usadosS.add(si);
+        const slot = crearCarta(temasDibujo[ti], zodiaco[si]);
+        slot.style.transform = 'translate(0,0) rotateZ(0)';
+        slot.style.zIndex = 10 + k;
+        slot.style.animation = 'carta-baraja 0.7s ease ' + (k * 0.06).toFixed(2) + 's';
+        escena.appendChild(slot);
+        slots.push(slot);
       }
+
+      // Tras la animación de barajar → despliega el abanico
+      setTimeout(() => {
+        slots.forEach(s => { s.style.animation = ''; });
+        abanico(slots);
+        // Habilita elegir cuando ya están desplegadas
+        setTimeout(() => {
+          slots.forEach(s => {
+            s.classList.remove('no-click');
+            s.addEventListener('click', () => elegir(s, slots), { once: true });
+          });
+          estado = 'abanico';
+          btn.disabled = false;
+          btn.textContent = 'Barajar de nuevo';
+          hint.textContent = 'Saca una carta. Deja que tu mano elija por ti.';
+        }, 760);
+      }, 1050);
     }
 
-    btn.addEventListener('click', revelar);
-    card.addEventListener('click', revelar);
+    function elegir(elegida, slots) {
+      if (estado !== 'abanico') return;
+      estado = 'revelada';
+      const w = escena.clientWidth;
+      slots.forEach(s => {
+        s.classList.add('no-click');
+        if (s === elegida) {
+          s.style.zIndex = 50;
+          s.style.transform = 'translate(0,-6px) rotateZ(0) scale(1.1)';
+        } else {
+          const x = parseFloat(s.dataset.x || '0');
+          const dir = x < 0 ? -1 : (x > 0 ? 1 : (Math.random() < 0.5 ? -1 : 1));
+          s.style.transform = 'translate(' + (dir * w / 1.25).toFixed(0) + 'px,50px) rotateZ(' + (dir * 24) + 'deg)';
+          s.style.opacity = '0';
+        }
+      });
+      // Voltea la elegida cuando ya está centrada
+      setTimeout(() => {
+        const inner = elegida.querySelector('.carta-inner');
+        if (inner) inner.classList.add('flip');
+        hint.textContent = 'Tu desafío está echado. Es un punto de partida, no una regla: rómpelo si quieres.';
+      }, 500);
+    }
+
+    btn.addEventListener('click', barajar);
   })();
 
   // ── MEMORICE DE POESÍA ──
@@ -6885,6 +7435,376 @@
       if (el) io.observe(el);
     });
   })();
+
+  // ── MODO GALERÍA INMERSIVA ──
+  // Pasa tus dibujos a pantalla completa, como una exposición.
+  (function () {
+    const fab = document.getElementById('immersive-fab');
+    const overlay = document.getElementById('immersive');
+    const stage = document.getElementById('immersive-stage');
+    const elTit = document.getElementById('immersive-titulo');
+    const elMeta = document.getElementById('immersive-meta');
+    const btnClose = document.getElementById('immersive-close');
+    const btnPlay = document.getElementById('immersive-play');
+    const btnPrev = document.getElementById('immersive-prev');
+    const btnNext = document.getElementById('immersive-next');
+    const progreso = document.getElementById('immersive-progress');
+    if (!fab || !overlay) return;
+
+    const DURACION = 5000; // ms por obra
+    let obras = [];
+    let idx = 0;
+    let timer = null, rafProg = null, inicioProg = 0;
+    let reproduciendo = true;
+    let imgA, imgB, usandoA = true; // dos capas para el fundido cruzado
+
+    // Toma los dibujos ya cargados en la galería
+    function recolectar() {
+      obras = [...document.querySelectorAll('#gallery-grid .gallery-item')].map(it => ({
+        img: it.dataset.img,
+        titulo: it.dataset.title || '',
+        meta: it.dataset.meta || ''
+      })).filter(o => o.img);
+      return obras.length > 0;
+    }
+
+    function crearCapas() {
+      stage.innerHTML = '';
+      imgA = document.createElement('img'); imgA.className = 'immersive-img';
+      imgB = document.createElement('img'); imgB.className = 'immersive-img';
+      stage.appendChild(imgA); stage.appendChild(imgB);
+    }
+
+    function mostrar(i) {
+      idx = (i + obras.length) % obras.length;
+      const o = obras[idx];
+      const entra = usandoA ? imgB : imgA;
+      const sale  = usandoA ? imgA : imgB;
+      entra.src = o.img;
+      entra.onload = () => {
+        entra.classList.add('visible');
+        sale.classList.remove('visible');
+        usandoA = !usandoA;
+      };
+      // por si ya está cacheada
+      if (entra.complete) { entra.classList.add('visible'); sale.classList.remove('visible'); usandoA = !usandoA; }
+      elTit.textContent = o.titulo;
+      elMeta.textContent = o.meta;
+      reiniciarProgreso();
+    }
+
+    function siguiente() { mostrar(idx + 1); }
+    function anterior() { mostrar(idx - 1); }
+
+    function reiniciarProgreso() {
+      if (rafProg) cancelAnimationFrame(rafProg);
+      progreso.style.width = '0';
+      if (!reproduciendo) return;
+      clearTimeout(timer);
+      inicioProg = performance.now();
+      function anim(t) {
+        const p = Math.min((t - inicioProg) / DURACION, 1);
+        progreso.style.width = (p * 100) + '%';
+        if (p < 1 && reproduciendo) rafProg = requestAnimationFrame(anim);
+      }
+      rafProg = requestAnimationFrame(anim);
+      timer = setTimeout(() => { if (reproduciendo) siguiente(); }, DURACION);
+    }
+
+    function abrir() {
+      if (!recolectar()) {
+        alert('Los dibujos aún se están cargando. Intenta en un momento.');
+        return;
+      }
+      crearCapas();
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      reproduciendo = true;
+      btnPlay.textContent = '❚❚';
+      idx = 0;
+      mostrar(0);
+    }
+
+    function cerrar() {
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      clearTimeout(timer);
+      if (rafProg) cancelAnimationFrame(rafProg);
+    }
+
+    function togglePlay() {
+      reproduciendo = !reproduciendo;
+      btnPlay.textContent = reproduciendo ? '❚❚' : '▶';
+      if (reproduciendo) reiniciarProgreso();
+      else { clearTimeout(timer); if (rafProg) cancelAnimationFrame(rafProg); }
+    }
+
+    fab.addEventListener('click', abrir);
+    btnClose.addEventListener('click', cerrar);
+    btnPlay.addEventListener('click', togglePlay);
+    btnNext.addEventListener('click', () => { mostrar(idx + 1); });
+    btnPrev.addEventListener('click', () => { mostrar(idx - 1); });
+    document.addEventListener('keydown', (e) => {
+      if (!overlay.classList.contains('open')) return;
+      if (e.key === 'Escape') cerrar();
+      else if (e.key === 'ArrowRight') mostrar(idx + 1);
+      else if (e.key === 'ArrowLeft') mostrar(idx - 1);
+      else if (e.key === ' ') { e.preventDefault(); togglePlay(); }
+    });
+  })();
+
+  // ── DIBUJO CON TIEMPO (práctica de gesto) ──
+  // Carga tus fotos desde img/referencias/ y las muestra al azar con cuenta regresiva.
+  (function () {
+    const visor   = document.getElementById('gesto-visor');
+    if (!visor) return;
+
+    const startBtn = document.getElementById('gesto-start');
+    const aviso    = document.getElementById('gesto-aviso');
+    const fab      = document.getElementById('gesto-fab');
+    const img      = document.getElementById('gesto-img');
+    const imgWrap  = img.parentElement;
+    const txt      = document.getElementById('gesto-tiempo-txt');
+    const cuenta   = document.getElementById('gesto-cuenta');
+    const ring     = document.getElementById('gesto-ring');
+    const ringFg   = document.getElementById('gesto-ring-fg');
+    const salir    = document.getElementById('gesto-salir');
+    const playBtn  = document.getElementById('gesto-play');
+    const prevBtn  = document.getElementById('gesto-prev');
+    const nextBtn  = document.getElementById('gesto-next');
+    const muteBtn  = document.getElementById('gesto-mute');
+
+    // --- Configuración elegida ---
+    let segElegido = 60;   // duración por dibujo
+    let cantElegida = 10;  // número de dibujos (0 = sin fin)
+
+    // --- Estado de la sesión ---
+    let fotos = [];        // [{name, url}]
+    let orden = [];        // secuencia de índices mostrados
+    let pos = -1;          // posición actual en "orden"
+    let restante = 0;      // segundos que quedan del dibujo actual
+    let tic = null;        // setInterval
+    let pausado = false;
+    let silenciado = false;
+
+    // --- Anillo de progreso ---
+    const R = 23, CIRC = 2 * Math.PI * R;
+    ringFg.style.strokeDasharray = CIRC;
+    document.querySelector('#gesto-ring .bg').style.strokeDasharray = CIRC;
+
+    // --- Carga de las fotos de referencia ---
+    const api = 'https://api.github.com/repos/reyautomata/reyautomata-art/contents/img/referencias';
+    const esImg = n => /\.(jpe?g|png|webp|gif|bmp|avif)$/i.test(n);
+
+    function guardarCache(lista) {
+      try { localStorage.setItem('ra_referencias_cache', JSON.stringify({ fecha: Date.now(), fotos: lista })); } catch (e) {}
+    }
+    function leerCache() {
+      try {
+        const c = JSON.parse(localStorage.getItem('ra_referencias_cache') || 'null');
+        return (c && Array.isArray(c.fotos)) ? c.fotos : [];
+      } catch (e) { return []; }
+    }
+
+    function aplicarFotos(lista) {
+      fotos = lista;
+      if (fotos.length) {
+        aviso.innerHTML = '<span style="color:var(--oro)">' + fotos.length +
+          ' foto' + (fotos.length === 1 ? '' : 's') + ' lista' + (fotos.length === 1 ? '' : 's') +
+          '.</span> Aparecerán al azar al comenzar.';
+      }
+    }
+
+    function cargarFotos() {
+      aplicarFotos(leerCache()); // muestra lo cacheado al instante
+      fetch(api)
+        .then(r => { if (!r.ok) throw new Error('rate/404'); return r.json(); })
+        .then(items => {
+          const lista = (Array.isArray(items) ? items : [])
+            .filter(it => it.type === 'file' && esImg(it.name) && it.download_url)
+            .map(it => ({ name: it.name, url: it.download_url }));
+          if (lista.length) { guardarCache(lista); aplicarFotos(lista); }
+        })
+        .catch(() => { /* sin conexión o límite de GitHub: nos quedamos con el caché */ });
+    }
+    cargarFotos();
+
+    // --- Selección de tiempo y cantidad ---
+    function grupoSel(contenedorId, attr, cb) {
+      const cont = document.getElementById(contenedorId);
+      cont.addEventListener('click', e => {
+        const b = e.target.closest('.gesto-op');
+        if (!b) return;
+        cont.querySelectorAll('.gesto-op').forEach(x => x.classList.remove('sel'));
+        b.classList.add('sel');
+        cb(parseInt(b.dataset[attr], 10));
+      });
+    }
+    grupoSel('gesto-tiempos', 'seg',  v => segElegido = v);
+    grupoSel('gesto-cantidad', 'cant', v => cantElegida = v);
+
+    // --- Sonido suave al terminar cada dibujo ---
+    let actx;
+    function campana() {
+      if (silenciado) return;
+      try {
+        actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+        const o = actx.createOscillator(), g = actx.createGain();
+        o.connect(g); g.connect(actx.destination);
+        o.type = 'sine'; o.frequency.value = 784;
+        g.gain.setValueAtTime(0.0001, actx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.22, actx.currentTime + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.55);
+        o.start(); o.stop(actx.currentTime + 0.55);
+      } catch (e) {}
+    }
+
+    // --- Lógica de imágenes ---
+    function aleatoria() {
+      if (fotos.length === 1) return 0;
+      let i, ult = orden.length ? orden[orden.length - 1] : -1;
+      do { i = Math.floor(Math.random() * fotos.length); } while (i === ult);
+      return i;
+    }
+
+    function fmt(s) {
+      const m = Math.floor(s / 60), r = s % 60;
+      return String(m).padStart(2, '0') + ':' + String(r).padStart(2, '0');
+    }
+
+    function pintarReloj() {
+      txt.textContent = fmt(restante);
+      const frac = segElegido > 0 ? (segElegido - restante) / segElegido : 0;
+      ringFg.style.strokeDashoffset = (CIRC * frac).toFixed(2);
+      const alerta = restante <= Math.max(3, Math.ceil(segElegido * 0.1)) && restante > 0;
+      ring.classList.toggle('alerta', alerta);
+      txt.classList.toggle('alerta', alerta);
+    }
+
+    function mostrar(idx) {
+      img.src = fotos[idx].url;
+      const total = cantElegida > 0 ? '/' + cantElegida : '';
+      cuenta.textContent = 'Dibujo ' + (pos + 1) + total;
+      restante = segElegido;
+      pintarReloj();
+    }
+
+    function ocultarFin() {
+      const fin = document.getElementById('gesto-fin');
+      if (fin) fin.style.display = 'none';
+    }
+
+    function siguiente(auto) {
+      // ¿terminó la sesión?
+      if (cantElegida > 0 && pos + 1 >= cantElegida) { terminar(); return; }
+      pos++;
+      if (pos >= orden.length) orden.push(aleatoria());
+      mostrar(orden[pos]);
+      if (auto) campana();
+    }
+
+    function anterior() {
+      if (pos <= 0) return;
+      pos--;
+      mostrar(orden[pos]);
+    }
+
+    function tick() {
+      if (pausado) return;
+      restante--;
+      pintarReloj();
+      if (restante <= 0) siguiente(true);
+    }
+
+    function arrancarReloj() {
+      if (tic) clearInterval(tic);
+      tic = setInterval(tick, 1000);
+    }
+
+    function setPausa(p) {
+      pausado = p;
+      playBtn.innerHTML = p ? '▶' : '❚❚';
+    }
+
+    function terminar() {
+      if (tic) clearInterval(tic);
+      let fin = document.getElementById('gesto-fin');
+      if (!fin) {
+        fin = document.createElement('div');
+        fin.id = 'gesto-fin';
+        fin.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;' +
+          'align-items:center;justify-content:center;text-align:center;color:var(--ink);' +
+          'background:#07070b;z-index:3;padding:1.5rem;';
+        visor.appendChild(fin);
+      }
+      fin.innerHTML =
+        '<div style="font-family:var(--serif);font-style:italic;font-size:2rem;color:var(--oro);margin-bottom:0.6rem;">✧</div>' +
+        '<div style="font-family:var(--serif);font-style:italic;font-size:1.5rem;">Terminaste tu práctica</div>' +
+        '<div style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-top:0.8rem;">' +
+        orden.length + ' dibujo' + (orden.length === 1 ? '' : 's') + ' · ' + fmt(segElegido) + ' cada uno</div>' +
+        '<div style="display:flex;gap:0.8rem;margin-top:1.8rem;">' +
+        '<button id="gesto-otra" style="font-family:var(--mono);font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.8rem 1.8rem;background:var(--copper);border:1px solid var(--copper);color:var(--bg);cursor:pointer;border-radius:4px;">Otra sesión</button>' +
+        '<button id="gesto-cerrar-fin" style="font-family:var(--mono);font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.8rem 1.8rem;background:transparent;border:1px solid var(--border);color:var(--ink);cursor:pointer;border-radius:4px;">Salir</button>' +
+        '</div>';
+      fin.style.display = 'flex';
+      document.getElementById('gesto-otra').addEventListener('click', abrir);
+      document.getElementById('gesto-cerrar-fin').addEventListener('click', cerrar);
+    }
+
+    function abrir() {
+      if (!fotos.length) {
+        aviso.innerHTML = '<span style="color:var(--copper)">Aún no hay fotos en <code>img/referencias/</code>.</span> ' +
+          'Sube tus imágenes a esa carpeta del repo y vuelve a intentarlo.';
+        aviso.animate(
+          [{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' },
+           { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }],
+          { duration: 260 }
+        );
+        return;
+      }
+      ocultarFin();
+      orden = [];
+      pos = -1;
+      setPausa(false);
+      visor.classList.add('on');
+      visor.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      siguiente(false);
+      arrancarReloj();
+    }
+
+    function cerrar() {
+      if (tic) clearInterval(tic);
+      ocultarFin();
+      visor.classList.remove('on');
+      visor.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    // --- Eventos ---
+    startBtn.addEventListener('click', abrir);
+    fab.addEventListener('click', abrir);
+    salir.addEventListener('click', cerrar);
+    playBtn.addEventListener('click', () => setPausa(!pausado));
+    nextBtn.addEventListener('click', () => siguiente(false));
+    prevBtn.addEventListener('click', anterior);
+    muteBtn.addEventListener('click', () => {
+      silenciado = !silenciado;
+      muteBtn.textContent = silenciado ? '♪̸' : '♪';
+      muteBtn.style.opacity = silenciado ? '0.45' : '1';
+    });
+
+    document.addEventListener('keydown', e => {
+      if (!visor.classList.contains('on')) return;
+      if (e.key === 'Escape') cerrar();
+      else if (e.key === 'ArrowRight') siguiente(false);
+      else if (e.key === 'ArrowLeft') anterior();
+      else if (e.key === ' ') { e.preventDefault(); setPausa(!pausado); }
+    });
+  })();
+
 </script>
 </body>
 </html>
